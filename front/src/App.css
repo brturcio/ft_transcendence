@@ -1,0 +1,391 @@
+.app-shell {
+	position: relative;
+	min-height: 100vh;
+	z-index: 1;
+}
+
+.app-screen {
+	padding: 24px 40px 110px;
+	min-height: 100vh;
+}
+
+.page {
+	padding: 56px 24px 0;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.page__hero {
+	max-width: 700px;
+	display: grid;
+	gap: 12px;
+}
+
+.page__eyebrow {
+	text-transform: uppercase;
+	letter-spacing: 0.15rem;
+	color: var(--glow-pink);
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.85rem;
+}
+
+.page__hero h1 {
+	font-family: "Orbitron", sans-serif;
+	font-size: clamp(2rem, 5vw, 3.6rem);
+	text-transform: uppercase;
+	text-shadow: 0 0 16px rgba(0, 229, 255, 0.45);
+}
+
+.page__hero p {
+	color: var(--txt-soft);
+	font-size: 1.15rem;
+	line-height: 1.35;
+}
+
+.leaderboard-card,
+.tournament-card,
+.profile-card {
+	background: var(--panel);
+	backdrop-filter: blur(6px);
+	border: 1px solid var(--line-soft);
+	border-radius: 16px;
+	box-shadow: 0 0 24px rgba(0, 229, 255, 0.09);
+}
+
+.leaderboard-card {
+	overflow: hidden;
+	max-width: 960px;
+}
+
+.leaderboard-head,
+.leaderboard-row {
+	display: grid;
+	grid-template-columns: 72px 1.5fr 1fr 1fr 1fr;
+	padding: 14px 20px;
+	gap: 12px;
+	align-items: center;
+}
+
+.leaderboard-head {
+	background: rgba(0, 229, 255, 0.1);
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.85rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05rem;
+}
+
+.leaderboard-row {
+	border-top: 1px solid rgba(142, 170, 199, 0.22);
+	font-size: 1.1rem;
+	color: var(--txt-soft);
+}
+
+.leaderboard-row span:nth-child(1),
+.leaderboard-row span:nth-child(5) {
+	color: var(--glow-lime);
+	font-weight: 700;
+}
+
+.tournament-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(220px, 1fr));
+	gap: 18px;
+	max-width: 1000px;
+}
+
+.tournament-card {
+	padding: 18px;
+	display: grid;
+	gap: 10px;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tournament-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 0 30px rgba(255, 62, 136, 0.2);
+}
+
+.tournament-card__type {
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	color: var(--glow-cyan);
+}
+
+.tournament-card h3 {
+	font-size: 1.35rem;
+	font-family: "Orbitron", sans-serif;
+}
+
+.tournament-card p {
+	color: var(--txt-soft);
+	font-size: 1rem;
+}
+
+.tournament-card__footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-top: 8px;
+}
+
+.tournament-card__footer span {
+	color: var(--glow-lime);
+	font-weight: 700;
+}
+
+.tournament-card__footer button {
+	border: 1px solid rgba(255, 62, 136, 0.55);
+	border-radius: 10px;
+	background: transparent;
+	color: var(--txt-main);
+	padding: 8px 14px;
+	font-weight: 700;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+.profile-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(220px, 1fr));
+	gap: 18px;
+	max-width: 1000px;
+}
+
+.profile-card {
+	padding: 18px;
+	display: grid;
+	gap: 8px;
+	color: var(--txt-soft);
+}
+
+.profile-card--main {
+	grid-column: span 2;
+}
+
+.profile-card--feed {
+	grid-column: span 3;
+}
+
+.profile-card__eyebrow {
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.78rem;
+	text-transform: uppercase;
+	color: var(--glow-cyan);
+	letter-spacing: 0.06rem;
+}
+
+.profile-card h3 {
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.9rem;
+	color: var(--txt-main);
+}
+
+.chip-row {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	margin-top: 8px;
+}
+
+.chip-row span {
+	font-size: 0.9rem;
+	padding: 5px 10px;
+	border: 1px solid var(--line-soft);
+	border-radius: 999px;
+	color: var(--glow-lime);
+	text-transform: uppercase;
+}
+
+.profile-card ul {
+	list-style: none;
+	display: grid;
+	gap: 10px;
+	margin-top: 4px;
+}
+
+.profile-card li {
+	padding: 10px 12px;
+	border: 1px solid rgba(142, 170, 199, 0.24);
+	border-radius: 10px;
+	background: rgba(14, 22, 48, 0.65);
+}
+
+.page--profile-simple {
+	max-width: 860px;
+	margin: 0 auto;
+	gap: 20px;
+}
+
+.page__hero--simple {
+	max-width: 640px;
+	gap: 10px;
+}
+
+.page__hero--simple h1 {
+	font-size: clamp(1.9rem, 4vw, 3rem);
+	text-shadow: none;
+}
+
+.profile-summary-card,
+.profile-form-card,
+.profile-activity-simple {
+	background: rgba(9, 18, 40, 0.72);
+	border: 1px solid rgba(110, 210, 255, 0.18);
+	border-radius: 14px;
+	padding: 20px;
+	box-shadow: none;
+}
+
+.profile-summary-card {
+	display: flex;
+	align-items: center;
+	gap: 18px;
+	max-width: 100%;
+}
+
+.profile-avatar {
+	width: 72px;
+	height: 72px;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	background: rgba(255, 255, 255, 0.12);
+	color: var(--txt-main);
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.7rem;
+	font-weight: 700;
+}
+
+.profile-summary-text {
+	display: grid;
+	gap: 4px;
+}
+
+.profile-summary-text h2 {
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.35rem;
+	color: var(--txt-main);
+	margin: 0;
+}
+
+.profile-summary-text p,
+.profile-summary-text span {
+	color: var(--txt-soft);
+	font-size: 0.98rem;
+}
+
+.profile-form-card {
+	display: grid;
+	gap: 16px;
+}
+
+.profile-form-card .form-group textarea,
+.profile-form-card .form-group input {
+	background: rgba(14, 22, 48, 0.78);
+	border: 1px solid rgba(110, 210, 255, 0.24);
+	border-radius: 12px;
+	padding: 14px 16px;
+	color: var(--txt-main);
+	font-family: "Rajdhani", sans-serif;
+	font-size: 1rem;
+	resize: vertical;
+}
+
+.profile-form-card .form-group textarea:focus,
+.profile-form-card .form-group input:focus {
+	outline: none;
+	border-color: var(--glow-cyan);
+	box-shadow: 0 0 18px rgba(0, 229, 255, 0.18);
+}
+
+.profile-stats-simple {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.profile-stat-item {
+	background: rgba(9, 18, 40, 0.72);
+	border: 1px solid rgba(110, 210, 255, 0.14);
+	border-radius: 14px;
+	padding: 16px;
+	text-align: center;
+	display: grid;
+	gap: 6px;
+}
+
+.profile-stat-item strong {
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.5rem;
+	color: var(--txt-main);
+}
+
+.profile-stat-item span {
+	color: var(--txt-soft);
+	font-size: 0.95rem;
+}
+
+.profile-activity-simple h3 {
+	font-family: "Orbitron", sans-serif;
+	font-size: 1.05rem;
+	margin-bottom: 12px;
+	color: var(--txt-main);
+}
+
+.profile-activity-simple ul {
+	list-style: none;
+	display: grid;
+	gap: 8px;
+}
+
+.profile-activity-simple li {
+	padding: 10px 12px;
+	border-radius: 10px;
+	background: rgba(14, 22, 48, 0.55);
+	border: 1px solid rgba(142, 170, 199, 0.14);
+	color: var(--txt-soft);
+}
+
+@media (max-width: 720px) {
+	.profile-summary-card {
+		align-items: flex-start;
+	}
+
+	.profile-stats-simple {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 980px) {
+	.app-screen {
+		padding: 16px 14px 88px;
+	}
+
+	.page {
+		padding: 32px 8px 0;
+	}
+
+	.leaderboard-head,
+	.leaderboard-row {
+		grid-template-columns: 52px 1fr 1fr;
+	}
+
+	.leaderboard-head span:nth-child(4),
+	.leaderboard-head span:nth-child(5),
+	.leaderboard-row span:nth-child(4),
+	.leaderboard-row span:nth-child(5) {
+		display: none;
+	}
+
+	.tournament-grid,
+	.profile-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.profile-card--main,
+	.profile-card--feed {
+		grid-column: span 1;
+	}
+}

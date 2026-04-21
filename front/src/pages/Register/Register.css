@@ -1,0 +1,235 @@
+.register-page {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 56px 24px 0;
+	margin-top: -100px;
+}
+
+.register-container {
+	width: 100%;
+	max-width: 480px;
+	position: relative;
+	z-index: 10;
+}
+
+.register-box {
+	background: rgba(9, 18, 40, 0.95);
+	backdrop-filter: blur(8px);
+	border: 1px solid var(--line-soft);
+	border-radius: 20px;
+	padding: 48px 40px;
+	box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+}
+
+.register-title {
+	font-family: "Orbitron", sans-serif;
+	font-size: 2.8rem;
+	font-weight: 800;
+	color: var(--txt-main);
+	text-align: center;
+	margin-bottom: 40px;
+	text-transform: uppercase;
+	letter-spacing: 0.06rem;
+	text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+.register-form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.form-group label {
+	font-family: "Rajdhani", sans-serif;
+	font-size: 0.95rem;
+	color: var(--txt-soft);
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05rem;
+}
+
+.form-group input {
+	background: rgba(14, 22, 48, 0.8);
+	border: 1px solid rgba(110, 210, 255, 0.3);
+	border-radius: 12px;
+	padding: 14px 18px;
+	color: var(--txt-main);
+	font-family: "Rajdhani", sans-serif;
+	font-size: 1rem;
+	transition: all 0.3s ease;
+}
+
+.form-group input::placeholder {
+	color: rgba(142, 170, 199, 0.6);
+}
+
+.form-group input:focus {
+	outline: none;
+	border-color: var(--glow-cyan);
+	background: rgba(14, 22, 48, 0.95);
+	box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
+}
+
+.form-group input:focus::placeholder {
+	color: rgba(142, 170, 199, 0.3);
+}
+
+.btn-register {
+	background: linear-gradient(95deg, var(--glow-cyan), #42f5d7);
+	border: none;
+	border-radius: 12px;
+	padding: 16px 24px;
+	color: #021318;
+	font-family: "Orbitron", sans-serif;
+	font-size: 0.95rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04rem;
+	cursor: pointer;
+	margin-top: 12px;
+	transition: all 0.3s ease;
+	box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+}
+
+.btn-register:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
+}
+
+.btn-register:active {
+	transform: translateY(0);
+}
+
+.register-footer {
+	text-align: center;
+	color: var(--txt-soft);
+	font-size: 0.95rem;
+	margin-top: 24px;
+	font-family: "Rajdhani", sans-serif;
+}
+
+.link-login {
+	color: var(--glow-cyan);
+	font-weight: 700;
+	text-decoration: none;
+	transition: all 0.2s ease;
+	text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+.link-login:hover {
+	color: var(--glow-pink);
+	text-shadow: 0 0 15px rgba(255, 62, 136, 0.4);
+}
+
+.oauth-divider {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 28px 0;
+	font-family: "Rajdhani", sans-serif;
+	font-size: 0.85rem;
+	color: var(--txt-soft);
+	text-transform: uppercase;
+	letter-spacing: 0.04rem;
+}
+
+.oauth-divider::before,
+.oauth-divider::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: linear-gradient(90deg, transparent, var(--line-soft), transparent);
+}
+
+.oauth-buttons {
+	display: grid;
+	place-items: center;
+	gap: 12px;
+	margin-bottom: 24px;
+}
+
+.btn-oauth {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	max-width: 220px;
+	padding: 14px 16px;
+	border: 1px solid rgba(110, 210, 255, 0.4);
+	border-radius: 12px;
+	background: rgba(14, 22, 48, 0.6);
+	color: var(--txt-soft);
+	font-family: "Rajdhani", sans-serif;
+	font-size: 0.9rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.03rem;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.btn-oauth:hover {
+	border-color: var(--glow-cyan);
+	background: rgba(14, 22, 48, 0.85);
+	color: var(--txt-main);
+	box-shadow: 0 0 16px rgba(0, 229, 255, 0.2);
+	transform: translateY(-2px);
+}
+
+.btn-oauth svg {
+	width: 18px;
+	height: 18px;
+}
+
+.btn-google {
+	border-color: rgba(255, 154, 0, 0.3);
+}
+
+.btn-google:hover {
+	border-color: #ff9a00;
+	background: rgba(255, 154, 0, 0.1);
+	color: #ff9a00;
+	box-shadow: 0 0 16px rgba(255, 154, 0, 0.2);
+}
+
+@media (max-width: 620px) {
+	.register-page {
+		padding: 32px 8px 0;
+	}
+
+	.register-box {
+		padding: 32px 24px;
+	}
+
+	.register-title {
+		font-size: 2rem;
+		margin-bottom: 28px;
+	}
+
+	.register-form {
+		gap: 18px;
+	}
+
+	.form-group input {
+		font-size: 16px;
+		/* Previene zoom en iOS */
+	}
+
+	.oauth-buttons {
+		grid-template-columns: 1fr;
+	}
+
+	.btn-oauth {
+		justify-content: center;
+		padding-left: 16px;
+	}
+}

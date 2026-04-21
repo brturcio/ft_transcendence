@@ -1,0 +1,60 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@400;500;600;700&display=swap");
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--bg-0: #050611;
+	--bg-1: #090f20;
+	--bg-2: #0f1730;
+	--txt-main: #e7f6ff;
+	--txt-soft: #8eaac7;
+	--line-soft: rgba(110, 210, 255, 0.24);
+	--glow-cyan: #00e5ff;
+	--glow-pink: #ff3e88;
+	--glow-lime: #9dff00;
+	--panel: rgba(9, 18, 40, 0.82);
+}
+
+html,
+body,
+#root {
+	min-height: 100vh;
+	width: 100%;
+}
+
+body {
+	font-family: "Rajdhani", sans-serif;
+	color: var(--txt-main);
+	background:
+		radial-gradient(circle at 10% 10%, rgba(0, 229, 255, 0.14), transparent 32%),
+		radial-gradient(circle at 85% 8%, rgba(255, 62, 136, 0.14), transparent 36%),
+		linear-gradient(145deg, var(--bg-0), var(--bg-1) 52%, var(--bg-2));
+	background-attachment: fixed;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+button,
+input {
+	font-family: inherit;
+}
+
+#root::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	background-image:
+		linear-gradient(rgba(120, 200, 255, 0.06) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(120, 200, 255, 0.04) 1px, transparent 1px);
+	background-size: 28px 28px;
+	mask-image: radial-gradient(circle at center, black 38%, transparent 100%);
+	z-index: 0;
+}
