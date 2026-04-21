@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import "../Register/Register.css";
+import "../Register/Register";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 
