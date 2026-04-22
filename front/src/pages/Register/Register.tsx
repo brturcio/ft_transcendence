@@ -20,19 +20,15 @@ export default function Register() {
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setError("");
-
 		if (password !== confirmPassword) {
 			setError("Passwords do not match.");
 			return;
 		}
-
 		if (!acceptTerms) {
 			setError("You must accept the Terms of Service and Privacy Policy.");
 			return;
 		}
-
 		setIsLoading(true);
-
 		try {
 			const response = await fetch(REGISTER_ENDPOINT, {
 				method: "POST",
@@ -45,22 +41,17 @@ export default function Register() {
 					password,
 				}),
 			});
-
 			const data = await response.json();
-
 			if (!response.ok) {
 				setError(data.message ?? "Could not create account.");
 				return;
 			}
-
-			localStorage.setItem(AUTH_TOKEN_KEY, data.token);
-
+			localStorage.setItem(AUTH_TOKEN_KEY, data.token)
 			setEmail("");
 			setUsername("");
 			setPassword("");
 			setConfirmPassword("");
 			setAcceptTerms(false);
-
 			navigate("/profile");
 		} catch (error) {
 			setError("Server error. Please try again later.");
@@ -156,14 +147,14 @@ export default function Register() {
 							</button>
 						</form>
 
-						{/* <div className="oauth-divider">
+						<div className="oauth-divider">
 							<span>OR CONTINUE WITH</span>
 						</div>
 						<div className="oauth-buttons">
 							<button type="button" className="btn-oauth btn-google">
 								Google
 							</button>
-						</div> */}
+						</div>
 						<p className="register-footer">
 							Already have an account?{" "}
 							<Link to="/login" className="link-login">

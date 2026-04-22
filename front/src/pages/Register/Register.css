@@ -1,3 +1,7 @@
+/* =========================
+   REGISTER PAGE
+   main page layout
+   ========================= */
 .register-page {
 	min-height: 100vh;
 	display: flex;
@@ -6,6 +10,10 @@
 	padding: 56px 24px 0;
 }
 
+/* =========================
+   REGISTER CONTAINER
+   outer wrapper of the card
+   ========================= */
 .register-container {
 	width: 100%;
 	max-width: 480px;
@@ -13,6 +21,10 @@
 	z-index: 10;
 }
 
+/* =========================
+   REGISTER BOX
+   main card
+   ========================= */
 .register-box {
 	background: rgba(9, 18, 40, 0.95);
 	backdrop-filter: blur(8px);
@@ -22,6 +34,10 @@
 	box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
 }
 
+/* =========================
+   REGISTER HEADER
+   title + subtitle
+   ========================= */
 .register-title {
 	font-family: "Orbitron", sans-serif;
 	font-size: 2.8rem;
@@ -43,12 +59,20 @@
 	margin-top: -20px;
 }
 
+/* =========================
+   REGISTER FORM
+   form wrapper
+   ========================= */
 .register-form {
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
 }
 
+/* =========================
+   FORM GROUP
+   label + input fields
+   ========================= */
 .form-group {
 	display: flex;
 	flex-direction: column;
@@ -90,6 +114,43 @@
 	color: rgba(142, 170, 199, 0.3);
 }
 
+/* =========================
+   ACCEPT TERMS
+   checkbox + links
+   ========================= */
+.accept-terms {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.accept-terms label {
+	font-family: "Rajdhani", sans-serif;
+	font-size: 0.95rem;
+	text-align: center;
+}
+
+.accept-terms input {
+	accent-color: var(--glow-cyan);
+}
+
+/* =========================
+   FORM ERROR MESSAGE
+   validation / server errors
+   ========================= */
+.form-error {
+	color: #ff6b6b;
+	font-family: "Rajdhani", sans-serif;
+	font-size: 0.95rem;
+	text-align: center;
+	margin-top: -8px;
+}
+
+/* =========================
+   CREATE ACCOUNT BUTTON
+   main submit button
+   ========================= */
 .btn-register {
 	background: linear-gradient(95deg, var(--glow-cyan), #42f5d7);
 	border: none;
@@ -116,44 +177,10 @@
 	transform: translateY(0);
 }
 
-.register-footer {
-	text-align: center;
-	color: var(--txt-soft);
-	font-size: 0.95rem;
-	margin-top: 24px;
-	font-family: "Rajdhani", sans-serif;
-}
-
-.link-login {
-	color: var(--glow-cyan);
-	font-weight: 700;
-	text-decoration: none;
-	transition: all 0.2s ease;
-	text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
-}
-
-.link-login:hover {
-	color: var(--glow-pink);
-	text-shadow: 0 0 15px rgba(255, 62, 136, 0.4);
-}
-
-.accept-terms {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 8px;
-}
-
-.accept-terms label {
-	font-family: "Rajdhani", sans-serif;
-	font-size: 0.95rem;
-	text-align: center;
-}
-
-.accept-terms input {
-	accent-color: var(--glow-cyan);
-}
-
+/* =========================
+   OAUTH SECTION
+   divider + google button
+   ========================= */
 .oauth-divider {
 	display: flex;
 	align-items: center;
@@ -226,6 +253,35 @@
 	box-shadow: 0 0 16px rgba(255, 154, 0, 0.2);
 }
 
+/* =========================
+   REGISTER FOOTER
+   login link
+   ========================= */
+.register-footer {
+	text-align: center;
+	color: var(--txt-soft);
+	font-size: 0.95rem;
+	margin-top: 24px;
+	font-family: "Rajdhani", sans-serif;
+}
+
+.link-login {
+	color: var(--glow-cyan);
+	font-weight: 700;
+	text-decoration: none;
+	transition: all 0.2s ease;
+	text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+.link-login:hover {
+	color: var(--glow-pink);
+	text-shadow: 0 0 15px rgba(255, 62, 136, 0.4);
+}
+
+/* =========================
+   RESPONSIVE
+   mobile adjustments
+   ========================= */
 @media (max-width: 620px) {
 	.register-page {
 		padding: 32px 8px 0;
