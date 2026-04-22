@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import type { FormEvent } from "react";
 import Navbar from "../../components/Navbar";
 import "../Register/Register";
 
@@ -7,7 +8,7 @@ const AUTH_TOKEN_KEY = "ft_auth_token";
 export default function Login() {
 	const navigate = useNavigate();
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		localStorage.setItem(AUTH_TOKEN_KEY, "demo-session");
 		navigate("/profile");

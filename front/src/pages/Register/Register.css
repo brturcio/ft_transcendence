@@ -4,7 +4,6 @@
 	align-items: center;
 	justify-content: center;
 	padding: 56px 24px 0;
-	margin-top: -100px;
 }
 
 .register-container {
@@ -33,6 +32,15 @@
 	text-transform: uppercase;
 	letter-spacing: 0.06rem;
 	text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+.join-transcendence {
+	font-size: 18px;
+	color: white;
+	display: block;
+	margin-bottom: 20px;
+	text-align: center;
+	margin-top: -20px;
 }
 
 .register-form {
@@ -96,12 +104,12 @@
 	cursor: pointer;
 	margin-top: 12px;
 	transition: all 0.3s ease;
-	box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+	box-shadow: 0 0 5px rgba(0, 229, 255, 0.4);
 }
 
 .btn-register:hover {
 	transform: translateY(-2px);
-	box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
+	box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
 }
 
 .btn-register:active {
@@ -127,6 +135,23 @@
 .link-login:hover {
 	color: var(--glow-pink);
 	text-shadow: 0 0 15px rgba(255, 62, 136, 0.4);
+}
+
+.accept-terms {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.accept-terms label {
+	font-family: "Rajdhani", sans-serif;
+	font-size: 0.95rem;
+	text-align: center;
+}
+
+.accept-terms input {
+	accent-color: var(--glow-cyan);
 }
 
 .oauth-divider {
@@ -221,7 +246,6 @@
 
 	.form-group input {
 		font-size: 16px;
-		/* Previene zoom en iOS */
 	}
 
 	.oauth-buttons {
