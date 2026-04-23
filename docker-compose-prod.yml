@@ -1,0 +1,35 @@
+services:
+  front:
+    build: ./front
+    container_name: front
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+      - ./certs:/certs
+    depends_on:
+      - back
+    networks:
+      - trans
+
+  back:
+    build: ./back
+    container_name: back
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    volumes:
+      - ./back:/app
+      - /app/node_modules
+      - ./certs:/certs
+    env_file:
+      - ./back/.env
+    networks:
+      - trans
+
+networks:
+  trans:
+    name: trans
+    driver: bridge

@@ -9,13 +9,13 @@ services:
       - /app/node_modules
       - ./certs:/certs
     depends_on:
-      - backend
+      - back
     networks:
       - trans
 
   back:
     build: ./back
-    container_name: backend
+    container_name: back
     ports:
       - "8000:8000"
     expose:

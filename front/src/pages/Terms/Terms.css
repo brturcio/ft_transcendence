@@ -1,0 +1,22 @@
+.landing__content {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+	text-align: left;
+	padding: 56px 24px 0;
+}
+
+.landing__content h1 {
+	margin-bottom: 2rem;
+}
+
+.landing__content h2 {
+	margin-top: 2rem;
+}
+
+.landing__content p,
+.landing__content ul {
+	line-height: 1.6;
+}
