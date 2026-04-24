@@ -130,10 +130,9 @@ export const showAchievementNotification = (achievementId: string) => {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      zIndex: 9999;
-      pointerEvents: none;
+      z-index: 999999;
+      pointer-events: auto;
     `;
-		notificationContainer.style.pointerEvents = "auto";
 		document.body.appendChild(notificationContainer);
 	}
 

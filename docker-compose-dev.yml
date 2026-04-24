@@ -27,7 +27,7 @@ services:
       - "3000:3000"
     volumes:
       - ./front:/app
-      - /app/node_modules
+      - front_node_modules:/app/node_modules
       - ./certs:/certs
     depends_on:
       - back
@@ -45,7 +45,7 @@ services:
       - "8000"
     volumes:
       - ./back:/app
-      - /app/node_modules
+      - back_node_modules:/app/node_modules
       - ./certs:/certs
     env_file:
       - ./back/.env
@@ -64,3 +64,5 @@ networks:
 
 volumes:
   postgres_data:
+  back_node_modules:
+  front_node_modules:

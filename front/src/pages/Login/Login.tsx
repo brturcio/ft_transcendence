@@ -11,7 +11,7 @@ export default function Login() {
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		localStorage.setItem(AUTH_TOKEN_KEY, "demo-session");
-		navigate("/profile");
+		navigate("/landing");
 	};
 
 	return (
