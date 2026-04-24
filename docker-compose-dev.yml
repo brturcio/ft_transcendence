@@ -36,13 +36,9 @@ services:
 
   back:
     build: ./back
-<<<<<<< HEAD
     container_name: back
-=======
-    container_name: backend
     command: >
       sh -c "until npm run db:migrate:base; do echo 'Database not ready, retrying migration...'; sleep 2; done && npm run db:seed && npm run dev"
->>>>>>> 8136bd0 (ajout login)
     ports:
       - "8000:8000"
     expose:
