@@ -66,7 +66,7 @@
 .register-form {
 	display: flex;
 	flex-direction: column;
-	gap: 24px;
+	gap: 16px;
 }
 
 /* =========================
@@ -113,6 +113,57 @@
 .form-group input:focus::placeholder {
 	color: rgba(142, 170, 199, 0.3);
 }
+
+.password-input {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.password-input input {
+	width: 100%;
+	padding-right: 48px;
+}
+
+.password-rules {
+	margin: 14px 0 0;
+	padding: 12px 14px;
+	list-style: none;
+	border: 1px solid rgba(0, 255, 255, 0.15);
+	border-radius: 12px;
+	background: rgba(0, 255, 255, 0.04);
+	font-size: 0.90rem;
+}
+
+.password-toggle {
+	position: absolute;
+	right: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	padding: 0;
+}
+
+.password-toggle__icon {
+	width: 22px;
+	height: 22px;
+	display: block;
+}
+
+.rule-valid {
+	color: rgba(126, 248, 126, 0.63);
+}
+
+.rule-invalid {
+	color: rgba(142, 170, 199, 0.6);
+}
+
+.password-rules li {
+	margin-bottom: 3px;
+}
+
 
 /* =========================
    ACCEPT TERMS

@@ -12,12 +12,33 @@ export default function Register() {
 	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [acceptTerms, setAcceptTerms] = useState(false);
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleSubmit = async (event: SubmitEvent) => {
+	const rules = [
+		{
+			label : "At least 8 characters",
+			test: (value: string) => value.length >= 8
+		},
+		{
+			label : "At least one Uppercase letter",
+			test: (value: string) => /[A-Z]/.test(value)
+		},
+		{
+			label : "At least one number",
+			test: (value: string) => /[0-9]/.test(value)
+		},
+		{
+			label : "At least one special characters",
+			test: (value: string) => /[!@#$%^&*(){}:";<>,.?]/.test(value)
+		}
+	];
+
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setError("");
 		if (password !== confirmPassword) {
@@ -46,7 +67,7 @@ export default function Register() {
 				setError(data.message ?? "Could not create account.");
 				return;
 			}
-			localStorage.setItem(AUTH_TOKEN_KEY, data.token)
+			localStorage.setItem(AUTH_TOKEN_KEY, data.token);
 			setEmail("");
 			setUsername("");
 			setPassword("");
@@ -99,26 +120,65 @@ export default function Register() {
 
 							<div className="form-group">
 								<label htmlFor="password">Password</label>
-								<input
-									id="password"
-									type="password"
-									placeholder="************"
-									value={password}
-									onChange={(event) => setPassword(event.target.value)}
-									required
-								/>
+
+								<div className="password-input">
+									<input
+										id="password"
+										type={showPassword ? "text" : "password"}
+										placeholder="Password"
+										value={password}
+										onChange={(event) => setPassword(event.target.value)}
+										required
+									/>
+
+									<button
+										type="button"
+										className="password-toggle"
+										onClick={() => setShowPassword(!showPassword)}
+										aria-label={showPassword ? "Hide password" : "Show password"}>
+											<img
+												src={showPassword ? "/show.png" : "/hide.png"}
+												alt=""
+												className="password-toggle__icon"/>
+									</button>
+								</div>
 							</div>
 
-							<div className="form-group">
+							<ul className="password-rules">
+										{rules.map((rule) => (
+											<li
+											key={rule.label}
+											className={rule.test(password) ? "rule-valid" : "rule-invalid"}
+											>
+												{rule.test(password) ? "✓" : "✗"} {rule.label}
+											</li>
+										))}
+							</ul>
+
+ 							<div className="form-group">
 								<label htmlFor="confirm-password">Confirm Password</label>
-								<input
-									id="confirm-password"
-									type="password"
-									placeholder="************"
-									value={confirmPassword}
-									onChange={(event) => setConfirmPassword(event.target.value)}
-									required
-								/>
+
+								<div className="password-input">
+									<input
+										id="confirm-password"
+										type={showConfirmPassword ? "text" : "password"}
+										placeholder="Password"
+										value={confirmPassword}
+										onChange={(event) => setConfirmPassword(event.target.value)}
+										required
+									/>
+
+									<button
+										type="button"
+										className="password-toggle"
+										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+										aria-label={showConfirmPassword ? "Hide password" : "Show password"}>
+											<img
+												src={showConfirmPassword ? "/show.png" : "/hide.png"}
+												alt=""
+												className="password-toggle__icon"/>
+									</button>
+								</div>
 							</div>
 
 							<div className="accept-terms">
@@ -142,7 +202,10 @@ export default function Register() {
 
 							{error && <p className="form-error">{error}</p>}
 
-							<button type="submit" className="btn-register" disabled={isLoading}>
+							<button
+								type="submit"
+								className="btn-register"
+								disabled={isLoading}>
 								{isLoading ? "[ CREATING ACCOUNT... ]" : "[ CREATE ACCOUNT ]"}
 							</button>
 						</form>
