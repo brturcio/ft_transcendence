@@ -1,5 +1,45 @@
 # ft_transcendence
 
+## Local dev stack (front + back + PostgreSQL persistent)
+
+The development stack is now integrated in `docker-compose-dev.yml` with:
+- `front` (Vite on port `3000`)
+- `back` (Next.js API on port `8000`)
+- `db` (PostgreSQL 16 on port `5432`)
+
+PostgreSQL data is persisted in the named Docker volume `postgres_data`.
+Stopping containers does not delete database data.
+
+### Start everything
+
+```bash
+make up
+```
+
+or
+
+```bash
+docker compose -f docker-compose-dev.yml up -d --build
+```
+
+### Stop everything (keep database data)
+
+```bash
+make down
+```
+
+### Reset database (delete persisted data)
+
+```bash
+make db-reset
+```
+
+### Notes
+
+- Backend waits for PostgreSQL readiness before applying base migration.
+- Seed runs at startup and is idempotent.
+- In Docker, backend uses `DATABASE_URL=postgresql://admin:admin@db:5432/ft_transcendence?sslmode=disable`.
+
 ## Description
 
 A tetris game where you can create a room and host competitions.

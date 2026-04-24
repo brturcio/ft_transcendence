@@ -3,7 +3,7 @@ import Navbar from "../../components/Navbar";
 import { AchievementsGrid } from "../../components/AchievementCard.tsx";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const PROFILE_ENDPOINT = `${API_BASE_URL}/users/me`;
 
 type ProfileStats = {

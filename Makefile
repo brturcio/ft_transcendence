@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 TPUT	= tput -T xterm-256color
 _RESET	= $(shell $(TPUT) sgr0)
 _BOLD	= $(shell $(TPUT) bold)
@@ -39,3 +40,25 @@ re: fclean all
 
 .PHONY:
 	all up down clean fclean re
+=======
+COMPOSE_DEV = docker compose -f docker-compose-dev.yml
+
+.PHONY: up down restart logs ps db-reset
+
+up:
+	$(COMPOSE_DEV) up -d --build
+
+down:
+	$(COMPOSE_DEV) down
+
+restart: down up
+
+logs:
+	$(COMPOSE_DEV) logs -f
+
+ps:
+	$(COMPOSE_DEV) ps
+
+db-reset:
+	$(COMPOSE_DEV) down -v
+>>>>>>> 8136bd0 (ajout login)

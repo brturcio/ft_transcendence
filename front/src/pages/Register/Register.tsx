@@ -4,7 +4,7 @@ import Navbar from "../../components/Navbar";
 import "./Register.css";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const REGISTER_ENDPOINT = `${API_BASE_URL}/auth/register`;
 
 export default function Register() {
