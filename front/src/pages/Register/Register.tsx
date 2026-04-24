@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import "./Register.css";
@@ -17,7 +17,7 @@ export default function Register() {
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: SubmitEvent) => {
 		event.preventDefault();
 		setError("");
 		if (password !== confirmPassword) {
