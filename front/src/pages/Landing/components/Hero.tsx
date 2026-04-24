@@ -18,7 +18,7 @@ export default function Hero() {
 			</div>
 
 			<div className="hero__buttons">
-				<Link className="primary-button" to="/tournaments">
+				<Link className="primary-button" to="/login">
 					[ PLAY NOW ]
 				</Link>
 			</div>

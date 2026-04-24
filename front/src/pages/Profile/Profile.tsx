@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Navbar from "../../components/Navbar";
+import { AchievementsGrid } from "../../components/AchievementCard.tsx";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
@@ -17,6 +18,7 @@ type ProfileData = {
 	bio: string;
 	rank: string;
 	stats: ProfileStats;
+	unlockedAchievements?: string[];
 };
 
 type BackendProfile = {
@@ -31,6 +33,7 @@ type BackendProfile = {
 		wins?: number;
 		winRate?: number | string;
 	};
+	unlockedAchievements?: string[];
 };
 
 const DEFAULT_PROFILE: ProfileData = {
@@ -43,6 +46,7 @@ const DEFAULT_PROFILE: ProfileData = {
 		wins: 0,
 		winRate: "0%",
 	},
+	unlockedAchievements: [],
 };
 
 function formatWinRate(value: number | string | undefined): string {
@@ -71,6 +75,7 @@ function mapBackendProfile(data: BackendProfile): ProfileData {
 			wins: data.stats?.wins ?? 0,
 			winRate: formatWinRate(data.stats?.winRate),
 		},
+		unlockedAchievements: data.unlockedAchievements ?? [],
 	};
 }
 
@@ -248,6 +253,11 @@ export default function Profile() {
 						<strong>{profile.stats.winRate}</strong>
 						<span>Win rate</span>
 					</div>
+				</section>
+
+				<section className="profile-achievements-section">
+					<h2>Achievements</h2>
+					<AchievementsGrid unlockedIds={profile.unlockedAchievements ?? []} />
 				</section>
 			</main>
 		</div>
