@@ -3,10 +3,10 @@ import "./Terms.css";
 
 export default function Terms() {
 	return (
-		<div className="landing-page app-screen">
+		<div className="terms-page app-screen">
 			<Navbar />
 
-			<main className="landing__content">
+			<main className="terms__content">
 				<h1>Conditions d'Utilisation – Transcendence</h1>
 
 					<h2>1. Présentation du service</h2>

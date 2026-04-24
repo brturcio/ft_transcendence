@@ -3,10 +3,10 @@ import "./Privacy.css";
 
 export default function Privacy() {
 	return (
-		<div className="landing-page app-screen">
+		<div className="privacy-page app-screen">
 			<Navbar />
 
-			<main className="landing__content">
+			<main className="privacy__content">
 				<h1>Politique de Confidentialité – Transcendence</h1>
 
 				<h2>1. Données collectées</h2>

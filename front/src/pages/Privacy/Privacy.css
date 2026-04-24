@@ -1,4 +1,4 @@
-.landing__content {
+.privacy__content {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
@@ -8,15 +8,15 @@
 	padding: 56px 24px 0;
 }
 
-.landing__content h1 {
+.privacy__content h1 {
 	margin-bottom: 2rem;
 }
 
-.landing__content h2 {
+.privacy__content h2 {
 	margin-top: 2rem;
 }
 
-.landing__content p,
-.landing__content ul {
+.privacy__content p,
+.privacy__content ul {
 	line-height: 1.6;
 }
