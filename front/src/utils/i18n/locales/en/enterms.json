@@ -1,0 +1,114 @@
+{
+	"title": "Terms of Service - Transcendence",
+	"sections": {
+		"service": {
+			"title": "1. Service Overview",
+			"paragraphs": [
+				"Transcendence is an online platform where users can compete in Tetris matches, chat in real time, and unlock achievements.",
+				"The service is free to access and use."
+			]
+		},
+		"acceptance": {
+			"title": "2. Acceptance",
+			"paragraphs": [
+				"By accessing and using Transcendence, the user accepts these Terms of Service without reservation.",
+				"If the user does not accept these terms, they must stop using the service immediately."
+			]
+		},
+		"account": {
+			"title": "3. Account Creation",
+			"intro": "Some features require creating an account. The user agrees to:",
+			"items": [
+				"Provide accurate and up-to-date information",
+				"Keep credentials confidential",
+				"Be responsible for any activity performed through their account"
+			],
+			"outro": "Transcendence may suspend or delete any account that violates these terms."
+		},
+		"usageRules": {
+			"title": "4. Usage Rules",
+			"intro": "The user agrees not to:",
+			"items": [
+				"Post illegal, offensive, hateful, or discriminatory content",
+				"Harass or threaten other users",
+				"Use software or techniques to cheat in competitions",
+				"Attempt to compromise site security (hacking, exploits, etc.)",
+				"Impersonate another person"
+			]
+		},
+		"chat": {
+			"title": "5. Online Chat",
+			"paragraphs": [
+				"Chat is a public space. The user is solely responsible for posted messages.",
+				"Transcendence may moderate or remove content and suspend users for inappropriate behavior."
+			]
+		},
+		"competitions": {
+			"title": "6. Competitions and Achievements",
+			"intro": "Tetris competitions are organized for entertainment purposes. Transcendence does not guarantee:",
+			"items": [
+				"Absence of bugs or interruptions",
+				"Score accuracy in case of technical issues"
+			],
+			"outro": "Achievements are assigned automatically and have no monetary value."
+		},
+		"ip": {
+			"title": "7. Intellectual Property",
+			"paragraphs": [
+				"All site elements (code, design, text, logos, features) are owned by Transcendence or used under license.",
+				"Any unauthorized reproduction or exploitation is prohibited."
+			]
+		},
+		"personalData": {
+			"title": "8. Personal Data",
+			"paragraphs": [
+				"Personal data is collected for account creation and service use.",
+				"For more information, refer to the Privacy Policy."
+			]
+		},
+		"liability": {
+			"title": "9. Liability",
+			"intro": "Transcendence cannot be held responsible for:",
+			"items": [
+				"Service interruptions or malfunctions",
+				"Data loss",
+				"User behavior",
+				"Indirect damages related to site use"
+			]
+		},
+		"security": {
+			"title": "10. Security",
+			"paragraphs": [
+				"Although security measures are implemented, Transcendence cannot guarantee absolute security.",
+				"Users are responsible for protecting their access credentials."
+			]
+		},
+		"updates": {
+			"title": "11. Terms Updates",
+			"paragraphs": [
+				"Transcendence may modify these Terms of Service at any time.",
+				"Users will be informed of changes by any appropriate means."
+			]
+		},
+		"termination": {
+			"title": "12. Termination",
+			"intro": "Transcendence may suspend or delete an account:",
+			"items": [
+				"In case of terms violation",
+				"In case of harmful behavior toward the platform or other users"
+			],
+			"outro": "Users may also delete their account at any time."
+		},
+		"law": {
+			"title": "13. Governing Law",
+			"paragraphs": [
+				"These terms are governed by French law.",
+				"Any dispute is subject to the jurisdiction of competent courts."
+			]
+		},
+		"contact": {
+			"title": "14. Contact",
+			"content": "For any question about these terms, contact: [To complete: contact email address]"
+		}
+	}
+}

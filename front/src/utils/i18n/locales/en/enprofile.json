@@ -1,0 +1,34 @@
+{
+	"title": "My Profile",
+	"fallback": {
+		"username": "No username",
+		"email": "No email"
+	},
+	"summary": {
+		"rankPrefix": "Rank #"
+	},
+	"fields": {
+		"username": "Username",
+		"bio": "Bio",
+		"bioPlaceholder": "Write a short bio..."
+	},
+	"actions": {
+		"save": "[ SAVE CHANGES ]",
+		"saving": "[ SAVING... ]"
+	},
+	"messages": {
+		"loading": "Loading profile...",
+		"updated": "Profile updated successfully.",
+		"loadError": "Could not load profile",
+		"saveError": "Could not update profile",
+		"unexpectedLoadError": "Unexpected error while loading profile"
+	},
+	"stats": {
+		"games": "Games",
+		"wins": "Wins",
+		"winRate": "Win rate"
+	},
+	"achievements": {
+		"title": "Achievements"
+	}
+}

@@ -1,0 +1,62 @@
+{
+	"title": "Politique de confidentialite - Transcendence",
+	"sections": {
+		"dataCollected": {
+			"title": "1. Donnees collectees",
+			"intro": "Nous collectons uniquement les donnees necessaires au fonctionnement du service :",
+			"items": [
+				"Informations de compte (pseudo, email, mot de passe chiffre)",
+				"Donnees d'utilisation (scores, achievements, historique de jeu)",
+				"Messages envoyes via le chat"
+			]
+		},
+		"dataUsage": {
+			"title": "2. Utilisation des donnees",
+			"intro": "Les donnees sont utilisees pour :",
+			"items": [
+				"Permettre l'acces au compte",
+				"Gerer les competitions et les scores",
+				"Afficher les achievements",
+				"Assurer le bon fonctionnement du chat",
+				"Ameliorer le service"
+			]
+		},
+		"sharing": {
+			"title": "3. Partage des donnees",
+			"content": "Aucune donnee personnelle n'est vendue ou partagee a des tiers. Les donnees peuvent etre accessibles uniquement en cas d'obligation legale."
+		},
+		"storage": {
+			"title": "4. Stockage et securite",
+			"paragraphs": [
+				"Les donnees sont stockees de maniere securisee. Les mots de passe sont chiffres et ne sont jamais stockes en clair.",
+				"Malgre les mesures mises en place, aucune methode de transmission ou de stockage n'est totalement securisee."
+			]
+		},
+		"retention": {
+			"title": "5. Duree de conservation",
+			"content": "Les donnees sont conservees tant que le compte est actif. Elles peuvent etre supprimees a la demande de l'utilisateur."
+		},
+		"rights": {
+			"title": "6. Droits des utilisateurs",
+			"intro": "Conformement au RGPD, vous disposez des droits suivants :",
+			"items": [
+				"Droit d'acces a vos donnees",
+				"Droit de rectification",
+				"Droit a la suppression",
+				"Droit a la limitation du traitement"
+			]
+		},
+		"cookies": {
+			"title": "7. Cookies",
+			"content": "Le site peut utiliser des cookies techniques necessaires au fonctionnement (connexion, session). Aucun cookie publicitaire n'est utilise."
+		},
+		"changes": {
+			"title": "8. Modifications",
+			"content": "Cette politique peut etre modifiee a tout moment. Les utilisateurs seront informes en cas de changement important."
+		},
+		"contact": {
+			"title": "9. Contact",
+			"content": "Pour toute question ou demande concernant vos donnees : [A completer : adresse email de contact]"
+		}
+	}
+}

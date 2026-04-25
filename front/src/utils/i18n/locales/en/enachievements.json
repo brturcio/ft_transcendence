@@ -1,0 +1,13 @@
+{
+	"section": {
+		"title": "Achievements"
+	},
+	"notification": {
+		"unlocked": "Achievement Unlocked!"
+	},
+	"locked": {
+		"title": "???",
+		"description": "???",
+		"imageAlt": "Locked achievement"
+	}
+}

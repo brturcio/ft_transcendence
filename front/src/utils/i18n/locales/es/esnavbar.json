@@ -1,0 +1,21 @@
+{
+	"brand": {
+		"main": "FT.",
+		"accent": "TRANSCENDENCE"
+	},
+	"menu": {
+		"home": "Inicio",
+		"profile": "Perfil",
+		"login": "Iniciar sesion"
+	},
+	"actions": {
+		"logout": "Cerrar sesion",
+		"register": "Registrarse"
+	},
+	"language": {
+		"english": "Ingles",
+		"spanish": "Español",
+		"french": "Frances",
+		"flagAltSuffix": "bandera"
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"title": "Iniciar sesion",
+	"fields": {
+		"email": {
+			"label": "Correo",
+			"placeholder": "tu@correo.com"
+		},
+		"password": {
+			"label": "Contraseña",
+			"placeholder": "Contraseña"
+		}
+	},
+	"actions": {
+		"submit": "[ INICIAR SESION ]"
+	},
+	"footer": {
+		"question": "Necesitas una cuenta?",
+		"register": "Registrate"
+	}
+}

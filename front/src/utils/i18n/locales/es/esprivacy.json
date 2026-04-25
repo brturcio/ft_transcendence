@@ -1,0 +1,62 @@
+{
+	"title": "Politica de Privacidad - Transcendence",
+	"sections": {
+		"dataCollected": {
+			"title": "1. Datos recopilados",
+			"intro": "Solo recopilamos los datos necesarios para el funcionamiento del servicio:",
+			"items": [
+				"Informacion de cuenta (usuario, correo, contrasena cifrada)",
+				"Datos de uso (puntuaciones, logros, historial de juego)",
+				"Mensajes enviados por el chat"
+			]
+		},
+		"dataUsage": {
+			"title": "2. Uso de los datos",
+			"intro": "Los datos se usan para:",
+			"items": [
+				"Permitir acceso a la cuenta",
+				"Gestionar competiciones y puntuaciones",
+				"Mostrar logros",
+				"Garantizar el buen funcionamiento del chat",
+				"Mejorar el servicio"
+			]
+		},
+		"sharing": {
+			"title": "3. Comparticion de datos",
+			"content": "No se venden ni comparten datos personales con terceros. Solo podran divulgarse por obligacion legal."
+		},
+		"storage": {
+			"title": "4. Almacenamiento y seguridad",
+			"paragraphs": [
+				"Los datos se almacenan de forma segura. Las contrasenas se cifran y nunca se guardan en texto plano.",
+				"A pesar de las medidas aplicadas, ningun metodo de transmision o almacenamiento es totalmente seguro."
+			]
+		},
+		"retention": {
+			"title": "5. Periodo de conservacion",
+			"content": "Los datos se conservan mientras la cuenta este activa y pueden eliminarse a solicitud del usuario."
+		},
+		"rights": {
+			"title": "6. Derechos del usuario",
+			"intro": "Conforme al RGPD, tienes los siguientes derechos:",
+			"items": [
+				"Derecho de acceso",
+				"Derecho de rectificacion",
+				"Derecho de supresion",
+				"Derecho a la limitacion del tratamiento"
+			]
+		},
+		"cookies": {
+			"title": "7. Cookies",
+			"content": "El sitio puede usar cookies tecnicas necesarias para su funcionamiento (inicio de sesion, sesion). No se usan cookies publicitarias."
+		},
+		"changes": {
+			"title": "8. Cambios",
+			"content": "Esta politica puede modificarse en cualquier momento. Los usuarios seran informados en caso de cambios importantes."
+		},
+		"contact": {
+			"title": "9. Contacto",
+			"content": "Para cualquier duda o solicitud sobre tus datos: [Por completar: correo de contacto]"
+		}
+	}
+}

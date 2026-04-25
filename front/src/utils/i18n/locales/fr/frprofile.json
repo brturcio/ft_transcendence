@@ -1,0 +1,33 @@
+{
+	"title": "Mon profil",
+	"fallback": {
+		"username": "Aucun pseudo",
+		"email": "Aucun email"
+	},
+	"summary": {
+		"rankPrefix": "Rang #"
+	},
+	"fields": {
+		"username": "Nom d'utilisateur",
+		"bio": "Bio",
+		"bioPlaceholder": "Ecris une courte bio..."
+	},
+	"actions": {
+		"save": "[ ENREGISTRER LES CHANGEMENTS ]",
+		"saving": "[ ENREGISTREMENT... ]"
+	},
+	"messages": {
+		"loading": "Chargement du profil...",
+		"updated": "Profil mis a jour avec succes.",
+		"loadError": "Impossible de charger le profil",
+		"saveError": "Impossible de mettre a jour le profil"
+	},
+	"stats": {
+		"games": "Parties",
+		"wins": "Victoires",
+		"winRate": "Taux de victoire"
+	},
+	"achievements": {
+		"title": "Achievements"
+	}
+}

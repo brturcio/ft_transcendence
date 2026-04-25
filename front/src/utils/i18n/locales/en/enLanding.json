@@ -1,0 +1,30 @@
+{
+  "intro": "// READY TO TRANSCEND?",
+  "title": {
+    "play": "Play.",
+    "compete": "Compete.",
+    "dominate": "Dominate."
+  },
+  "features": {
+    "realtime": "> real-time competitive Tetris",
+    "leaderboard": "> live global leaderboard",
+    "tournaments": "> weekly tournaments with rewards"
+  },
+  "cta": {
+    "playNow": "[ PLAY NOW ]"
+  },
+  "dashboard": {
+    "leaderboard": {
+      "title": "Global Leaderboard",
+      "loading": "Loading..."
+    },
+    "game": {
+      "score": "SCORE",
+      "next": "NEXT"
+    },
+    "actions": {
+      "join": "[ JOIN ]",
+      "host": "[ HOST ]"
+    }
+  }
+}

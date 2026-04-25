@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Navbar from "../../components/Navbar/Navbar.tsx";
 import { AchievementsGrid } from "../../components/AchievementCard.tsx";
+import { useTranslation } from 'react-i18next';
 import "./Profile.css"
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
@@ -93,6 +94,7 @@ function getAvatarInitial(username: string, email: string): string {
 }
 
 export default function Profile() {
+	const { t } = useTranslation();
 	const [profile, setProfile] = useState<ProfileData>(DEFAULT_PROFILE);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
@@ -117,7 +119,7 @@ export default function Profile() {
 				});
 
 				if (!response.ok) {
-					throw new Error(`No se pudo cargar el perfil (${response.status})`);
+					throw new Error(`${t("profile.messages.loadError")} (${response.status})`);
 				}
 
 				const data: BackendProfile = await response.json();
@@ -130,7 +132,7 @@ export default function Profile() {
 				setErrorMessage(
 					error instanceof Error
 						? error.message
-						: "Error inesperado al obtener el perfil",
+						: t("profile.messages.unexpectedLoadError"),
 				);
 			} finally {
 				setIsLoading(false);
@@ -185,7 +187,7 @@ export default function Profile() {
 
 			<main className="page page--profile page--profile-simple">
 				<section className="page__hero page__hero--simple">
-					<h1>My Profile</h1>
+					<h1>{t("profile.title")}</h1>
 				</section>
 
 				<section className="profile-summary-card">
@@ -193,15 +195,15 @@ export default function Profile() {
 						{getAvatarInitial(profile.username, profile.email)}
 					</div>
 					<div className="profile-summary-text">
-						<h2>{profile.username || "Sin username"}</h2>
-						<p>{profile.email || "Sin email"}</p>
-						<span>Rank #{profile.rank}</span>
+						<h2>{profile.username || t("profile.fallback.username")}</h2>
+						<p>{profile.email || t("profile.fallback.email")}</p>
+						<span>{t("profile.summary.rankPrefix")}{profile.rank}</span>
 					</div>
 				</section>
 
 				<form className="profile-form-card" onSubmit={handleSave}>
 					<div className="form-group">
-						<label htmlFor="profile-username">Username</label>
+						<label htmlFor="profile-username">{t("profile.fields.username")}</label>
 						<input
 							id="profile-username"
 							type="text"
@@ -216,11 +218,11 @@ export default function Profile() {
 					</div>
 
 					<div className="form-group">
-						<label htmlFor="profile-bio">Bio</label>
+						<label htmlFor="profile-bio">{t("profile.fields.bio")}</label>
 						<textarea
 							id="profile-bio"
 							rows={4}
-							placeholder="Write a short bio..."
+							placeholder={t("profile.fields.bioPlaceholder")}
 							value={profile.bio}
 							onChange={(event) =>
 								setProfile((current) => ({
@@ -232,32 +234,32 @@ export default function Profile() {
 					</div>
 
 					<button type="submit" className="btn-register" disabled={isSaving}>
-						{isSaving ? "[ SAVING... ]" : "[ SAVE CHANGES ]"}
+						{isSaving ? t("profile.actions.saving") : t("profile.actions.save")}
 					</button>
 
 					{saveMessage && <p>{saveMessage}</p>}
 					{errorMessage && <p>{errorMessage}</p>}
 				</form>
 
-				{isLoading && <p>Loading profile...</p>}
+				{isLoading && <p>{t("profile.messages.loading")}</p>}
 
 				<section className="profile-stats-simple">
 					<div className="profile-stat-item">
 						<strong>{profile.stats.games}</strong>
-						<span>Games</span>
+						<span>{t("profile.stats.games")}</span>
 					</div>
 					<div className="profile-stat-item">
 						<strong>{profile.stats.wins}</strong>
-						<span>Wins</span>
+						<span>{t("profile.stats.wins")}</span>
 					</div>
 					<div className="profile-stat-item">
 						<strong>{profile.stats.winRate}</strong>
-						<span>Win rate</span>
+						<span>{t("profile.stats.winRate")}</span>
 					</div>
 				</section>
 
 				<section className="profile-achievements-section">
-					<h2>Achievements</h2>
+					<h2>{t("profile.achievements.title")}</h2>
 					<AchievementsGrid unlockedIds={profile.unlockedAchievements ?? []} />
 				</section>
 			</main>

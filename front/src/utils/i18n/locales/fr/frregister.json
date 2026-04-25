@@ -1,0 +1,56 @@
+{
+	"title": "Inscription",
+	"subtitle": "Rejoins la communaute ft_transcendence",
+	"fields": {
+		"email": {
+			"label": "Email",
+			"placeholder": "votre@email.com"
+		},
+		"username": {
+			"label": "Nom d'utilisateur",
+			"placeholder": "votre_pseudo"
+		},
+		"password": {
+			"label": "Mot de passe",
+			"placeholder": "Mot de passe",
+			"show": "Afficher le mot de passe",
+			"hide": "Masquer le mot de passe"
+		},
+		"confirmPassword": {
+			"label": "Confirmer le mot de passe",
+			"placeholder": "Mot de passe",
+			"show": "Afficher le mot de passe",
+			"hide": "Masquer le mot de passe"
+		}
+	},
+	"passwordRules": {
+		"minLength": "Au moins 8 caracteres",
+		"uppercase": "Au moins une majuscule",
+		"number": "Au moins un chiffre",
+		"special": "Au moins un caractere special"
+	},
+	"terms": {
+		"agree": "J'accepte les",
+		"tos": "Conditions d'utilisation",
+		"and": "et la",
+		"privacy": "Politique de confidentialite"
+	},
+	"errors": {
+		"passwordMismatch": "Les mots de passe ne correspondent pas.",
+		"mustAcceptTerms": "Vous devez accepter les Conditions d'utilisation et la Politique de confidentialite.",
+		"couldNotCreate": "Impossible de creer le compte.",
+		"server": "Erreur serveur. Veuillez reessayer plus tard."
+	},
+	"actions": {
+		"create": "[ CREER UN COMPTE ]",
+		"creating": "[ CREATION DU COMPTE... ]"
+	},
+	"oauth": {
+		"divider": "OU CONTINUER AVEC",
+		"google": "Google"
+	},
+	"footer": {
+		"question": "Vous avez deja un compte ?",
+		"login": "Connexion"
+	}
+}

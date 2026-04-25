@@ -1,5 +1,6 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import flagsEs from "../../assets/Language/squareEspaña.png"
 import flagsFr from "../../assets/Language/squareFrance.png"
 import flagsEn from "../../assets/Language/squareUnitedKingdom.png"
@@ -14,12 +15,13 @@ type LanguageOption = {
 };
 
 const LANGUAGE_OPTIONS: LanguageOption[] = [
-	{ code: "en", label: "English", flag: flagsEn },
-	{ code: "es", label: "Español", flag: flagsEs },
-	{ code: "fr", label: "Français", flag: flagsFr },
+	{ code: "en", label: "navbar.language.english", flag: flagsEn },
+	{ code: "es", label: "navbar.language.spanish", flag: flagsEs },
+	{ code: "fr", label: "navbar.language.french", flag: flagsFr },
 ];
 
 export default function Navbar() {
+	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const isAuthenticated = Boolean(localStorage.getItem(AUTH_TOKEN_KEY));
@@ -39,21 +41,21 @@ export default function Navbar() {
 	return (
 		<header className="navbar">
 			<div className="navbar__logo">
-				<NavLink  to="/" className="logo-main">FT.</NavLink>
-				<NavLink to="/" className="logo-accent">TRANSCENDENCE</NavLink>
+				<NavLink  to="/" className="logo-main">{t("navbar.brand.main")}</NavLink>
+				<NavLink to="/" className="logo-accent">{t("navbar.brand.accent")}</NavLink>
 			</div>
 
 			<nav className="navbar__menu">
 				<NavLink to="/" className={getNavClass} end>
-					Home
+					{t("navbar.menu.home")}
 				</NavLink>
 				{isAuthenticated ? (
 					<NavLink to="/profile" className={getNavClass}>
-						Profile
+						{t("navbar.menu.profile")}
 					</NavLink>
 				) : (
 					<NavLink to="/login" className={getNavClass}>
-						Login
+						{t("navbar.menu.login")}
 					</NavLink>
 				)}
 			</nav>
@@ -71,9 +73,9 @@ export default function Navbar() {
 					<img
 						className="language-flag"
 						src={selectedLanguage.flag}
-						alt={`${selectedLanguage.label} flag`}
+						alt={`${t(selectedLanguage.label)} flag`}
 					/>
-					{selectedLanguage.label}
+					{t(selectedLanguage.label)}
 				</button>
 
 				{isOpen && (
@@ -89,14 +91,15 @@ export default function Navbar() {
 									onClick={() => {
 										setSelectedLanguage(language);
 										setIsOpen(false);
+										i18n.changeLanguage(language.code);
 									}}
 								>
 									<img
 										className="language-flag"
 										src={language.flag}
-										alt={`${language.label} flag`}
+										alt={`${t(language.label)} flag`}
 									/>
-									{language.label}
+									{t(language.label)}
 								</button>
 							);
 						})}
@@ -107,11 +110,11 @@ export default function Navbar() {
 			<div className="navbar__actions">
 				{isAuthenticated ? (
 					<button type="button" className="sign-button" onClick={handleLogout}>
-						Logout
+						{t("navbar.actions.logout")}
 					</button>
 				) : (
 					<Link to="/register" className="sign-button">
-						Register
+						{t("navbar.actions.register")}
 					</Link>
 				)}
 			</div>

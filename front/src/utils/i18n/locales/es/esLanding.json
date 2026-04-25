@@ -1,0 +1,30 @@
+{
+  "intro": "// ¿LISTO PARA TRASCENDER?",
+  "title": {
+    "play": "Jugar.",
+    "compete": "Competir.",
+    "dominate": "Dominar."
+  },
+  "features": {
+    "realtime": "> Tetris competitivo en tiempo real",
+    "leaderboard": "> clasificación global en vivo",
+    "tournaments": "> torneos semanales con recompensas"
+  },
+  "cta": {
+    "playNow": "[ JUGAR AHORA ]"
+  },
+  "dashboard": {
+    "leaderboard": {
+      "title": "Clasificación Global",
+      "loading": "Cargando..."
+    },
+    "game": {
+      "score": "PUNTOS",
+      "next": "SIGUIENTE"
+    },
+    "actions": {
+      "join": "[ UNIRSE ]",
+      "host": "[ CREAR ]"
+    }
+  }
+}

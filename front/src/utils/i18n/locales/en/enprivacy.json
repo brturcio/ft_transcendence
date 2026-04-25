@@ -1,0 +1,62 @@
+{
+	"title": "Privacy Policy - Transcendence",
+	"sections": {
+		"dataCollected": {
+			"title": "1. Collected Data",
+			"intro": "We only collect data required for the service to work:",
+			"items": [
+				"Account information (username, email, encrypted password)",
+				"Usage data (scores, achievements, match history)",
+				"Messages sent in chat"
+			]
+		},
+		"dataUsage": {
+			"title": "2. Data Usage",
+			"intro": "Data is used to:",
+			"items": [
+				"Allow account access",
+				"Manage competitions and scores",
+				"Display achievements",
+				"Keep chat working properly",
+				"Improve the service"
+			]
+		},
+		"sharing": {
+			"title": "3. Data Sharing",
+			"content": "No personal data is sold or shared with third parties. Data may only be disclosed if required by law."
+		},
+		"storage": {
+			"title": "4. Storage and Security",
+			"paragraphs": [
+				"Data is stored securely. Passwords are encrypted and never stored in plain text.",
+				"Even with safeguards in place, no transmission or storage method is fully secure."
+			]
+		},
+		"retention": {
+			"title": "5. Retention Period",
+			"content": "Data is kept while the account remains active and can be deleted upon user request."
+		},
+		"rights": {
+			"title": "6. User Rights",
+			"intro": "In line with GDPR, you have the following rights:",
+			"items": [
+				"Right to access your data",
+				"Right to rectify your data",
+				"Right to erasure",
+				"Right to restrict processing"
+			]
+		},
+		"cookies": {
+			"title": "7. Cookies",
+			"content": "The site may use technical cookies required for operation (login, session). No advertising cookies are used."
+		},
+		"changes": {
+			"title": "8. Changes",
+			"content": "This privacy policy may be updated at any time. Users will be informed of important changes."
+		},
+		"contact": {
+			"title": "9. Contact",
+			"content": "For any question or request about your data: [To complete: contact email address]"
+		}
+	}
+}

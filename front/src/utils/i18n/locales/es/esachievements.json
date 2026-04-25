@@ -1,0 +1,13 @@
+{
+	"section": {
+		"title": "Logros"
+	},
+	"notification": {
+		"unlocked": "Logro desbloqueado!"
+	},
+	"locked": {
+		"title": "???",
+		"description": "???",
+		"imageAlt": "Logro bloqueado"
+	}
+}

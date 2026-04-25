@@ -1,0 +1,114 @@
+{
+	"title": "Conditions d'utilisation - Transcendence",
+	"sections": {
+		"service": {
+			"title": "1. Presentation du service",
+			"paragraphs": [
+				"Transcendence est une plateforme en ligne permettant aux utilisateurs de participer a des competitions de Tetris, d'interagir via un chat et de debloquer des achievements.",
+				"Le service est accessible gratuitement."
+			]
+		},
+		"acceptance": {
+			"title": "2. Acceptation des conditions",
+			"paragraphs": [
+				"En accedant et en utilisant Transcendence, l'utilisateur accepte sans reserve les presentes conditions.",
+				"S'il n'accepte pas ces conditions, il doit cesser immediatement d'utiliser le service."
+			]
+		},
+		"account": {
+			"title": "3. Creation de compte",
+			"intro": "L'acces a certaines fonctionnalites necessite la creation d'un compte. L'utilisateur s'engage a :",
+			"items": [
+				"Fournir des informations exactes et a jour",
+				"Garder ses identifiants confidentiels",
+				"Etre responsable de toute activite effectuee via son compte"
+			],
+			"outro": "Transcendence se reserve le droit de suspendre ou supprimer tout compte en cas de violation de ces conditions."
+		},
+		"usageRules": {
+			"title": "4. Regles d'utilisation",
+			"intro": "L'utilisateur s'engage a ne pas :",
+			"items": [
+				"Publier de contenu illegal, offensant, haineux ou discriminatoire",
+				"Harceler ou menacer d'autres utilisateurs",
+				"Utiliser des logiciels ou techniques visant a tricher",
+				"Tenter de compromettre la securite du site",
+				"Usurper l'identite d'une autre personne"
+			]
+		},
+		"chat": {
+			"title": "5. Chat en ligne",
+			"paragraphs": [
+				"Le chat est un espace public. L'utilisateur est seul responsable des messages qu'il publie.",
+				"Transcendence se reserve le droit de moderer, supprimer du contenu ou suspendre un utilisateur en cas de comportement inapproprie."
+			]
+		},
+		"competitions": {
+			"title": "6. Competitions et achievements",
+			"intro": "Les competitions de Tetris sont organisees a titre ludique. Transcendence ne garantit pas :",
+			"items": [
+				"L'absence de bugs ou d'interruptions",
+				"L'exactitude des scores en cas de probleme technique"
+			],
+			"outro": "Les achievements sont attribues automatiquement et n'ont aucune valeur monetaire."
+		},
+		"ip": {
+			"title": "7. Propriete intellectuelle",
+			"paragraphs": [
+				"Tous les elements du site sont la propriete de Transcendence ou utilises sous licence.",
+				"Toute reproduction ou exploitation non autorisee est interdite."
+			]
+		},
+		"personalData": {
+			"title": "8. Donnees personnelles",
+			"paragraphs": [
+				"Les donnees personnelles sont collectees dans le cadre de la creation de compte et de l'utilisation du service.",
+				"Pour plus d'informations, consultez la Politique de confidentialite."
+			]
+		},
+		"liability": {
+			"title": "9. Responsabilite",
+			"intro": "Transcendence ne pourra etre tenu responsable :",
+			"items": [
+				"Des interruptions ou dysfonctionnements du service",
+				"Des pertes de donnees",
+				"Du comportement des utilisateurs",
+				"Des dommages indirects lies a l'utilisation du site"
+			]
+		},
+		"security": {
+			"title": "10. Securite",
+			"paragraphs": [
+				"Bien que des mesures de securite soient mises en place, Transcendence ne peut garantir une securite absolue.",
+				"L'utilisateur est responsable de la protection de ses acces."
+			]
+		},
+		"updates": {
+			"title": "11. Modification des conditions",
+			"paragraphs": [
+				"Transcendence se reserve le droit de modifier les presentes conditions a tout moment.",
+				"Les utilisateurs seront informes des changements par tout moyen juge approprie."
+			]
+		},
+		"termination": {
+			"title": "12. Resiliation",
+			"intro": "Transcendence peut suspendre ou supprimer un compte :",
+			"items": [
+				"En cas de violation des conditions",
+				"En cas de comportement nuisible a la plateforme ou aux autres utilisateurs"
+			],
+			"outro": "L'utilisateur peut egalement supprimer son compte a tout moment."
+		},
+		"law": {
+			"title": "13. Droit applicable",
+			"paragraphs": [
+				"Les presentes conditions sont regies par le droit francais.",
+				"Tout litige sera soumis a la juridiction des tribunaux competents."
+			]
+		},
+		"contact": {
+			"title": "14. Contact",
+			"content": "Pour toute question concernant ces conditions : [A completer : adresse email de contact]"
+		}
+	}
+}

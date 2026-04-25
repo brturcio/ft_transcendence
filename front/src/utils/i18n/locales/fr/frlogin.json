@@ -1,0 +1,20 @@
+{
+	"title": "Connexion",
+	"fields": {
+		"email": {
+			"label": "Email",
+			"placeholder": "votre@email.com"
+		},
+		"password": {
+			"label": "Mot de passe",
+			"placeholder": "Mot de passe"
+		}
+	},
+	"actions": {
+		"submit": "[ CONNEXION ]"
+	},
+	"footer": {
+		"question": "Besoin d'un compte ?",
+		"register": "S'inscrire"
+	}
+}

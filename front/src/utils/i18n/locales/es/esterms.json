@@ -1,0 +1,114 @@
+{
+	"title": "Terminos de Uso - Transcendence",
+	"sections": {
+		"service": {
+			"title": "1. Presentacion del servicio",
+			"paragraphs": [
+				"Transcendence es una plataforma en linea donde los usuarios pueden competir en partidas de Tetris, chatear en tiempo real y desbloquear logros.",
+				"El servicio es gratuito."
+			]
+		},
+		"acceptance": {
+			"title": "2. Aceptacion",
+			"paragraphs": [
+				"Al acceder y usar Transcendence, el usuario acepta estos terminos sin reservas.",
+				"Si no los acepta, debe dejar de usar el servicio inmediatamente."
+			]
+		},
+		"account": {
+			"title": "3. Creacion de cuenta",
+			"intro": "Algunas funciones requieren cuenta. El usuario se compromete a:",
+			"items": [
+				"Proporcionar informacion exacta y actualizada",
+				"Mantener sus credenciales confidenciales",
+				"Ser responsable de toda actividad realizada con su cuenta"
+			],
+			"outro": "Transcendence puede suspender o eliminar cuentas que incumplan estos terminos."
+		},
+		"usageRules": {
+			"title": "4. Reglas de uso",
+			"intro": "El usuario se compromete a no:",
+			"items": [
+				"Publicar contenido ilegal, ofensivo, de odio o discriminatorio",
+				"Acosar o amenazar a otros usuarios",
+				"Usar tecnicas o software para hacer trampa en competiciones",
+				"Intentar comprometer la seguridad del sitio",
+				"Suplantar la identidad de otra persona"
+			]
+		},
+		"chat": {
+			"title": "5. Chat en linea",
+			"paragraphs": [
+				"El chat es un espacio publico. El usuario es responsable de sus mensajes.",
+				"Transcendence puede moderar o eliminar contenido y suspender usuarios por comportamiento inapropiado."
+			]
+		},
+		"competitions": {
+			"title": "6. Competiciones y logros",
+			"intro": "Las competiciones son de caracter ludico. Transcendence no garantiza:",
+			"items": [
+				"Ausencia de errores o interrupciones",
+				"Exactitud de puntuaciones ante problemas tecnicos"
+			],
+			"outro": "Los logros se asignan automaticamente y no tienen valor monetario."
+		},
+		"ip": {
+			"title": "7. Propiedad intelectual",
+			"paragraphs": [
+				"Todos los elementos del sitio son propiedad de Transcendence o se usan bajo licencia.",
+				"Queda prohibida cualquier reproduccion o explotacion no autorizada."
+			]
+		},
+		"personalData": {
+			"title": "8. Datos personales",
+			"paragraphs": [
+				"Los datos personales se recopilan para crear la cuenta y usar el servicio.",
+				"Para mas informacion, consulta la Politica de Privacidad."
+			]
+		},
+		"liability": {
+			"title": "9. Responsabilidad",
+			"intro": "Transcendence no sera responsable de:",
+			"items": [
+				"Interrupciones o fallos del servicio",
+				"Perdida de datos",
+				"Conducta de los usuarios",
+				"Danos indirectos derivados del uso del sitio"
+			]
+		},
+		"security": {
+			"title": "10. Seguridad",
+			"paragraphs": [
+				"Aunque se aplican medidas de seguridad, no se puede garantizar seguridad absoluta.",
+				"El usuario es responsable de proteger sus accesos."
+			]
+		},
+		"updates": {
+			"title": "11. Modificacion de condiciones",
+			"paragraphs": [
+				"Transcendence puede modificar estos terminos en cualquier momento.",
+				"Los usuarios seran informados de los cambios por el medio que se considere apropiado."
+			]
+		},
+		"termination": {
+			"title": "12. Cancelacion",
+			"intro": "Transcendence puede suspender o eliminar una cuenta:",
+			"items": [
+				"Por incumplimiento de los terminos",
+				"Por conducta perjudicial para la plataforma o sus usuarios"
+			],
+			"outro": "El usuario tambien puede eliminar su cuenta en cualquier momento."
+		},
+		"law": {
+			"title": "13. Ley aplicable",
+			"paragraphs": [
+				"Estos terminos se rigen por la ley francesa.",
+				"Cualquier conflicto sera sometido a los tribunales competentes."
+			]
+		},
+		"contact": {
+			"title": "14. Contacto",
+			"content": "Para cualquier consulta sobre estos terminos: [Por completar: correo de contacto]"
+		}
+	}
+}

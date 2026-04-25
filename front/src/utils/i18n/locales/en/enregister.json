@@ -1,0 +1,56 @@
+{
+	"title": "Register",
+	"subtitle": "Join the ft_transcendence community",
+	"fields": {
+		"email": {
+			"label": "Email",
+			"placeholder": "your@email.com"
+		},
+		"username": {
+			"label": "Username",
+			"placeholder": "your_username"
+		},
+		"password": {
+			"label": "Password",
+			"placeholder": "Password",
+			"show": "Show password",
+			"hide": "Hide password"
+		},
+		"confirmPassword": {
+			"label": "Confirm Password",
+			"placeholder": "Password",
+			"show": "Show password",
+			"hide": "Hide password"
+		}
+	},
+	"passwordRules": {
+		"minLength": "At least 8 characters",
+		"uppercase": "At least one uppercase letter",
+		"number": "At least one number",
+		"special": "At least one special character"
+	},
+	"terms": {
+		"agree": "I agree to the",
+		"tos": "Terms of Service",
+		"and": "and",
+		"privacy": "Privacy Policy"
+	},
+	"errors": {
+		"passwordMismatch": "Passwords do not match.",
+		"mustAcceptTerms": "You must accept the Terms of Service and Privacy Policy.",
+		"couldNotCreate": "Could not create account.",
+		"server": "Server error. Please try again later."
+	},
+	"actions": {
+		"create": "[ CREATE ACCOUNT ]",
+		"creating": "[ CREATING ACCOUNT... ]"
+	},
+	"oauth": {
+		"divider": "OR CONTINUE WITH",
+		"google": "Google"
+	},
+	"footer": {
+		"question": "Already have an account?",
+		"login": "Login"
+	}
+}

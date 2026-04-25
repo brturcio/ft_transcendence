@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { FormEvent } from "react";
 import Navbar from "../../components/Navbar/Navbar";
+import { useTranslation } from "react-i18next";
 import "./Login.css";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 
 export default function Login() {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -21,38 +23,38 @@ export default function Login() {
 			<main className="register-page">
 				<div className="register-container">
 					<div className="register-box">
-						<h1 className="register-title">Login</h1>
+						<h1 className="register-title">{t("login.title")}</h1>
 
 						<form className="register-form" onSubmit={handleSubmit}>
 							<div className="form-group">
-								<label htmlFor="email">Email</label>
+								<label htmlFor="email">{t("login.fields.email.label")}</label>
 								<input
 									id="email"
 									type="email"
-									placeholder="your@email.com"
+									placeholder={t("login.fields.email.placeholder")}
 									required
 								/>
 							</div>
 
 							<div className="form-group">
-								<label htmlFor="password">Password</label>
+								<label htmlFor="password">{t("login.fields.password.label")}</label>
 								<input
 									id="password"
 									type="password"
-									placeholder="Password"
+									placeholder={t("login.fields.password.placeholder")}
 									required
 								/>
 							</div>
 
 							<button type="submit" className="btn-register">
-								[ LOGIN ]
+								{t("login.actions.submit")}
 							</button>
 						</form>
 
 						<p className="register-footer">
-							Need an account?{" "}
+							{t("login.footer.question")}{" "}
 							<Link to="/register" className="link-login">
-								Register
+								{t("login.footer.register")}
 							</Link>
 						</p>
 					</div>

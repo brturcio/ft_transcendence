@@ -1,0 +1,33 @@
+{
+	"title": "Mi perfil",
+	"fallback": {
+		"username": "Sin usuario",
+		"email": "Sin correo"
+	},
+	"summary": {
+		"rankPrefix": "Rango #"
+	},
+	"fields": {
+		"username": "Usuario",
+		"bio": "Biografia",
+		"bioPlaceholder": "Escribe una biografia corta..."
+	},
+	"actions": {
+		"save": "[ GUARDAR CAMBIOS ]",
+		"saving": "[ GUARDANDO... ]"
+	},
+	"messages": {
+		"loading": "Cargando perfil...",
+		"updated": "Perfil actualizado correctamente.",
+		"loadError": "No se pudo cargar el perfil",
+		"saveError": "No se pudo actualizar el perfil"
+	},
+	"stats": {
+		"games": "Partidas",
+		"wins": "Victorias",
+		"winRate": "Porcentaje de victorias"
+	},
+	"achievements": {
+		"title": "Logros"
+	}
+}

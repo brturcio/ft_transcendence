@@ -1,0 +1,56 @@
+{
+	"title": "Registro",
+	"subtitle": "Unete a la comunidad de ft_transcendence",
+	"fields": {
+		"email": {
+			"label": "Correo",
+			"placeholder": "tu@correo.com"
+		},
+		"username": {
+			"label": "Usuario",
+			"placeholder": "tu_usuario"
+		},
+		"password": {
+			"label": "Contrasena",
+			"placeholder": "Contrasena",
+			"show": "Mostrar contrasena",
+			"hide": "Ocultar contrasena"
+		},
+		"confirmPassword": {
+			"label": "Confirmar contrasena",
+			"placeholder": "Contrasena",
+			"show": "Mostrar contrasena",
+			"hide": "Ocultar contrasena"
+		}
+	},
+	"passwordRules": {
+		"minLength": "Al menos 8 caracteres",
+		"uppercase": "Al menos una mayuscula",
+		"number": "Al menos un numero",
+		"special": "Al menos un caracter especial"
+	},
+	"terms": {
+		"agree": "Acepto los",
+		"tos": "Terminos del Servicio",
+		"and": "y la",
+		"privacy": "Politica de Privacidad"
+	},
+	"errors": {
+		"passwordMismatch": "Las contrasenas no coinciden.",
+		"mustAcceptTerms": "Debes aceptar los Terminos del Servicio y la Politica de Privacidad.",
+		"couldNotCreate": "No se pudo crear la cuenta.",
+		"server": "Error del servidor. Intentalo de nuevo mas tarde."
+	},
+	"actions": {
+		"create": "[ CREAR CUENTA ]",
+		"creating": "[ CREANDO CUENTA... ]"
+	},
+	"oauth": {
+		"divider": "O CONTINUA CON",
+		"google": "Google"
+	},
+	"footer": {
+		"question": "Ya tienes cuenta?",
+		"login": "Iniciar sesion"
+	}
+}
