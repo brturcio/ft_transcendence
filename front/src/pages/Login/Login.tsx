@@ -12,7 +12,7 @@ export default function Login() {
 		event.preventDefault();
 		localStorage.setItem(AUTH_TOKEN_KEY, "demo-session");
 		navigate("/landing");
-	};
+};
 
 	return (
 		<div className="landing-page app-screen">
