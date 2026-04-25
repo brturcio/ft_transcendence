@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Navbar/Navbar.tsx";
 import { AchievementsGrid } from "../../components/AchievementCard.tsx";
+import "./Profile.css"
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";

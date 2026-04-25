@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
+import hideIcon from "../../assets/register/hide.png";
+import showIcon from "../../assets/register/show.png";
 import "./Register.css";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
@@ -137,7 +139,7 @@ export default function Register() {
 										onClick={() => setShowPassword(!showPassword)}
 										aria-label={showPassword ? "Hide password" : "Show password"}>
 											<img
-												src={showPassword ? "/show.png" : "/hide.png"}
+												src={showPassword ? showIcon : hideIcon}
 												alt=""
 												className="password-toggle__icon"/>
 									</button>
@@ -174,7 +176,7 @@ export default function Register() {
 										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
 										aria-label={showConfirmPassword ? "Hide password" : "Show password"}>
 											<img
-												src={showConfirmPassword ? "/show.png" : "/hide.png"}
+												src={showConfirmPassword ? showIcon : hideIcon}
 												alt=""
 												className="password-toggle__icon"/>
 									</button>

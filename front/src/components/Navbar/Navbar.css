@@ -1,0 +1,203 @@
+/* NAVBAR */
+.navbar {
+	height: 72px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border: 1px solid var(--line-soft);
+	border-radius: 16px;
+	background: rgba(8, 14, 32, 0.7);
+	backdrop-filter: blur(6px);
+	padding: 0 24px;
+}
+
+.navbar__logo {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 1.2rem;
+	font-weight: 700;
+	font-family: "Orbitron", sans-serif;
+	letter-spacing: 0.05rem;
+}
+
+.logo-main {
+	color: var(--txt-main);
+}
+
+.logo-accent {
+	color: var(--glow-pink);
+	text-shadow: 0 0 10px rgba(255, 62, 136, 0.6);
+}
+
+.navbar__menu {
+	display: flex;
+	align-items: center;
+	gap: 32px;
+}
+
+.navbar__link {
+	color: var(--txt-soft);
+	font-size: 0.95rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06rem;
+	font-family: "Orbitron", sans-serif;
+	position: relative;
+	transition: color 0.2s ease;
+}
+
+.navbar__link::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -8px;
+	width: 100%;
+	height: 2px;
+	background: linear-gradient(90deg, var(--glow-cyan), var(--glow-pink));
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 0.2s ease;
+}
+
+.navbar__link:hover,
+.navbar__link--active {
+	color: var(--txt-main);
+}
+
+.navbar__link:hover::after,
+.navbar__link--active::after {
+	transform: scaleX(1);
+}
+
+.navbar__actions {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.icon-button {
+	width: 40px;
+	height: 40px;
+	border: 1px solid var(--line-soft);
+	border-radius: 10px;
+	background: transparent;
+	color: var(--txt-main);
+	cursor: pointer;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.icon-button:hover {
+	border-color: rgba(0, 229, 255, 0.7);
+	box-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
+}
+
+.sign-button,
+.language-button {
+	min-width: 190px;
+	height: 42px;
+	padding: 0 18px;
+	gap: 10px;
+	border: 1px solid rgba(255, 62, 136, 0.65);
+	border-radius: 10px;
+	background: transparent;
+	color: var(--txt-main);
+	text-transform: uppercase;
+	cursor: pointer;
+	font-family: "Orbitron", sans-serif;
+	letter-spacing: 0.05rem;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.sign-button {
+	text-decoration: none;
+}
+
+.language {
+	position: relative;
+	display: inline-block;
+}
+
+
+.language-menu {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	min-width: 190px;
+
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
+	background: rgba(10, 14, 30, 0.95);
+	border: 1px solid rgba(255, 62, 136, 0.65);
+	border-radius: 10px;
+	padding: 6px;
+	z-index: 10;
+	font-family: "Orbitron", sans-serif;
+	letter-spacing: 0.05rem;
+	box-shadow: 0 0 18px rgba(255, 62, 136, 0.25);
+}
+
+
+.language-menu button {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+
+	background: transparent;
+	border: none;
+	color: var(--txt-main);
+	padding: 10px 14px;
+	text-align: left;
+	cursor: pointer;
+	font-family: "Orbitron", sans-serif;
+	text-transform: uppercase;
+	letter-spacing: 0.05rem;
+	border-radius: 8px;
+	white-space: nowrap;
+}
+
+.language-menu__option--active {
+	background: rgba(0, 229, 255, 0.14);
+	color: var(--glow-cyan);
+	box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.28);
+}
+
+.language-menu button:hover {
+	background: rgba(255, 62, 136, 0.15);
+	color: var(--glow-cyan);
+}
+
+.language-flag {
+	width: 28px;
+	height: 22px;
+	border-radius: 6px;
+	object-fit: cover;
+	border: 1px solid rgba(255, 62, 136, 0.45);
+	box-shadow: 0 0 10px rgba(255, 62, 136, 0.25);
+}
+
+/* NAVBAR RESPONSIVE */
+@media (max-width: 1100px) {
+	.navbar {
+		height: auto;
+		padding: 14px;
+		gap: 12px;
+		flex-wrap: wrap;
+	}
+
+	.navbar__menu {
+		gap: 14px;
+		flex-wrap: wrap;
+	}
+}
+
+@media (max-width: 620px) {
+	.navbar__actions {
+		width: 100%;
+		justify-content: flex-end;
+	}
+}

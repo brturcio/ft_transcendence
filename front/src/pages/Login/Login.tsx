@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { FormEvent } from "react";
-import Navbar from "../../components/Navbar";
-import "../Register/Register";
+import Navbar from "../../components/Navbar/Navbar";
+import "./Login.css";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 
@@ -39,7 +39,7 @@ export default function Login() {
 								<input
 									id="password"
 									type="password"
-									placeholder="************"
+									placeholder="Password"
 									required
 								/>
 							</div>
