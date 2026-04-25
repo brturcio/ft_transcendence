@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import { useTranslation } from "react-i18next";
+import TetrisGame from "../../components/TetrisGame/TetrisGame";
 
 import "./Landing.css";
 
@@ -50,44 +51,7 @@ export default function Landing() {
 						</aside>
 
 						<section className="dashboard-game">
-							<div className="tetris-container">
-								<div className="tetris-grid-wrapper">
-									<div className="tetris-grid">
-										{Array(20)
-											.fill(null)
-											.map((_, row) =>
-												Array(10)
-													.fill(null)
-													.map((_, col) => (
-														<div
-															key={`${row}-${col}`}
-															className="tetris-cell"
-														></div>
-													))
-											)}
-									</div>
-								</div>
-
-								<div className="tetris-info">
-									<div className="tetris-score">
-										<h3>{t("landing.dashboard.game.score")}</h3>
-										<p className="score-value">0</p>
-									</div>
-
-									<div className="tetris-next">
-										<h3>{t("landing.dashboard.game.next")}</h3>
-										<div className="next-block-preview">
-											<div className="mini-grid">
-												{Array(16)
-													.fill(null)
-													.map((_, i) => (
-														<div key={i} className="mini-cell"></div>
-													))}
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
+							<TetrisGame />
 						</section>
 
 						<aside className="dashboard-actions">
