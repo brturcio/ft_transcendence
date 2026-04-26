@@ -24,10 +24,12 @@ export function initializeGame(startPaused: boolean = false): GameState {
 	return {
 		grid: createEmptyGrid(),
 		currentPiece: createNewPiece(getRandomPieceType()),
+		stashPiece: null,
 		nextPiece: nextPieceType,
 		score: 0,
 		lines: 0,
 		level: 1,
+		dropSpeed: INITIAL_DROP_SPEED,
 		isGameOver: false,
 		isPaused: startPaused
 	};
@@ -59,7 +61,7 @@ export function updateLevel(totalLines: number): number {
 
 // Get drop speed based on level
 export function getDropSpeed(level: number): number {
-	return Math.max(100, INITIAL_DROP_SPEED - (level - 1) * 50);
+	return Math.max(60, INITIAL_DROP_SPEED * Math.pow(0.65, level - 1));
 }
 
 // Drop piece one row
@@ -84,10 +86,12 @@ export function dropPiece(gameState: GameState): GameState {
 		const newScore = calculateScore(clearedLines, gameState.score);
 		const newLines = gameState.lines + clearedLines;
 		const newLevel = updateLevel(newLines);
+		const newDropSpeed = getDropSpeed(newLevel);
 
 		// Create next piece
 		const nextPiece = createNewPiece(gameState.nextPiece);
 		const nextNextPieceType = getRandomPieceType();
+		const newStash = gameState.stashPiece;
 
 		// Check if game over (new piece can't be placed)
 		const isGameOver = !canPlacePiece(clearedGrid, nextPiece);
@@ -96,9 +100,11 @@ export function dropPiece(gameState: GameState): GameState {
 			grid: clearedGrid,
 			currentPiece: isGameOver ? null : nextPiece,
 			nextPiece: nextNextPieceType,
+			stashPiece: newStash,
 			score: newScore,
 			lines: newLines,
 			level: newLevel,
+			dropSpeed: newDropSpeed,
 			isGameOver,
 			isPaused: gameState.isPaused
 		};
@@ -268,6 +274,7 @@ export function quickDrop(gameState: GameState): GameState {
 	const newScore = calculateScore(clearedLines, gameState.score);
 	const newLines = gameState.lines + clearedLines;
 	const newLevel = updateLevel(newLines);
+	const newDropSpeed = getDropSpeed(newLevel);
 
 	// Create next piece
 	const nextPiece = createNewPiece(gameState.nextPiece);
@@ -280,10 +287,52 @@ export function quickDrop(gameState: GameState): GameState {
 		grid: clearedGrid,
 		currentPiece: isGameOver ? null : nextPiece,
 		nextPiece: nextNextPieceType,
+		stashPiece: gameState.stashPiece,
 		score: newScore,
 		lines: newLines,
 		level: newLevel,
+		dropSpeed: newDropSpeed,
 		isGameOver,
 		isPaused: gameState.isPaused
+	};
+}
+
+
+export function switchStash(gameState: GameState): GameState {
+	if (gameState.isPaused || gameState.isGameOver || !gameState.currentPiece) {
+		return gameState;
+	}
+
+	const { currentPiece, stashPiece, grid, nextPiece } = gameState;
+
+	if (!stashPiece) {
+		const newCurrent = createNewPiece(nextPiece);
+		const newNext = getRandomPieceType();
+
+		const isGameOver = !canPlacePiece(grid, newCurrent);
+
+		return {
+			...gameState,
+			stashPiece: currentPiece.type,
+			currentPiece: isGameOver ? null : newCurrent,
+			nextPiece: newNext,
+			isGameOver
+		};
+	}
+
+	const swappedPiece = createNewPiece(stashPiece);
+
+	if (!canPlacePiece(grid, swappedPiece)) {
+		return {
+			...gameState,
+			isGameOver: true,
+			currentPiece: null
+		};
+	}
+
+	return {
+		...gameState,
+		stashPiece: currentPiece.type,
+		currentPiece: swappedPiece
 	};
 }

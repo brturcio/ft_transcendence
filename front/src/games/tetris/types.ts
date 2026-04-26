@@ -16,10 +16,12 @@ export type CellState = null | PieceType;
 export interface GameState {
 	grid: CellState[][];
 	currentPiece: Piece | null;
+	stashPiece: PieceType | null;
 	nextPiece: PieceType;
 	score: number;
 	lines: number;
 	level: number;
+	dropSpeed: number;
 	isGameOver: boolean;
 	isPaused: boolean;
 }

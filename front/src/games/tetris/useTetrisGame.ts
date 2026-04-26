@@ -7,23 +7,24 @@ import {
 	moveLeft,
 	moveRight,
 	togglePause,
-	quickDrop
+	quickDrop,
+	switchStash
 } from './gameEngine';
 
 // Hook to manage Tetris game state and logic
 export function useTetrisGame() {
-	const [gameState, setGameState] = React.useState<GameState>(() => initializeGame(true));
+		const [gameState, setGameState] = React.useState<GameState>(() => initializeGame(true));
 
 	// Auto-drop piece every tick
 	React.useEffect(() => {
 		if (gameState.isPaused || gameState.isGameOver) return;
 
 		const interval = setInterval(() => {
-			setGameState(state => dropPiece(state));
-		}, 800); // Adjust speed as needed
+			setGameState(prev => dropPiece(prev));
+		}, gameState.dropSpeed);
 
 		return () => clearInterval(interval);
-	}, [gameState.isPaused, gameState.isGameOver]);
+	}, [gameState.dropSpeed, gameState.isPaused, gameState.isGameOver]);
 
 	// Handle keyboard input
 	React.useEffect(() => {
@@ -49,6 +50,11 @@ export function useTetrisGame() {
 					e.preventDefault();
 					setGameState(state => quickDrop(state));
 					break;
+				case 'Shift':
+					e.preventDefault();
+					console.log("caca");
+					setGameState(state => switchStash(state));
+					break;
 				case 'Escape':
 					e.preventDefault();
 					setGameState(state => togglePause(state));
@@ -63,7 +69,7 @@ export function useTetrisGame() {
 	}, []);
 
 	const resetGame = () => {
-		setGameState(initializeGame(true)); // Reset with isPaused = true
+		setGameState(initializeGame(true));
 	};
 
 	return {
