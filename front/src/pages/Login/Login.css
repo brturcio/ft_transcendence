@@ -1,5 +1,5 @@
 /* LOGIN PAGE */
-.register-page {
+.login-page {
 	min-height: 100vh;
 	display: flex;
 	align-items: center;
@@ -7,14 +7,14 @@
 	padding: 56px 24px 0;
 }
 
-.register-container {
+.login-container {
 	width: 100%;
 	max-width: 480px;
 	position: relative;
 	z-index: 10;
 }
 
-.register-box {
+.login-box {
 	background: rgba(9, 18, 40, 0.95);
 	backdrop-filter: blur(8px);
 	border: 1px solid var(--line-soft);
@@ -23,7 +23,7 @@
 	box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
 }
 
-.register-title {
+.login-title {
 	font-family: "Orbitron", sans-serif;
 	font-size: 2.8rem;
 	font-weight: 800;
@@ -35,19 +35,19 @@
 	text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
 }
 
-.register-form {
+.login-form {
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
 }
 
-.form-group {
+.login-form-group {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
 }
 
-.form-group label {
+.login-form-group label {
 	font-family: "Rajdhani", sans-serif;
 	font-size: 0.95rem;
 	color: var(--txt-soft);
@@ -56,7 +56,7 @@
 	letter-spacing: 0.05rem;
 }
 
-.form-group input {
+.login-form-group input {
 	background: rgba(14, 22, 48, 0.8);
 	border: 1px solid rgba(110, 210, 255, 0.3);
 	border-radius: 12px;
@@ -67,22 +67,22 @@
 	transition: all 0.3s ease;
 }
 
-.form-group input::placeholder {
+.login-form-group input::placeholder {
 	color: rgba(142, 170, 199, 0.6);
 }
 
-.form-group input:focus {
+.login-form-group input:focus {
 	outline: none;
 	border-color: var(--glow-cyan);
 	background: rgba(14, 22, 48, 0.95);
 	box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
 }
 
-.form-group input:focus::placeholder {
+.login-form-group input:focus::placeholder {
 	color: rgba(142, 170, 199, 0.3);
 }
 
-.btn-register {
+.login-submit-btn {
 	background: linear-gradient(95deg, var(--glow-cyan), #42f5d7);
 	border: none;
 	border-radius: 12px;
@@ -99,16 +99,16 @@
 	box-shadow: 0 0 5px rgba(0, 229, 255, 0.4);
 }
 
-.btn-register:hover {
+.login-submit-btn:hover {
 	transform: translateY(-2px);
 	box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
 }
 
-.btn-register:active {
+.login-submit-btn:active {
 	transform: translateY(0);
 }
 
-.register-footer {
+.login-footer {
 	text-align: center;
 	color: var(--txt-soft);
 	font-size: 0.95rem;
@@ -116,7 +116,7 @@
 	font-family: "Rajdhani", sans-serif;
 }
 
-.link-login {
+.login-link {
 	color: var(--glow-cyan);
 	font-weight: 700;
 	text-decoration: none;
@@ -124,30 +124,30 @@
 	text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
 }
 
-.link-login:hover {
+.login-link:hover {
 	color: var(--glow-pink);
 	text-shadow: 0 0 15px rgba(255, 62, 136, 0.4);
 }
 
 @media (max-width: 620px) {
-	.register-page {
+	.login-page {
 		padding: 32px 8px 0;
 	}
 
-	.register-box {
+	.login-box {
 		padding: 32px 24px;
 	}
 
-	.register-title {
+	.login-title {
 		font-size: 2rem;
 		margin-bottom: 28px;
 	}
 
-	.register-form {
+	.login-form {
 		gap: 18px;
 	}
 
-	.form-group input {
+	.login-form-group input {
 		font-size: 16px;
 	}
 }

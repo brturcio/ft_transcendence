@@ -1,7 +1,10 @@
 import Navbar from "../../components/Navbar/Navbar";
+import { useTranslation } from "react-i18next";
 import "./Privacy.css";
 
 export default function Privacy() {
+	const { t } = useTranslation();
+
 	return (
 		<div className="privacy-page app-screen">
 			<Navbar />
@@ -10,97 +13,87 @@ export default function Privacy() {
 				<section className="privacy__card">
 					<header className="privacy__header">
 						<span className="privacy__eyebrow">Transcendence</span>
-						<h1>Politique de Confidentialité</h1>
-						<p>
-							Cette page explique quelles données sont collectées, comment elles
-							sont utilisées et quels sont vos droits.
-						</p>
+						<h1>{t("privacy.title")}</h1>
+						<h2>
+							{t("privacy.intro")}
+						</h2>
 					</header>
 
 					<section className="privacy__section">
-						<h2>1. Données collectées</h2>
-						<p>Nous collectons uniquement les données nécessaires au fonctionnement du service :</p>
+						<h2>{t("privacy.sections.dataCollected.title")}</h2>
+						<p>{t("privacy.sections.dataCollected.intro")}</p>
 						<ul>
-							<li>Informations de compte : pseudo, email, mot de passe chiffré</li>
-							<li>Données d’utilisation : scores, achievements, historique de jeu</li>
-							<li>Messages envoyés via le chat</li>
+							<li>{t("privacy.sections.dataCollected.items.0")}</li>
+							<li>{t("privacy.sections.dataCollected.items.1")}</li>
+							<li>{t("privacy.sections.dataCollected.items.2")}</li>
 						</ul>
 					</section>
 
 					<section className="privacy__section">
-						<h2>2. Utilisation des données</h2>
-						<p>Les données sont utilisées pour :</p>
+						<h2>{t("privacy.sections.dataUsage.title")}</h2>
+						<p>{t("privacy.sections.dataUsage.intro")}</p>
 						<ul>
-							<li>Permettre l’accès au compte utilisateur</li>
-							<li>Gérer les compétitions et les scores</li>
-							<li>Afficher les achievements</li>
-							<li>Assurer le bon fonctionnement du chat</li>
-							<li>Améliorer le service</li>
+							<li>{t("privacy.sections.dataUsage.items.0")}</li>
+							<li>{t("privacy.sections.dataUsage.items.1")}</li>
+							<li>{t("privacy.sections.dataUsage.items.2")}</li>
+							<li>{t("privacy.sections.dataUsage.items.3")}</li>
+							<li>{t("privacy.sections.dataUsage.items.4")}</li>
 						</ul>
 					</section>
 
 					<section className="privacy__section">
-						<h2>3. Partage des données</h2>
+						<h2>{t("privacy.sections.sharing.title")}</h2>
 						<p>
-							Aucune donnée personnelle n’est vendue ou partagée à des tiers.
-							Les données peuvent être accessibles uniquement en cas d’obligation légale.
+							{t("privacy.sections.sharing.content")}
 						</p>
 					</section>
 
 					<section className="privacy__section">
-						<h2>4. Stockage et sécurité</h2>
+						<h2>{t("privacy.sections.storage.title")}</h2>
 						<p>
-							Les données sont stockées de manière sécurisée. Les mots de passe
-							sont chiffrés et ne sont jamais stockés en clair.
+							{t("privacy.sections.storage.paragraphs.0")}
 						</p>
 						<p>
-							Malgré les mesures mises en place, aucune méthode de transmission
-							ou de stockage n’est totalement sécurisée.
+							{t("privacy.sections.storage.paragraphs.1")}
 						</p>
 					</section>
 
 					<section className="privacy__section">
-						<h2>5. Durée de conservation</h2>
+						<h2>{t("privacy.sections.retention.title")}</h2>
 						<p>
-							Les données sont conservées tant que le compte est actif. Elles
-							peuvent être supprimées à la demande de l’utilisateur.
+							{t("privacy.sections.retention.content")}
 						</p>
 					</section>
 
 					<section className="privacy__section">
-						<h2>6. Droits des utilisateurs</h2>
-						<p>Conformément au RGPD, vous disposez des droits suivants :</p>
+						<h2>{t("privacy.sections.rights.title")}</h2>
+						<p>{t("privacy.sections.rights.intro")}</p>
 						<ul>
-							<li>Droit d’accès à vos données</li>
-							<li>Droit de rectification</li>
-							<li>Droit à la suppression</li>
-							<li>Droit à la limitation du traitement</li>
+							<li>{t("privacy.sections.rights.items.0")}</li>
+							<li>{t("privacy.sections.rights.items.1")}</li>
+							<li>{t("privacy.sections.rights.items.2")}</li>
+							<li>{t("privacy.sections.rights.items.3")}</li>
 						</ul>
 					</section>
 
 					<section className="privacy__section">
-						<h2>7. Cookies</h2>
+						<h2>{t("privacy.sections.cookies.title")}</h2>
 						<p>
-							Le site peut utiliser des cookies techniques nécessaires au
-							fonctionnement, comme la connexion ou la session. Aucun cookie
-							publicitaire n’est utilisé.
+							{t("privacy.sections.cookies.content")}
 						</p>
 					</section>
 
 					<section className="privacy__section">
-						<h2>8. Modifications</h2>
+						<h2>{t("privacy.sections.changes.title")}</h2>
 						<p>
-							Cette politique de confidentialité peut être modifiée à tout moment.
-							Les utilisateurs seront informés en cas de changement important.
+							{t("privacy.sections.changes.content")}
 						</p>
 					</section>
 
 					<section className="privacy__section privacy__section--contact">
-						<h2>9. Contact</h2>
+						<h2>{t("privacy.sections.contact.title")}</h2>
 						<p>
-							Pour toute question ou demande concernant vos données :
-							<br />
-							<strong>[À compléter : adresse email de contact]</strong>
+							{t("privacy.sections.contact.content")}
 						</p>
 					</section>
 				</section>

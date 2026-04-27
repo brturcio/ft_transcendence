@@ -14,13 +14,17 @@
 	},
 	"actions": {
 		"save": "[ ENREGISTRER LES CHANGEMENTS ]",
-		"saving": "[ ENREGISTREMENT... ]"
+		"saving": "[ ENREGISTREMENT... ]",
+		"delete": "[ SUPPRIMER ]",
+		"deleting": "[ SUPPRESSION ]"
 	},
 	"messages": {
 		"loading": "Chargement du profil...",
 		"updated": "Profil mis a jour avec succes.",
 		"loadError": "Impossible de charger le profil",
-		"saveError": "Impossible de mettre a jour le profil"
+		"saveError": "Impossible de mettre a jour le profil",
+		"deleteConfirm": "Etes-vous sur de vouloir supprimer votre compte ? Cette action est irreversible.",
+		"deleteError": "Impossible de supprimer le compte"
 	},
 	"stats": {
 		"games": "Parties",

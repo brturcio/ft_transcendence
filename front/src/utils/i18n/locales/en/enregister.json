@@ -43,7 +43,9 @@
 	},
 	"actions": {
 		"create": "[ CREATE ACCOUNT ]",
-		"creating": "[ CREATING ACCOUNT... ]"
+		"creating": "[ CREATING ACCOUNT... ]",
+		"delete" : "[ DELETE ACCOUNT ]",
+		"deleting" : "[ DELETING ACCOUNT ]"
 	},
 	"oauth": {
 		"divider": "OR CONTINUE WITH",

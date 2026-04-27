@@ -1,5 +1,6 @@
 {
-	"title": "Privacy Policy - Transcendence",
+	"title": "Privacy Policy",
+	"intro": "This page explains what data is collected, how it is used, and what your rights are.",
 	"sections": {
 		"dataCollected": {
 			"title": "1. Collected Data",
@@ -56,7 +57,7 @@
 		},
 		"contact": {
 			"title": "9. Contact",
-			"content": "For any question or request about your data: [To complete: contact email address]"
+			"content": "For any question or request about your data: transcendence@gmail.com"
 		}
 	}
 }

@@ -14,13 +14,17 @@
 	},
 	"actions": {
 		"save": "[ SAVE CHANGES ]",
-		"saving": "[ SAVING... ]"
+		"saving": "[ SAVING... ]",
+		"delete": "[ DELETE ]",
+		"deleting": "[ DELETING ]"
 	},
 	"messages": {
 		"loading": "Loading profile...",
 		"updated": "Profile updated successfully.",
 		"loadError": "Could not load profile",
 		"saveError": "Could not update profile",
+		"deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
+		"deleteError": "Could not delete account",
 		"unexpectedLoadError": "Unexpected error while loading profile"
 	},
 	"stats": {

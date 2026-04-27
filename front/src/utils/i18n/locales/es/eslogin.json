@@ -11,7 +11,14 @@
 		}
 	},
 	"actions": {
-		"submit": "[ INICIAR SESION ]"
+		"submit": "[ INICIAR SESION ]",
+		"loading": "[ INICIANDO SESION... ]"
+	},
+	"errors": {
+		"invalidCredentials": "Correo o contrasena incorrectos.",
+		"validation": "Revisa el formato de correo y contrasena.",
+		"network": "No se pudo conectar con el servidor.",
+		"server": "Error del servidor. Intentalo de nuevo mas tarde."
 	},
 	"footer": {
 		"question": "Necesitas una cuenta?",

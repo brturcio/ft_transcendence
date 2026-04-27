@@ -14,13 +14,17 @@
 	},
 	"actions": {
 		"save": "[ GUARDAR CAMBIOS ]",
-		"saving": "[ GUARDANDO... ]"
+		"saving": "[ GUARDANDO... ]",
+		"delete": "[ ELIMINAR ]",
+		"deleting": "[ ELIMINANDO ]"
 	},
 	"messages": {
 		"loading": "Cargando perfil...",
 		"updated": "Perfil actualizado correctamente.",
 		"loadError": "No se pudo cargar el perfil",
-		"saveError": "No se pudo actualizar el perfil"
+		"saveError": "No se pudo actualizar el perfil",
+		"deleteConfirm": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
+		"deleteError": "No se pudo eliminar la cuenta"
 	},
 	"stats": {
 		"games": "Partidas",

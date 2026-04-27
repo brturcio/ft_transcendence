@@ -9,6 +9,8 @@
 	background: rgba(8, 14, 32, 0.7);
 	backdrop-filter: blur(6px);
 	padding: 0 24px;
+	position: relative;
+	z-index: 11;
 }
 
 .navbar__logo {

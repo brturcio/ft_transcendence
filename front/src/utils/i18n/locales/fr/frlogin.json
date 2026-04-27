@@ -11,7 +11,14 @@
 		}
 	},
 	"actions": {
-		"submit": "[ CONNEXION ]"
+		"submit": "[ CONNEXION ]",
+		"loading": "[ CONNEXION EN COURS... ]"
+	},
+	"errors": {
+		"invalidCredentials": "Email ou mot de passe incorrect.",
+		"validation": "Verifiez le format de l'email et du mot de passe.",
+		"network": "Impossible de se connecter au serveur.",
+		"server": "Erreur serveur. Veuillez reessayer plus tard."
 	},
 	"footer": {
 		"question": "Besoin d'un compte ?",

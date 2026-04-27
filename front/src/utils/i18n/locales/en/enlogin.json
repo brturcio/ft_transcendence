@@ -11,7 +11,14 @@
 		}
 	},
 	"actions": {
-		"submit": "[ LOGIN ]"
+		"submit": "[ LOGIN ]",
+		"loading": "[ LOGGING IN... ]"
+	},
+	"errors": {
+		"invalidCredentials": "Invalid email or password.",
+		"validation": "Please check your email and password format.",
+		"network": "Could not connect to the server.",
+		"server": "Server error. Please try again later."
 	},
 	"footer": {
 		"question": "Need an account?",

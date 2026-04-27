@@ -1,5 +1,6 @@
 {
-	"title": "Politique de confidentialite - Transcendence",
+	"title": "Politique de confidentialite",
+	"intro": "Cette page explique quelles donnees sont collectees, comment elles sont utilisees et quels sont vos droits.",
 	"sections": {
 		"dataCollected": {
 			"title": "1. Donnees collectees",
@@ -56,7 +57,7 @@
 		},
 		"contact": {
 			"title": "9. Contact",
-			"content": "Pour toute question ou demande concernant vos donnees : [A completer : adresse email de contact]"
+			"content": "Pour toute question ou demande concernant vos donnees : transcendence@gmail.com"
 		}
 	}
 }

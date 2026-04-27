@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar.tsx";
 import { AchievementsGrid } from "../../components/AchievementCard.tsx";
 import { useTranslation } from 'react-i18next';
@@ -95,9 +96,11 @@ function getAvatarInitial(username: string, email: string): string {
 
 export default function Profile() {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const [profile, setProfile] = useState<ProfileData>(DEFAULT_PROFILE);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [saveMessage, setSaveMessage] = useState("");
 
@@ -166,18 +169,53 @@ export default function Profile() {
 			});
 
 			if (!response.ok) {
-				throw new Error(`No se pudo guardar (${response.status})`);
+				throw new Error(`${t("profile.messages.saveError")} (${response.status})`);
 			}
 
 			const data: BackendProfile = await response.json();
 			setProfile(mapBackendProfile(data));
-			setSaveMessage("Perfil actualizado correctamente.");
+			setSaveMessage(t("profile.messages.updated"));
 		} catch (error) {
 			setErrorMessage(
-				error instanceof Error ? error.message : "No se pudo actualizar el perfil",
+				error instanceof Error ? error.message : t("profile.messages.saveError"),
 			);
 		} finally {
 			setIsSaving(false);
+		}
+	};
+
+	const handleDeleteAccount = async () => {
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+
+		if (!window.confirm(t("profile.messages.deleteConfirm"))) {
+			return;
+		}
+
+		setIsDeleting(true);
+		setSaveMessage("");
+		setErrorMessage("");
+
+		try {
+			const response = await fetch(PROFILE_ENDPOINT, {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+					...(token ? { Authorization: `Bearer ${token}` } : {}),
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error(`${t("profile.messages.deleteError")} (${response.status})`);
+			}
+
+			localStorage.removeItem(AUTH_TOKEN_KEY);
+			navigate("/login", { replace: true });
+		} catch (error) {
+			setErrorMessage(
+				error instanceof Error ? error.message : t("profile.messages.deleteError"),
+			);
+		} finally {
+			setIsDeleting(false);
 		}
 	};
 
@@ -202,11 +240,12 @@ export default function Profile() {
 				</section>
 
 				<form className="profile-form-card" onSubmit={handleSave}>
-					<div className="form-group">
+					<div className="profile-form-group">
 						<label htmlFor="profile-username">{t("profile.fields.username")}</label>
 						<input
 							id="profile-username"
 							type="text"
+							placeholder={t("profile.fields.username")}
 							value={profile.username}
 							onChange={(event) =>
 								setProfile((current) => ({
@@ -217,7 +256,7 @@ export default function Profile() {
 						/>
 					</div>
 
-					<div className="form-group">
+					<div className="profile-form-group">
 						<label htmlFor="profile-bio">{t("profile.fields.bio")}</label>
 						<textarea
 							id="profile-bio"
@@ -233,9 +272,20 @@ export default function Profile() {
 						/>
 					</div>
 
-					<button type="submit" className="btn-register" disabled={isSaving}>
-						{isSaving ? t("profile.actions.saving") : t("profile.actions.save")}
-					</button>
+					<div className="profile-buttons">
+						<button type="submit" className="profile-save-btn" disabled={isSaving || isDeleting}>
+							{isSaving ? t("profile.actions.saving") : t("profile.actions.save")}
+						</button>
+
+						<button
+							type="button"
+							className="profile-delete-btn"
+							onClick={handleDeleteAccount}
+							disabled={isSaving || isDeleting}
+						>
+							{isDeleting ? t("profile.actions.deleting") : t("profile.actions.delete")}
+						</button>
+					</div>
 
 					{saveMessage && <p>{saveMessage}</p>}
 					{errorMessage && <p>{errorMessage}</p>}

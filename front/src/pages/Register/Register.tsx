@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Navbar from "../../components/Navbar/Navbar";
 import hideIcon from "../../assets/register/hide.png";
 import showIcon from "../../assets/register/show.png";
@@ -11,6 +12,7 @@ const REGISTER_ENDPOINT = `${API_BASE_URL}/auth/register`;
 
 export default function Register() {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -23,19 +25,19 @@ export default function Register() {
 
 	const rules = [
 		{
-			label : "At least 8 characters",
+			label: t("register.passwordRules.minLength"),
 			test: (value: string) => value.length >= 8
 		},
 		{
-			label : "At least one Uppercase letter",
+			label: t("register.passwordRules.uppercase"),
 			test: (value: string) => /[A-Z]/.test(value)
 		},
 		{
-			label : "At least one number",
+			label: t("register.passwordRules.number"),
 			test: (value: string) => /[0-9]/.test(value)
 		},
 		{
-			label : "At least one special characters",
+			label: t("register.passwordRules.special"),
 			test: (value: string) => /[!@#$%^&*(){}:";<>,.?]/.test(value)
 		}
 	];
@@ -44,11 +46,11 @@ export default function Register() {
 		event.preventDefault();
 		setError("");
 		if (password !== confirmPassword) {
-			setError("Passwords do not match.");
+			setError(t("register.errors.passwordMismatch"));
 			return;
 		}
 		if (!acceptTerms) {
-			setError("You must accept the Terms of Service and Privacy Policy.");
+			setError(t("register.errors.mustAcceptTerms"));
 			return;
 		}
 		setIsLoading(true);
@@ -66,7 +68,7 @@ export default function Register() {
 			});
 			const data = await response.json();
 			if (!response.ok) {
-				setError(data.message ?? "Could not create account.");
+				setError(data.message ?? t("register.errors.couldNotCreate"));
 				return;
 			}
 			localStorage.setItem(AUTH_TOKEN_KEY, data.token);
@@ -77,7 +79,7 @@ export default function Register() {
 			setAcceptTerms(false);
 			navigate("/profile");
 		} catch (error) {
-			setError("Server error. Please try again later.");
+			setError(t("register.errors.server"));
 		} finally {
 			setIsLoading(false);
 		}
@@ -90,18 +92,16 @@ export default function Register() {
 			<main className="register-page">
 				<div className="register-container">
 					<div className="register-box">
-						<h1 className="register-title">Register</h1>
-						<p className="join-transcendence">
-							Join the ft_transcendence community
-						</p>
+						<h1 className="register-title">{t("register.title")}</h1>
+						<p className="join-transcendence">{t("register.subtitle")}</p>
 
 						<form className="register-form" onSubmit={handleSubmit}>
 							<div className="form-group">
-								<label htmlFor="email">Email</label>
+								<label htmlFor="email">{t("register.fields.email.label")}</label>
 								<input
 									id="email"
 									type="email"
-									placeholder="your@email.com"
+									placeholder={t("register.fields.email.placeholder")}
 									value={email}
 									onChange={(event) => setEmail(event.target.value)}
 									required
@@ -109,11 +109,11 @@ export default function Register() {
 							</div>
 
 							<div className="form-group">
-								<label htmlFor="username">Username</label>
+								<label htmlFor="username">{t("register.fields.username.label")}</label>
 								<input
 									id="username"
 									type="text"
-									placeholder="your_username"
+									placeholder={t("register.fields.username.placeholder")}
 									value={username}
 									onChange={(event) => setUsername(event.target.value)}
 									required
@@ -121,13 +121,13 @@ export default function Register() {
 							</div>
 
 							<div className="form-group">
-								<label htmlFor="password">Password</label>
+								<label htmlFor="password">{t("register.fields.password.label")}</label>
 
 								<div className="password-input">
 									<input
 										id="password"
 										type={showPassword ? "text" : "password"}
-										placeholder="Password"
+										placeholder={t("register.fields.password.placeholder")}
 										value={password}
 										onChange={(event) => setPassword(event.target.value)}
 										required
@@ -137,34 +137,34 @@ export default function Register() {
 										type="button"
 										className="password-toggle"
 										onClick={() => setShowPassword(!showPassword)}
-										aria-label={showPassword ? "Hide password" : "Show password"}>
-											<img
-												src={showPassword ? showIcon : hideIcon}
-												alt=""
-												className="password-toggle__icon"/>
+										aria-label={showPassword ? t("register.fields.password.hide") : t("register.fields.password.show")}>
+										<img
+											src={showPassword ? showIcon : hideIcon}
+											alt=""
+											className="password-toggle__icon" />
 									</button>
 								</div>
 							</div>
 
 							<ul className="password-rules">
-										{rules.map((rule) => (
-											<li
-											key={rule.label}
-											className={rule.test(password) ? "rule-valid" : "rule-invalid"}
-											>
-												{rule.test(password) ? "✓" : "✗"} {rule.label}
-											</li>
-										))}
+								{rules.map((rule) => (
+									<li
+										key={rule.label}
+										className={rule.test(password) ? "rule-valid" : "rule-invalid"}
+									>
+										{rule.test(password) ? "✓" : "✗"} {rule.label}
+									</li>
+								))}
 							</ul>
 
- 							<div className="form-group">
-								<label htmlFor="confirm-password">Confirm Password</label>
+							<div className="form-group">
+								<label htmlFor="confirm-password">{t("register.fields.confirmPassword.label")}</label>
 
 								<div className="password-input">
 									<input
 										id="confirm-password"
 										type={showConfirmPassword ? "text" : "password"}
-										placeholder="Password"
+										placeholder={t("register.fields.confirmPassword.placeholder")}
 										value={confirmPassword}
 										onChange={(event) => setConfirmPassword(event.target.value)}
 										required
@@ -174,11 +174,11 @@ export default function Register() {
 										type="button"
 										className="password-toggle"
 										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-										aria-label={showConfirmPassword ? "Hide password" : "Show password"}>
-											<img
-												src={showConfirmPassword ? showIcon : hideIcon}
-												alt=""
-												className="password-toggle__icon"/>
+										aria-label={showConfirmPassword ? t("register.fields.confirmPassword.hide") : t("register.fields.confirmPassword.show")}>
+										<img
+											src={showConfirmPassword ? showIcon : hideIcon}
+											alt=""
+											className="password-toggle__icon" />
 									</button>
 								</div>
 							</div>
@@ -191,13 +191,13 @@ export default function Register() {
 									onChange={(event) => setAcceptTerms(event.target.checked)}
 								/>
 								<label htmlFor="accept-terms">
-									I agree to the{" "}
+									{t("register.terms.agree")} {" "}
 									<Link to="/terms" className="link-login">
-										Terms of Service
+										{t("register.terms.tos")}
 									</Link>
-									{" "}and{" "}
+									{" "}{t("register.terms.and")} {" "}
 									<Link to="/privacy" className="link-login">
-										Privacy Policy
+										{t("register.terms.privacy")}
 									</Link>
 								</label>
 							</div>
@@ -208,22 +208,22 @@ export default function Register() {
 								type="submit"
 								className="btn-register"
 								disabled={isLoading}>
-								{isLoading ? "[ CREATING ACCOUNT... ]" : "[ CREATE ACCOUNT ]"}
+								{isLoading ? t("register.actions.creating") : t("register.actions.create")}
 							</button>
 						</form>
 
 						<div className="oauth-divider">
-							<span>OR CONTINUE WITH</span>
+							<span>{t("register.oauth.divider")}</span>
 						</div>
 						<div className="oauth-buttons">
 							<button type="button" className="btn-oauth btn-google">
-								Google
+								{t("register.oauth.google")}
 							</button>
 						</div>
 						<p className="register-footer">
-							Already have an account?{" "}
+							{t("register.footer.question")} {" "}
 							<Link to="/login" className="link-login">
-								Login
+								{t("register.footer.login")}
 							</Link>
 						</p>
 					</div>

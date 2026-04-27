@@ -20,6 +20,7 @@
 	margin-bottom: 40px;
 	padding-bottom: 32px;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+	text-align: center;
 }
 
 .privacy__eyebrow {
@@ -38,9 +39,9 @@
 	line-height: 1.05;
 }
 
-.privacy__header p {
+.privacy__header h3 {
 	max-width: 680px;
-	margin: 0;
+	margin: 0 auto;
 	opacity: 0.75;
 	line-height: 1.7;
 }
@@ -66,7 +67,7 @@
 	opacity: 0.82;
 }
 
-.privacy__section p + p {
+.privacy__section p+p {
 	margin-top: 12px;
 }
 
@@ -75,7 +76,7 @@
 	padding-left: 22px;
 }
 
-.privacy__section li + li {
+.privacy__section li+li {
 	margin-top: 8px;
 }
 
