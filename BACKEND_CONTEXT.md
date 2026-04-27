@@ -107,9 +107,6 @@ Definition of done phase 0:
   - games
   - game_players
   - game_events
-  - tournaments
-  - tournament_players
-  - tournament_matches
   - achievements
   - user_achievements
   - user_stats

@@ -1,7 +1,28 @@
 services:
+  db:
+    image: postgres:16
+    container_name: postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ft_transcendence
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d ft_transcendence"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - trans
+
   front:
     build: ./front
     container_name: front
+    command: npm run dev -- --host 0.0.0.0 --port 3000
     ports:
       - "3000:3000"
     volumes:
@@ -16,6 +37,8 @@ services:
   back:
     build: ./back
     container_name: back
+    command: >
+      sh -c "until npm run db:migrate:base; do echo 'Database not ready, retrying migration...'; sleep 2; done && npm run db:seed && npm run build && npm run start"
     ports:
       - "8000:8000"
     expose:
@@ -26,6 +49,11 @@ services:
       - ./certs:/certs
     env_file:
       - ./back/.env
+    environment:
+      DATABASE_URL: postgresql://admin:admin@db:5432/ft_transcendence?sslmode=disable
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - trans
 
@@ -33,3 +61,6 @@ networks:
   trans:
     name: trans
     driver: bridge
+
+volumes:
+  postgres_data:
