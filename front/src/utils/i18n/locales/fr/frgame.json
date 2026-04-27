@@ -1,4 +1,27 @@
 {
-	"title": "Jeu",
-	"comingSoon": "La page de jeu sera bientot disponible"
+	"tetris": {
+		"actions": {
+			"play": "JOUER",
+			"restart": "RECOMMENCER",
+			"continue": "Continuer"
+		},
+		"labels": {
+			"score": "SCORE",
+			"level": "Niveau",
+			"next": "SUIVANT",
+			"stash": "RESERVE",
+			"controls": "CONTROLES"
+		},
+		"controls": {
+			"move": "Deplacer : Fleche gauche / Fleche droite",
+			"rotate": "Rotation : Fleche haut",
+			"softDrop": "Chute lente : Fleche bas",
+			"hardDrop": "Chute rapide : Espace",
+			"stash": "Mettre en reserve : Shift / Ctrl",
+			"pause": "Pause : Esc"
+		},
+		"gameOver": {
+			"title": "GAME OVER"
+		}
+	}
 }

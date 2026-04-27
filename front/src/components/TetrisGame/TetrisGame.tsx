@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTetrisGame, getPieceShape, getDisplayGridWithPreview, togglePause } from '../../games/tetris';
+import { useTranslation } from 'react-i18next';
 import './TetrisGame.css';
 
 const PIECE_COLORS: Record<string, string> = {
@@ -16,6 +17,7 @@ const PIECE_COLORS: Record<string, string> = {
 
 export default function TetrisGame() {
 	const game = useTetrisGame();
+	const { t } = useTranslation();
 	const [isStarted, setIsStarted] = useState(false);
 	const displayGrid = getDisplayGridWithPreview(game.gameState);
 
@@ -69,23 +71,23 @@ export default function TetrisGame() {
 		const miniGrid = Array(4).fill(null).map(() => Array(4).fill(null));
 
 		if (!shape) {
-		return (
-			<div className="stash-piece-grid">
-				{miniGrid.map((row, rowIdx) =>
-					row.map((cell, colIdx) => (
-						<div
-							key={`stash-${rowIdx}-${colIdx}`}
-							className="stash-piece-cell"
-							style={{
-								backgroundColor: 'rgba(255, 62, 136, 0.05)',
-								boxShadow: 'none'
-							}}
-						/>
-					))
-				)}
-			</div>
-		);
-	}
+			return (
+				<div className="stash-piece-grid">
+					{miniGrid.map((row, rowIdx) =>
+						row.map((cell, colIdx) => (
+							<div
+								key={`stash-${rowIdx}-${colIdx}`}
+								className="stash-piece-cell"
+								style={{
+									backgroundColor: 'rgba(255, 62, 136, 0.05)',
+									boxShadow: 'none'
+								}}
+							/>
+						))
+					)}
+				</div>
+			);
+		}
 
 		const offsetX = Math.floor((4 - shape[0].length) / 2);
 		const offsetY = Math.floor((4 - shape.length) / 2);
@@ -131,8 +133,8 @@ export default function TetrisGame() {
 										cell === 'preview'
 											? 'rgba(255,255,255,0.15)'
 											: cell
-											? PIECE_COLORS[cell]
-											: 'rgba(0, 229, 255, 0.05)',
+												? PIECE_COLORS[cell]
+												: 'rgba(0, 229, 255, 0.05)',
 
 									boxShadow:
 										cell && cell !== 'preview'
@@ -151,7 +153,7 @@ export default function TetrisGame() {
 							className="tetris-play-btn"
 							onClick={isStarted ? handleRestart : handleStart}
 						>
-							[ {isStarted ? 'RESTART' : 'PLAY'} ]
+							[ {isStarted ? t('game.tetris.actions.restart') : t('game.tetris.actions.play')} ]
 						</button>
 					</div>
 				)}
@@ -162,7 +164,7 @@ export default function TetrisGame() {
 							className="tetris-pause-btn"
 							onClick={game.togglePause}
 						>
-							Continue
+							t('game.tetris.actions.continue')
 						</button>
 					</div>
 				)}
@@ -172,14 +174,14 @@ export default function TetrisGame() {
 			<div className="tetris-info">
 				{!game.gameState.isGameOver && (
 					<div className="tetris-score">
-						<h3>SCORE</h3>
+						<h3>{t('game.tetris.labels.score')}</h3>
 						<p className="score-value">{game.gameState.score}</p>
-						<p className="score-label">Level {game.gameState.level}</p>
+						<p className="score-label">{t('game.tetris.labels.level')} {game.gameState.level}</p>
 					</div>
 				)}
 				{!game.gameState.isGameOver && (
 					<div className="tetris-next">
-						<h3>NEXT</h3>
+						<h3>{t('game.tetris.labels.next')}</h3>
 						<div className="next-block-preview">
 							{renderNextPiece()}
 						</div>
@@ -187,7 +189,7 @@ export default function TetrisGame() {
 				)}
 				{!game.gameState.isGameOver && (
 					<div className="tetris-stash">
-						<h3>STASH</h3>
+						<h3>{t('game.tetris.labels.stash')}</h3>
 						<div className="stash-block-preview">
 							{renderStashPiece()}
 						</div>
@@ -195,20 +197,20 @@ export default function TetrisGame() {
 				)}
 				{!game.gameState.isGameOver && (
 					<div className="tetris-controls">
-						<h3>CONTROLS</h3>
+						<h3>{t('game.tetris.labels.controls')}</h3>
 						<ul>
-							<li>⬅️ ➡️ : Move</li>
-							<li>⬆️ : Rotate</li>
-							<li>⬇️ : Soft drop</li>
-							<li>Space : Hard drop</li>
-							<li>Shift / Ctrl : Stash</li>
-							<li>Esc : Pause</li>
+							<li>{t('game.tetris.controls.move')}</li>
+							<li>{t('game.tetris.controls.rotate')}</li>
+							<li>{t('game.tetris.controls.softDrop')}</li>
+							<li>{t('game.tetris.controls.hardDrop')}</li>
+							<li>{t('game.tetris.controls.stash')}</li>
+							<li>{t('game.tetris.controls.pause')}</li>
 						</ul>
 					</div>
 				)}
 				{game.gameState.isGameOver && (
 					<div className="game-over-message">
-						<p>GAME OVER</p>
+						<p>{t('game.tetris.gameOver.title')}</p>
 						<p className="final-score">{game.gameState.score}</p>
 					</div>
 				)}

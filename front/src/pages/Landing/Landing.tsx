@@ -19,7 +19,7 @@ export default function Landing() {
 			<main className="landing__content">
 				{!isAuthenticated ? (
 					<section className="hero">
-						<p className="hero__intro">{t("intro")}</p>
+						<p className="hero__intro">{t("landing.intro")}</p>
 
 						<div className="hero__title">
 							<h1 className="title-white">{t("landing.title.play")}</h1>

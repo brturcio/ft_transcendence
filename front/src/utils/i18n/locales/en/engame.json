@@ -1,4 +1,27 @@
 {
-	"title": "Game",
-	"comingSoon": "Game page coming soon"
+	"tetris": {
+		"actions": {
+			"play": "PLAY",
+			"restart": "RESTART",
+			"continue": "Continue"
+		},
+		"labels": {
+			"score": "SCORE",
+			"level": "Level",
+			"next": "NEXT",
+			"stash": "STASH",
+			"controls": "CONTROLS"
+		},
+		"controls": {
+			"move": "Move: Arrow Left / Arrow Right",
+			"rotate": "Rotate: Arrow Up",
+			"softDrop": "Soft drop: Arrow Down",
+			"hardDrop": "Hard drop: Space",
+			"stash": "Stash: Shift / Ctrl",
+			"pause": "Pause: Esc"
+		},
+		"gameOver": {
+			"title": "GAME OVER"
+		}
+	}
 }

@@ -1,6 +1,6 @@
 /* LOGIN PAGE */
 .login-page {
-	min-height: 100vh;
+	min-height: 75vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -127,6 +127,14 @@
 .login-link:hover {
 	color: var(--glow-pink);
 	text-shadow: 0 0 15px rgba(255, 62, 136, 0.4);
+}
+
+.login-error {
+	color: #ff6b6b;
+	font-family: "Rajdhani", sans-serif;
+	font-size: 0.95rem;
+	text-align: center;
+	margin-top: -8px;
 }
 
 @media (max-width: 620px) {

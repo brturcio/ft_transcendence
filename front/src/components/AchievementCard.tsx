@@ -1,7 +1,7 @@
 import { type Achievement, getAllAchievements, ACHIEVEMENTS } from "../constants/achievements.ts";
 import lockedBadgeImage from "../assets/achievements/hiden.gif";
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 const LOCKED_BADGE = lockedBadgeImage;
 
@@ -20,7 +20,7 @@ const notificationStyles = `
       opacity: 1;
     }
   }
-  
+
   @keyframes slideOutLeft {
     from {
       transform: translateX(0) translateY(0);
@@ -31,11 +31,11 @@ const notificationStyles = `
       opacity: 0;
     }
   }
-  
+
   .achievement-notification {
     animation: slideInLeft 0.5s ease-out;
   }
-  
+
   .achievement-notification.exit {
     animation: slideOutLeft 0.5s ease-in forwards;
   }
@@ -56,6 +56,7 @@ const AchievementNotificationItem = ({
 	achievement: Achievement;
 	onExit: () => void;
 }) => {
+	const { t } = useTranslation();
 	const [isExiting, setIsExiting] = useState(false);
 
 	useEffect(() => {
@@ -101,7 +102,7 @@ const AchievementNotificationItem = ({
 			/>
 			<div>
 				<h4 style={{ margin: "0 0 0.25rem 0", color: "#ffffff" }}>
-					🎉 Achievement Unlocked!
+					🎉 {t("achievements.notification.unlocked")}
 				</h4>
 				<p style={{ margin: "0.25rem 0 0 0", color: "#e8e4ff" }}>
 					<strong>{achievement.title}</strong>
@@ -168,10 +169,11 @@ type AchievementCardProps = {
 
 // Composant pour afficher un achievement
 const AchievementCard = ({ achievement, unlocked }: AchievementCardProps) => {
+	const { t } = useTranslation();
 	const isLocked = !unlocked;
 	const displayImage = isLocked ? LOCKED_BADGE : achievement.image;
-	const title = isLocked ? "???" : achievement.title;
-	const description = isLocked ? "???" : achievement.description;
+	const title = isLocked ? t("achievements.locked.title") : achievement.title;
+	const description = isLocked ? t("achievements.locked.description") : achievement.description;
 
 	const handleClick = () => {
 		if (achievement.id === "curious" && isLocked) {
@@ -197,7 +199,7 @@ const AchievementCard = ({ achievement, unlocked }: AchievementCardProps) => {
 			{displayImage && (
 				<img
 					src={displayImage}
-					alt={isLocked ? "Locked achievement" : achievement.title}
+					alt={isLocked ? t("achievements.locked.imageAlt") : achievement.title}
 					style={{ width: "100%", marginTop: "0.5rem", borderRadius: "4px" }}
 				/>
 			)}
