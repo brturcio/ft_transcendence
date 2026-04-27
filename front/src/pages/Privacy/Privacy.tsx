@@ -6,73 +6,104 @@ export default function Privacy() {
 		<div className="privacy-page app-screen">
 			<Navbar />
 
-			<main className="privacy__content">
-				<h1>Politique de Confidentialité – Transcendence</h1>
+			<main className="privacy">
+				<section className="privacy__card">
+					<header className="privacy__header">
+						<span className="privacy__eyebrow">Transcendence</span>
+						<h1>Politique de Confidentialité</h1>
+						<p>
+							Cette page explique quelles données sont collectées, comment elles
+							sont utilisées et quels sont vos droits.
+						</p>
+					</header>
 
-				<h2>1. Données collectées</h2>
-				<p>Nous collectons uniquement les données nécessaires au fonctionnement du service :</p>
-				<ul>
-					<li>Informations de compte (pseudo, email, mot de passe chiffré)</li>
-					<li>Données d’utilisation (scores, achievements, historique de jeu)</li>
-					<li>Messages envoyés via le chat</li>
-				</ul>
+					<section className="privacy__section">
+						<h2>1. Données collectées</h2>
+						<p>Nous collectons uniquement les données nécessaires au fonctionnement du service :</p>
+						<ul>
+							<li>Informations de compte : pseudo, email, mot de passe chiffré</li>
+							<li>Données d’utilisation : scores, achievements, historique de jeu</li>
+							<li>Messages envoyés via le chat</li>
+						</ul>
+					</section>
 
-				<h2>2. Utilisation des données</h2>
-				<p>Les données sont utilisées pour :</p>
-				<ul>
-					<li>Permettre l’accès au compte utilisateur</li>
-					<li>Gérer les compétitions et les scores</li>
-					<li>Afficher les achievements</li>
-					<li>Assurer le bon fonctionnement du chat</li>
-					<li>Améliorer le service</li>
-				</ul>
+					<section className="privacy__section">
+						<h2>2. Utilisation des données</h2>
+						<p>Les données sont utilisées pour :</p>
+						<ul>
+							<li>Permettre l’accès au compte utilisateur</li>
+							<li>Gérer les compétitions et les scores</li>
+							<li>Afficher les achievements</li>
+							<li>Assurer le bon fonctionnement du chat</li>
+							<li>Améliorer le service</li>
+						</ul>
+					</section>
 
-				<h2>3. Partage des données</h2>
-				<p>
-					Aucune donnée personnelle n’est vendue ou partagée à des tiers.
-					Les données peuvent être accessibles uniquement en cas d’obligation légale.
-				</p>
+					<section className="privacy__section">
+						<h2>3. Partage des données</h2>
+						<p>
+							Aucune donnée personnelle n’est vendue ou partagée à des tiers.
+							Les données peuvent être accessibles uniquement en cas d’obligation légale.
+						</p>
+					</section>
 
-				<h2>4. Stockage et sécurité</h2>
-				<p>
-					Les données sont stockées de manière sécurisée. Les mots de passe sont chiffrés et ne sont jamais stockés en clair.
-				</p>
-				<p>
-					Malgré les mesures mises en place, aucune méthode de transmission ou de stockage n’est totalement sécurisée.
-				</p>
+					<section className="privacy__section">
+						<h2>4. Stockage et sécurité</h2>
+						<p>
+							Les données sont stockées de manière sécurisée. Les mots de passe
+							sont chiffrés et ne sont jamais stockés en clair.
+						</p>
+						<p>
+							Malgré les mesures mises en place, aucune méthode de transmission
+							ou de stockage n’est totalement sécurisée.
+						</p>
+					</section>
 
-				<h2>5. Durée de conservation</h2>
-				<p>
-					Les données sont conservées tant que le compte est actif. Elles peuvent être supprimées à la demande de l’utilisateur.
-				</p>
+					<section className="privacy__section">
+						<h2>5. Durée de conservation</h2>
+						<p>
+							Les données sont conservées tant que le compte est actif. Elles
+							peuvent être supprimées à la demande de l’utilisateur.
+						</p>
+					</section>
 
-				<h2>6. Droits des utilisateurs</h2>
-				<p>Conformément au RGPD, vous disposez des droits suivants :</p>
-				<ul>
-					<li>Droit d’accès à vos données</li>
-					<li>Droit de rectification</li>
-					<li>Droit à la suppression</li>
-					<li>Droit à la limitation du traitement</li>
-				</ul>
+					<section className="privacy__section">
+						<h2>6. Droits des utilisateurs</h2>
+						<p>Conformément au RGPD, vous disposez des droits suivants :</p>
+						<ul>
+							<li>Droit d’accès à vos données</li>
+							<li>Droit de rectification</li>
+							<li>Droit à la suppression</li>
+							<li>Droit à la limitation du traitement</li>
+						</ul>
+					</section>
 
-				<h2>7. Cookies</h2>
-				<p>
-					Le site peut utiliser des cookies techniques nécessaires au fonctionnement (connexion, session).
-					Aucun cookie publicitaire n’est utilisé.
-				</p>
+					<section className="privacy__section">
+						<h2>7. Cookies</h2>
+						<p>
+							Le site peut utiliser des cookies techniques nécessaires au
+							fonctionnement, comme la connexion ou la session. Aucun cookie
+							publicitaire n’est utilisé.
+						</p>
+					</section>
 
-				<h2>8. Modifications</h2>
-				<p>
-					Cette politique de confidentialité peut être modifiée à tout moment.
-					Les utilisateurs seront informés en cas de changement important.
-				</p>
+					<section className="privacy__section">
+						<h2>8. Modifications</h2>
+						<p>
+							Cette politique de confidentialité peut être modifiée à tout moment.
+							Les utilisateurs seront informés en cas de changement important.
+						</p>
+					</section>
 
-				<h2>9. Contact</h2>
-				<p>
-					Pour toute question ou demande concernant vos données :
-					<br />
-					[À compléter : adresse email de contact]
-				</p>
+					<section className="privacy__section privacy__section--contact">
+						<h2>9. Contact</h2>
+						<p>
+							Pour toute question ou demande concernant vos données :
+							<br />
+							<strong>[À compléter : adresse email de contact]</strong>
+						</p>
+					</section>
+				</section>
 			</main>
 		</div>
 	);
