@@ -1,4 +1,3 @@
-// Types pour les achievements
 export type Achievement = {
 	id: string;
 	title: string;
@@ -6,9 +5,7 @@ export type Achievement = {
 	image: string;
 };
 
-// Données des achievements
 export const ACHIEVEMENTS: Record<string, Achievement> = {
-	// Game Count Achievements
 	first_game: {
 		id: "first_game",
 		title: "Welcome to the game",

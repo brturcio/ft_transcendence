@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar.tsx";
 import { AchievementsGrid } from "../../components/AchievementCard.tsx";
+import { unlockAchievement } from "../../components/Achievements.tsx";
 import { useTranslation } from 'react-i18next';
 import "./Profile.css"
 
@@ -51,6 +52,7 @@ const DEFAULT_PROFILE: ProfileData = {
 	},
 	unlockedAchievements: [],
 };
+
 
 function formatWinRate(value: number | string | undefined): string {
 	if (typeof value === "number") {
@@ -155,6 +157,8 @@ export default function Profile() {
 		setSaveMessage("");
 		setErrorMessage("");
 
+		const oldUsername = profile.username;
+
 		try {
 			const response = await fetch(PROFILE_ENDPOINT, {
 				method: "PATCH",
@@ -173,8 +177,18 @@ export default function Profile() {
 			}
 
 			const data: BackendProfile = await response.json();
-			setProfile(mapBackendProfile(data));
+			const updatedProfile = mapBackendProfile(data);
+
+			setProfile(updatedProfile);
 			setSaveMessage(t("profile.messages.updated"));
+
+			if (
+				oldUsername !== "" &&
+				oldUsername !== updatedProfile.username
+			) {
+				unlockAchievement("change_nickname");
+			}
+
 		} catch (error) {
 			setErrorMessage(
 				error instanceof Error ? error.message : t("profile.messages.saveError"),
@@ -310,7 +324,7 @@ export default function Profile() {
 
 				<section className="profile-achievements-section">
 					<h2>{t("profile.achievements.title")}</h2>
-					<AchievementsGrid unlockedIds={profile.unlockedAchievements ?? []} />
+					<AchievementsGrid backendUnlockedIds={profile.unlockedAchievements ?? []} />
 				</section>
 			</main>
 		</div>

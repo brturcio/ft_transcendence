@@ -10,15 +10,14 @@ import {
 	canPlacePiece,
 	getPieceShape
 } from './pieces';
+import { unlockAchievement, unlockTetrisAchievement } from "../../components/Achievements";
 
-// Initialize empty grid
 export function createEmptyGrid(): (PieceType | null)[][] {
 	return Array(GRID_ROWS)
 		.fill(null)
 		.map(() => Array(GRID_COLS).fill(null));
 }
 
-// Initialize game state
 export function initializeGame(startPaused: boolean = false): GameState {
 	const nextPieceType = getRandomPieceType();
 	return {
@@ -31,16 +30,14 @@ export function initializeGame(startPaused: boolean = false): GameState {
 		level: 1,
 		dropSpeed: INITIAL_DROP_SPEED,
 		isGameOver: false,
-		isPaused: startPaused
+		isPaused: startPaused,
 	};
 }
 
-// Check for complete lines and clear them
 export function clearCompleteLines(grid: (PieceType | null)[][]): { grid: (PieceType | null)[][]; clearedLines: number } {
 	const newGrid = grid.filter(row => row.some(cell => cell === null));
 	const clearedLines = grid.length - newGrid.length;
 	
-	// Add empty rows at top
 	while (newGrid.length < GRID_ROWS) {
 		newGrid.unshift(Array(GRID_COLS).fill(null));
 	}
@@ -82,6 +79,10 @@ export function dropPiece(gameState: GameState): GameState {
 		// Piece is locked, place it on grid
 		const newGrid = placePieceOnGrid(gameState.grid, gameState.currentPiece);
 		const { grid: clearedGrid, clearedLines } = clearCompleteLines(newGrid);
+
+		if (clearedLines == 4) {
+			unlockTetrisAchievement();
+		}
 
 		const newScore = calculateScore(clearedLines, gameState.score);
 		const newLines = gameState.lines + clearedLines;
@@ -270,6 +271,10 @@ export function quickDrop(gameState: GameState): GameState {
 	// Place piece on grid
 	const newGrid = placePieceOnGrid(gameState.grid, droppedPiece);
 	const { grid: clearedGrid, clearedLines } = clearCompleteLines(newGrid);
+
+	if (clearedLines == 4) {
+		unlockTetrisAchievement();
+	}
 
 	const newScore = calculateScore(clearedLines, gameState.score);
 	const newLines = gameState.lines + clearedLines;

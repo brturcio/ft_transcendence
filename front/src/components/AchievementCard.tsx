@@ -4,11 +4,20 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const LOCKED_BADGE = lockedBadgeImage;
+const activeNotifications = new Set<string>();
+const STORAGE_KEY = "unlocked_achievements";
 
-// Conteneur pour les notifications
+const getStoredAchievements = (): string[] => {
+	try {
+		const data = localStorage.getItem(STORAGE_KEY);
+		return data ? JSON.parse(data) : [];
+	} catch {
+		return [];
+	}
+};
+
 let notificationContainer: HTMLDivElement | null = null;
 
-// Styles pour les animations
 const notificationStyles = `
   @keyframes slideInLeft {
     from {
@@ -41,14 +50,12 @@ const notificationStyles = `
   }
 `;
 
-// Ajouter les styles au document
 if (typeof document !== "undefined") {
 	const styleSheet = document.createElement("style");
 	styleSheet.textContent = notificationStyles;
 	document.head.appendChild(styleSheet);
 }
 
-// Composant pour afficher une notification d'achievement
 const AchievementNotificationItem = ({
 	achievement,
 	onExit,
@@ -123,7 +130,12 @@ export const showAchievementNotification = (achievementId: string) => {
 		return;
 	}
 
-	// Créer le conteneur s'il n'existe pas
+	if (activeNotifications.has(achievementId)) {
+		return;
+	}
+
+	activeNotifications.add(achievementId);
+
 	if (!notificationContainer) {
 		notificationContainer = document.createElement("div");
 		notificationContainer.id = "achievement-notifications";
@@ -137,11 +149,9 @@ export const showAchievementNotification = (achievementId: string) => {
 		document.body.appendChild(notificationContainer);
 	}
 
-	// Créer un wrapper pour cette notification
 	const notificationWrapper = document.createElement("div");
 	notificationContainer.appendChild(notificationWrapper);
 
-	// Rendu React
 	const root = ReactDOM.createRoot(notificationWrapper);
 	root.render(
 		<AchievementNotificationItem
@@ -149,6 +159,8 @@ export const showAchievementNotification = (achievementId: string) => {
 			onExit={() => {
 				root.unmount();
 				notificationContainer?.removeChild(notificationWrapper);
+
+				activeNotifications.delete(achievementId);
 			}}
 		/>
 	);
@@ -156,6 +168,7 @@ export const showAchievementNotification = (achievementId: string) => {
 
 // Import ReactDOM pour createRoot
 import ReactDOM from "react-dom/client";
+import { unlockAchievement } from "./Achievements.tsx";
 
 // Exposer la fonction sur window pour accès via console
 if (typeof window !== "undefined") {
@@ -176,10 +189,12 @@ const AchievementCard = ({ achievement, unlocked }: AchievementCardProps) => {
 	const description = isLocked ? t("achievements.locked.description") : achievement.description;
 
 	const handleClick = () => {
-		if (achievement.id === "curious" && isLocked) {
-			showAchievementNotification("curious");
-		}
-	};
+	if (achievement.id === "curious" && isLocked) {
+		unlockAchievement("curious");
+
+		window.dispatchEvent(new Event("storage"));
+	}
+};
 
 	return (
 		<div
@@ -189,7 +204,6 @@ const AchievementCard = ({ achievement, unlocked }: AchievementCardProps) => {
 				border: `2px solid ${isLocked ? "#999" : "#ccc"}`,
 				borderRadius: "8px",
 				textAlign: "center",
-				opacity: unlocked ? 0 : 1,
 				cursor: "pointer",
 				transition: "all 0.3s",
 				backgroundColor: isLocked ? "#522cffdc" : "transparent",
@@ -212,13 +226,31 @@ const AchievementCard = ({ achievement, unlocked }: AchievementCardProps) => {
 	);
 };
 
-// Composant pour afficher tous les achievements
 export const AchievementsGrid = ({
-	unlockedIds = [],
+	backendUnlockedIds = [],
 }: {
-	unlockedIds?: string[];
+	backendUnlockedIds?: string[];
 }) => {
 	const achievements = getAllAchievements();
+	const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
+
+	useEffect(() => {
+		const local = getStoredAchievements();
+		const merged = Array.from(new Set([...local, ...backendUnlockedIds]));
+
+		setUnlockedIds(merged);
+	}, [backendUnlockedIds]);
+
+	useEffect(() => {
+		const update = () => {
+			const local = getStoredAchievements();
+			const merged = Array.from(new Set([...local, ...backendUnlockedIds]));
+			setUnlockedIds(merged);
+		};
+
+		window.addEventListener("achievements_updated", update);
+		return () => window.removeEventListener("achievements_updated", update);
+	}, [backendUnlockedIds]);
 
 	return (
 		<div
@@ -239,5 +271,3 @@ export const AchievementsGrid = ({
 		</div>
 	);
 };
-
-export default AchievementCard;

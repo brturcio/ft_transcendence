@@ -13,7 +13,7 @@ import {
 
 // Hook to manage Tetris game state and logic
 export function useTetrisGame() {
-		const [gameState, setGameState] = React.useState<GameState>(() => initializeGame(true));
+	const [gameState, setGameState] = React.useState<GameState>(() => initializeGame(true));
 
 	// Auto-drop piece every tick
 	React.useEffect(() => {
@@ -52,7 +52,6 @@ export function useTetrisGame() {
 					break;
 				case 'Shift':
 					e.preventDefault();
-					console.log("caca");
 					setGameState(state => switchStash(state));
 					break;
 				case 'Escape':

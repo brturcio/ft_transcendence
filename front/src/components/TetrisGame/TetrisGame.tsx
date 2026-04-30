@@ -164,7 +164,7 @@ export default function TetrisGame() {
 							className="tetris-pause-btn"
 							onClick={game.togglePause}
 						>
-							t('game.tetris.actions.continue')
+							{t('game.tetris.actions.continue')}
 						</button>
 					</div>
 				)}
