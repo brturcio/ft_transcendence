@@ -1,9 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import "./App.css";
-import Landing from "./pages/Landing/Landing";
-import Login from "./pages/Login/Login";
-import Profile from "./pages/Profile/Profile";
-import Register from "./pages/Register/Register";
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import Profile from "./pages/Profile";
+import Register from "./pages/Register";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 

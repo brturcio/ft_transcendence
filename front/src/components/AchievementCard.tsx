@@ -1,7 +1,9 @@
 import { type Achievement, getAllAchievements, ACHIEVEMENTS } from "../constants/achievements.ts";
 import lockedBadgeImage from "../assets/achievements/hiden.gif";
 import { useState, useEffect } from "react";
+import ReactDOM from "react-dom/client";
 import { useTranslation } from "react-i18next";
+import { unlockAchievement } from "./Achievements.tsx";
 
 const LOCKED_BADGE = lockedBadgeImage;
 const activeNotifications = new Set<string>();
@@ -83,38 +85,21 @@ const AchievementNotificationItem = ({
 
 	return (
 		<div
-			className={`achievement-notification ${isExiting ? "exit" : ""}`}
-			style={{
-				display: "flex",
-				alignItems: "center",
-				gap: "1rem",
-				padding: "1rem",
-				background: "linear-gradient(135deg, #522cff 0%, #6b3fff 100%)",
-				borderRadius: "8px",
-				minWidth: "320px",
-				boxShadow: "0 8px 32px rgba(82, 44, 255, 0.3)",
-				border: "1px solid rgba(255, 255, 255, 0.2)",
-				marginBottom: "1rem",
-			}}
+			className={`achievement-notification mb-4 flex min-w-80 items-center gap-4 rounded-lg border border-white/20 bg-[linear-gradient(135deg,#522cff_0%,#6b3fff_100%)] p-4 shadow-[0_8px_32px_rgba(82,44,255,0.3)] ${isExiting ? "exit" : ""}`}
 		>
 			<img
 				src={achievement.image}
 				alt={achievement.title}
-				style={{
-					width: "64px",
-					height: "64px",
-					borderRadius: "6px",
-					flexShrink: 0,
-				}}
+				className="h-16 w-16 shrink-0 rounded-md"
 			/>
 			<div>
-				<h4 style={{ margin: "0 0 0.25rem 0", color: "#ffffff" }}>
+				<h4 className="mb-1 mt-0 text-white">
 					🎉 {t("achievements.notification.unlocked")}
 				</h4>
-				<p style={{ margin: "0.25rem 0 0 0", color: "#e8e4ff" }}>
+				<p className="mb-0 mt-1 text-[#e8e4ff]">
 					<strong>{achievement.title}</strong>
 				</p>
-				<p style={{ margin: "0.25rem 0 0 0", fontSize: "0.85rem", color: "#d0c9ff" }}>
+				<p className="mb-0 mt-1 text-[0.85rem] text-[#d0c9ff]">
 					{achievement.description}
 				</p>
 			</div>
@@ -139,13 +124,7 @@ export const showAchievementNotification = (achievementId: string) => {
 	if (!notificationContainer) {
 		notificationContainer = document.createElement("div");
 		notificationContainer.id = "achievement-notifications";
-		notificationContainer.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      z-index: 999999;
-      pointer-events: auto;
-    `;
+		notificationContainer.className = "pointer-events-auto fixed bottom-5 left-5 z-[999999]";
 		document.body.appendChild(notificationContainer);
 	}
 
@@ -165,11 +144,6 @@ export const showAchievementNotification = (achievementId: string) => {
 		/>
 	);
 };
-
-// Import ReactDOM pour createRoot
-import ReactDOM from "react-dom/client";
-import { unlockAchievement } from "./Achievements.tsx";
-
 // Exposer la fonction sur window pour accès via console
 if (typeof window !== "undefined") {
 	(window as any).showAchievementNotification = showAchievementNotification;
@@ -189,39 +163,27 @@ const AchievementCard = ({ achievement, unlocked }: AchievementCardProps) => {
 	const description = isLocked ? t("achievements.locked.description") : achievement.description;
 
 	const handleClick = () => {
-	if (achievement.id === "curious" && isLocked) {
-		unlockAchievement("curious");
+		if (achievement.id === "curious" && isLocked) {
+			unlockAchievement("curious");
 
-		window.dispatchEvent(new Event("storage"));
-	}
-};
+			window.dispatchEvent(new Event("storage"));
+		}
+	};
 
 	return (
 		<div
 			onClick={handleClick}
-			style={{
-				padding: "1rem",
-				border: `2px solid ${isLocked ? "#999" : "#ccc"}`,
-				borderRadius: "8px",
-				textAlign: "center",
-				cursor: "pointer",
-				transition: "all 0.3s",
-				backgroundColor: isLocked ? "#522cffdc" : "transparent",
-			}}
+			className={`cursor-pointer rounded-lg border-2 p-4 text-center transition-all duration-300 ${isLocked ? "border-[#999] bg-[#522cffdc]" : "border-[#ccc] bg-transparent"}`}
 		>
-			{<h3>{title}</h3>}
+			<h3>{title}</h3>
 			{displayImage && (
 				<img
 					src={displayImage}
 					alt={isLocked ? t("achievements.locked.imageAlt") : achievement.title}
-					style={{ width: "100%", marginTop: "0.5rem", borderRadius: "4px" }}
+					className="mt-2 w-full rounded"
 				/>
 			)}
-			{(
-				<p style={{ fontSize: "0.9rem", color: "#ffffff" }}>
-					{description}
-				</p>
-			)}
+			<p className="text-[0.9rem] text-white">{description}</p>
 		</div>
 	);
 };
@@ -253,14 +215,7 @@ export const AchievementsGrid = ({
 	}, [backendUnlockedIds]);
 
 	return (
-		<div
-			style={{
-				display: "grid",
-				gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-				gap: "1rem",
-				padding: "1rem",
-			}}
-		>
+		<div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4 p-4">
 			{achievements.map((achievement) => (
 				<AchievementCard
 					key={achievement.id}

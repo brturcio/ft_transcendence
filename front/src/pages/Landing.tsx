@@ -1,0 +1,111 @@
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import { useTranslation } from "react-i18next";
+import TetrisGame from "../components/TetrisGame";
+
+const AUTH_TOKEN_KEY = "ft_auth_token";
+
+const introUpKeyframes = `
+	@keyframes intro-up {
+		from {
+			opacity: 0;
+			transform: translateY(12px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+`;
+
+const heroTitle =
+	"font-['Orbitron',sans-serif] text-[6.2rem] leading-[1.08] mb-2 font-extrabold uppercase max-[1100px]:text-[clamp(2.6rem,10vw,4.6rem)] max-[760px]:text-[clamp(2.5rem,13vw,4.2rem)]";
+const heroButton =
+	"h-[58px] px-7 rounded-[10px] text-[0.95rem] uppercase cursor-pointer inline-flex items-center justify-center font-['Orbitron',sans-serif] tracking-[0.04rem] bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] border-0 text-[#021318] font-bold shadow-[0_0_16px_rgba(0,229,255,0.35)] max-[760px]:w-full";
+const dashboardPanel =
+	"flex flex-col gap-4 p-5 bg-[rgba(0,0,0,0.3)] border border-[var(--line-soft)] rounded-lg max-[760px]:p-4";
+const dashboardTitle =
+	"text-[var(--glow-cyan)] text-[1.2rem] font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] mb-3";
+const actionButton =
+	"w-full h-[50px] border-0 rounded-lg font-['Orbitron',sans-serif] text-[0.9rem] uppercase cursor-pointer tracking-[0.04rem] transition-all duration-200 max-[760px]:h-[45px] max-[760px]:text-[0.85rem]";
+
+export default function Landing() {
+	const { t } = useTranslation();
+
+	const isAuthenticated = Boolean(localStorage.getItem(AUTH_TOKEN_KEY));
+
+	return (
+		<div className="min-h-screen text-(--txt-main) pt-6 px-10 pb-27.5 max-[1100px]:pt-4 max-[1100px]:px-3.5 max-[1100px]:pb-22 max-[760px]:pb-20">
+			<style>{introUpKeyframes}</style>
+			<Navbar />
+
+			<main className="flex justify-center items-center pt-14 px-6 min-h-[calc(100vh-210px)] max-[1100px]:pt-16 max-[1100px]:px-2 max-[1100px]:gap-7.5 max-[760px]:pt-9 max-[760px]:min-h-[calc(100vh-170px)]">
+				{!isAuthenticated ? (
+					<section className="flex flex-col justify-center items-center text-center max-w-230 animate-[intro-up_500ms_ease]">
+						<p className="text-(--glow-pink) text-2xl mb-7 font-['Orbitron',sans-serif] tracking-[0.06rem] uppercase">
+							{t("landing.intro")}
+						</p>
+
+						<div>
+							<h1 className={`${heroTitle} text-(--txt-main)`}>{t("landing.title.play")}</h1>
+							<h1
+								className={`${heroTitle} text-(--txt-main) [text-shadow:0_0_18px_rgba(0,229,255,0.45)]`}
+							>
+								{t("landing.title.compete")}
+							</h1>
+							<h1
+								className={`${heroTitle} text---txt-main) [text-shadow:0_0_18px_rgba(255,62,136,0.42)]`}
+							>
+								{t("landing.title.dominate")}
+							</h1>
+						</div>
+
+						<div className="mt-7 flex flex-col gap-3">
+							<p className="text-(--txt-soft) text-2xl">{t("landing.features.realtime")}</p>
+							<p className="text-(--txt-soft) text-2xl">{t("landing.features.leaderboard")}</p>
+							<p className="text-(--txt-soft) text-2xl">{t("landing.features.tournaments")}</p>
+						</div>
+
+						<div className="flex justify-center gap-4.5 mt-9 max-[760px]:flex-col max-[760px]:w-full">
+							<Link className={heroButton} to="/login">
+								{t("landing.cta.playNow")}
+							</Link>
+						</div>
+					</section>
+				) : (
+					<div className="grid grid-cols-[280px_1fr_200px] gap-6 w-full max-w-350 animate-[intro-up_500ms_ease] max-[760px]:grid-cols-1 max-[760px]:gap-4">
+						<aside className={dashboardPanel}>
+							<h2 className={dashboardTitle}>{t("landing.dashboard.leaderboard.title")}</h2>
+							<div className="flex flex-col gap-2.5 flex-1 overflow-y-auto max-h-100">
+								<div className="text-(--txt-soft) text-center p-5 italic">
+									{t("landing.dashboard.leaderboard.loading")}
+								</div>
+							</div>
+						</aside>
+
+						<section className="flex flex-col p-5 bg-[rgba(0,0,0,0.3)] border border-(--line-soft) rounded-lg max-[760px]:p-4">
+							<TetrisGame />
+						</section>
+
+						<aside
+							className={`${dashboardPanel} justify-start max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-3`}
+						>
+							<button
+								className={`${actionButton} bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] font-bold shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:shadow-[0_0_24px_rgba(0,229,255,0.5)]`}
+							>
+								{t("landing.dashboard.actions.join")}
+							</button>
+
+							<button
+								className={`${actionButton} bg-transparent border border-(--glow-pink) text-(--glow-pink) shadow-[0_0_10px_rgba(255,62,136,0.2)] hover:shadow-[0_0_16px_rgba(255,62,136,0.4)]`}
+							>
+								{t("landing.dashboard.actions.host")}
+							</button>
+						</aside>
+					</div>
+				)}
+			</main>
+		</div>
+	);
+}

@@ -1,10 +1,17 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar/Navbar.tsx";
-import { AchievementsGrid } from "../../components/AchievementCard.tsx";
-import { unlockAchievement } from "../../components/Achievements.tsx";
-import { useTranslation } from 'react-i18next';
-import "./Profile.css"
+import Navbar from "../components/Navbar.tsx";
+import { AchievementsGrid } from "../components/AchievementCard.tsx";
+import { unlockAchievement } from "../components/Achievements.tsx";
+import { useTranslation } from "react-i18next";
+
+const card = "bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.18)] rounded-[14px] p-5 shadow-none";
+const label =
+	"font-['Rajdhani',sans-serif] text-[0.95rem] text-[var(--txt-soft)] font-semibold uppercase tracking-[0.05rem]";
+const field =
+	"bg-[rgba(14,22,48,0.78)] border border-[rgba(110,210,255,0.24)] rounded-xl py-[14px] px-4 text-[var(--txt-main)] font-['Rajdhani',sans-serif] text-base resize-y focus:outline-none focus:border-[var(--glow-cyan)] focus:shadow-[0_0_18px_rgba(0,229,255,0.18)]";
+const actionButton =
+	"border-0 rounded-xl py-4 px-6 text-[#021318] font-['Orbitron',sans-serif] text-[0.95rem] font-bold uppercase tracking-[0.04rem] cursor-pointer transition-all duration-300 flex-1 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
@@ -52,7 +59,6 @@ const DEFAULT_PROFILE: ProfileData = {
 	},
 	unlockedAchievements: [],
 };
-
 
 function formatWinRate(value: number | string | undefined): string {
 	if (typeof value === "number") {
@@ -134,11 +140,7 @@ export default function Profile() {
 					return;
 				}
 
-				setErrorMessage(
-					error instanceof Error
-						? error.message
-						: t("profile.messages.unexpectedLoadError"),
-				);
+				setErrorMessage(error instanceof Error ? error.message : t("profile.messages.unexpectedLoadError"));
 			} finally {
 				setIsLoading(false);
 			}
@@ -182,17 +184,11 @@ export default function Profile() {
 			setProfile(updatedProfile);
 			setSaveMessage(t("profile.messages.updated"));
 
-			if (
-				oldUsername !== "" &&
-				oldUsername !== updatedProfile.username
-			) {
+			if (oldUsername !== "" && oldUsername !== updatedProfile.username) {
 				unlockAchievement("change_nickname");
 			}
-
 		} catch (error) {
-			setErrorMessage(
-				error instanceof Error ? error.message : t("profile.messages.saveError"),
-			);
+			setErrorMessage(error instanceof Error ? error.message : t("profile.messages.saveError"));
 		} finally {
 			setIsSaving(false);
 		}
@@ -225,9 +221,7 @@ export default function Profile() {
 			localStorage.removeItem(AUTH_TOKEN_KEY);
 			navigate("/login", { replace: true });
 		} catch (error) {
-			setErrorMessage(
-				error instanceof Error ? error.message : t("profile.messages.deleteError"),
-			);
+			setErrorMessage(error instanceof Error ? error.message : t("profile.messages.deleteError"));
 		} finally {
 			setIsDeleting(false);
 		}
@@ -237,26 +231,38 @@ export default function Profile() {
 		<div className="landing-page app-screen">
 			<Navbar />
 
-			<main className="page page--profile page--profile-simple">
-				<section className="page__hero page__hero--simple">
-					<h1>{t("profile.title")}</h1>
+			<main className="pt-14 px-6 pb-0 flex flex-col max-w-215 mx-auto gap-5 max-[980px]:pt-8 max-[980px]:px-2">
+				<section className="max-w-160 grid gap-2.5">
+					<h1 className="font-['Orbitron',sans-serif] text-[clamp(1.9rem,4vw,3rem)] uppercase text-shadow:none">
+						{t("profile.title")}
+					</h1>
 				</section>
 
-				<section className="profile-summary-card">
-					<div className="profile-avatar">
+				<section className={`${card} flex items-center gap-4.5 max-w-full max-[720px]:items-start`}>
+					<div className="w-18 h-18 rounded-full grid place-items-center bg-[rgba(255,255,255,0.12)] text-(--txt-main) font-['Orbitron',sans-serif] text-[1.7rem] font-bold">
 						{getAvatarInitial(profile.username, profile.email)}
 					</div>
-					<div className="profile-summary-text">
-						<h2>{profile.username || t("profile.fallback.username")}</h2>
-						<p>{profile.email || t("profile.fallback.email")}</p>
-						<span>{t("profile.summary.rankPrefix")}{profile.rank}</span>
+					<div className="grid gap-1">
+						<h2 className="font-['Orbitron',sans-serif] text-[1.35rem] text-(--txt-main) m-0">
+							{profile.username || t("profile.fallback.username")}
+						</h2>
+						<p className="text-(--txt-soft) text-[0.98rem]">
+							{profile.email || t("profile.fallback.email")}
+						</p>
+						<span className="text-(--txt-soft) text-[0.98rem]">
+							{t("profile.summary.rankPrefix")}
+							{profile.rank}
+						</span>
 					</div>
 				</section>
 
-				<form className="profile-form-card" onSubmit={handleSave}>
-					<div className="profile-form-group">
-						<label htmlFor="profile-username">{t("profile.fields.username")}</label>
+				<form className={`${card} grid gap-4`} onSubmit={handleSave}>
+					<div className="flex flex-col gap-2">
+						<label className={label} htmlFor="profile-username">
+							{t("profile.fields.username")}
+						</label>
 						<input
+							className={field}
 							id="profile-username"
 							type="text"
 							placeholder={t("profile.fields.username")}
@@ -270,9 +276,12 @@ export default function Profile() {
 						/>
 					</div>
 
-					<div className="profile-form-group">
-						<label htmlFor="profile-bio">{t("profile.fields.bio")}</label>
+					<div className="flex flex-col gap-2">
+						<label className={label} htmlFor="profile-bio">
+							{t("profile.fields.bio")}
+						</label>
 						<textarea
+							className={field}
 							id="profile-bio"
 							rows={4}
 							placeholder={t("profile.fields.bioPlaceholder")}
@@ -286,14 +295,18 @@ export default function Profile() {
 						/>
 					</div>
 
-					<div className="profile-buttons">
-						<button type="submit" className="profile-save-btn" disabled={isSaving || isDeleting}>
+					<div className="flex justify-center p-2.5">
+						<button
+							type="submit"
+							className={`${actionButton} mr-2.5 bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] shadow-[0_0_5px_rgba(0,229,255,0.4)] hover:-translate-y-0.5 hover:shadow-[0_0_10px_rgba(0,229,255,0.6)]`}
+							disabled={isSaving || isDeleting}
+						>
 							{isSaving ? t("profile.actions.saving") : t("profile.actions.save")}
 						</button>
 
 						<button
 							type="button"
-							className="profile-delete-btn"
+							className={`${actionButton} bg-[linear-gradient(95deg,#ff4d4f,#ff1744)] shadow-[0_0_15px_rgba(255,62,136,0.4)] hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(255,62,136,0.4)]`}
 							onClick={handleDeleteAccount}
 							disabled={isSaving || isDeleting}
 						>
@@ -307,23 +320,31 @@ export default function Profile() {
 
 				{isLoading && <p>{t("profile.messages.loading")}</p>}
 
-				<section className="profile-stats-simple">
-					<div className="profile-stat-item">
-						<strong>{profile.stats.games}</strong>
-						<span>{t("profile.stats.games")}</span>
+				<section className="grid grid-cols-3 gap-3 max-[720px]:grid-cols-1">
+					<div className="bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.14)] rounded-[14px] p-4 text-center grid gap-1.5">
+						<strong className="font-['Orbitron',sans-serif] text-2xl text-(--txt-main)">
+							{profile.stats.games}
+						</strong>
+						<span className="text-(--txt-soft) text-[0.95rem]">{t("profile.stats.games")}</span>
 					</div>
-					<div className="profile-stat-item">
-						<strong>{profile.stats.wins}</strong>
-						<span>{t("profile.stats.wins")}</span>
+					<div className="bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.14)] rounded-[14px] p-4 text-center grid gap-1.5">
+						<strong className="font-['Orbitron',sans-serif] text-2xl text-(--txt-main)">
+							{profile.stats.wins}
+						</strong>
+						<span className="text-(--txt-soft) text-[0.95rem]">{t("profile.stats.wins")}</span>
 					</div>
-					<div className="profile-stat-item">
-						<strong>{profile.stats.winRate}</strong>
-						<span>{t("profile.stats.winRate")}</span>
+					<div className="bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.14)] rounded-[14px] p-4 text-center grid gap-1.5">
+						<strong className="font-['Orbitron',sans-serif] text-2xl text-(--txt-main)">
+							{profile.stats.winRate}
+						</strong>
+						<span className="text-(--txt-soft) text-[0.95rem]">{t("profile.stats.winRate")}</span>
 					</div>
 				</section>
 
-				<section className="profile-achievements-section">
-					<h2>{t("profile.achievements.title")}</h2>
+				<section className={card}>
+					<h2 className="font-['Orbitron',sans-serif] text-(--txt-main) mb-4">
+						{t("profile.achievements.title")}
+					</h2>
 					<AchievementsGrid backendUnlockedIds={profile.unlockedAchievements ?? []} />
 				</section>
 			</main>

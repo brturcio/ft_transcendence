@@ -10,7 +10,7 @@ import {
 	canPlacePiece,
 	getPieceShape
 } from './pieces';
-import { unlockAchievement, unlockTetrisAchievement } from "../../components/Achievements";
+import { unlockTetrisAchievement } from "../../components/Achievements";
 
 export function createEmptyGrid(): (PieceType | null)[][] {
 	return Array(GRID_ROWS)

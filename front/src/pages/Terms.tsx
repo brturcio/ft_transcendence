@@ -1,22 +1,22 @@
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../components/Navbar";
 import { useTranslation } from "react-i18next";
+
+const sectionClass = "py-[28px] max-[768px]:py-[22px] border-b border-white/[0.1]";
+const h2Class = "m- mb-[14px] text-[2rem]";
+const pClass = "m-0 ml-8 leading-[1.75] opacity-[0.82] text-[1rem]";
+const pTopClass = "m-0 mt-1 ml-8 leading-[1.75] opacity-[0.82] text-[1rem]";
+const ulClass = "ml-8 m-0 mt-1 pl-[22px] leading-[1.75] opacity-[0.82] list-disc";
+const liClass = "lm-8 mt-1";
 
 export default function Terms() {
 	const { t } = useTranslation();
-
-	const sectionClass = "py-[28px] max-[768px]:py-[22px] border-b border-white/[0.1]";
-	const h2Class = "m-0 mb-[14px] text-[1.25rem]";
-	const pClass = "m-0 leading-[1.75] opacity-[0.82]";
-	const pTopClass = "m-0 mt-3 leading-[1.75] opacity-[0.82]";
-	const ulClass = "m-0 mt-3 pl-[22px] leading-[1.75] opacity-[0.82] list-disc";
-	const liClass = "mt-2";
 
 	return (
 		<div className="terms-page app-screen">
 			<Navbar />
 
 			<main className="min-h-screen py-16 px-6 max-[768px]:py-8 max-[768px]:px-4 flex justify-center">
-				<section className="w-full max-w-[900px] p-12 max-[768px]:py-7 max-[768px]:px-5 rounded-[24px] max-[768px]:rounded-[18px] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.14)] shadow-[0_24px_80px_rgba(0,0,0,0.25)] backdrop-blur-[16px]">
+				<section className="w-full max-w-225 p-12 max-[768px]:py-7 max-[768px]:px-5 rounded-3xl max-[768px]:rounded-[18px] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.14)] shadow-[0_24px_80px_rgba(0,0,0,0.25)] backdrop-blur-lg">
 					<header className="mb-10 pb-8 border-b border-[rgba(255,255,255,0.14)] text-center">
 						<span className="inline-block mb-3 text-[0.8rem] font-bold tracking-[0.16em] uppercase opacity-70">
 							Transcendence
