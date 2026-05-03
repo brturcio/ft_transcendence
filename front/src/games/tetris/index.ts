@@ -1,6 +1,15 @@
-// Re-export all tetris game utilities and types
-export { type GameState, type Piece, type PieceType, GRID_ROWS, GRID_COLS } from './types';
-export { 
+export type {
+	GameState,
+	Piece,
+	PieceType
+} from "./types";
+
+export {
+	GRID_ROWS,
+	GRID_COLS
+} from "./types";
+
+export {
 	getRandomPieceType,
 	getPieceShape,
 	createNewPiece,
@@ -11,7 +20,8 @@ export {
 	movePieceLeft,
 	movePieceRight,
 	movePieceDown
-} from './pieces';
+} from "./pieces";
+
 export {
 	createEmptyGrid,
 	initializeGame,
@@ -19,15 +29,15 @@ export {
 	calculateScore,
 	updateLevel,
 	getDropSpeed,
+	getHardDropY,
 	dropPiece,
 	rotateCurrent,
 	moveLeft,
 	moveRight,
 	togglePause,
+	quickDrop,
 	getDisplayGrid,
-	getHardDropY,
-	getPreviewGrid,
-	getDisplayGridWithPreview,
-	quickDrop
-} from './gameEngine';
-export { useTetrisGame } from './useTetrisGame';
+	switchStash
+} from "./gameEngine";
+
+export { useTetrisGame } from "./useTetrisGame";

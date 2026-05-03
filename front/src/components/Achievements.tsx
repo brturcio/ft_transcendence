@@ -41,7 +41,7 @@ export const unlockAchievement = async (id: string) => {
 	}
 };
 
-export const unlockTetrisAchievement = () => {
+export const unlockTetrisAchievement = async () => {
 	try {
 		const stored = localStorage.getItem(TETRIS_COUNT_KEY);
 		let count = stored ? parseInt(stored, 10) : 0;

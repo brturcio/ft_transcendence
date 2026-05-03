@@ -1,84 +1,230 @@
-import React from 'react';
-import type { GameState } from './types';
+import React, { useMemo } from "react";
+import type { GameState } from "./types";
 import {
 	initializeGame,
-	dropPiece,
-	rotateCurrent,
-	moveLeft,
-	moveRight,
-	togglePause,
-	quickDrop,
-	switchStash
-} from './gameEngine';
+	getRandomPieceType,
+	createNewPiece,
+	placePieceOnGrid,
+	clearCompleteLines,
+	canPlacePiece,
+	movePieceLeft,
+	movePieceRight,
+	rotatePiece,
+	switchStash,
+	getHardDropY
+} from "./index";
 
-// Hook to manage Tetris game state and logic
+import { dropPiece, getDisplayGrid } from "./gameEngine";
+
+import { unlockTetrisAchievement } from "../../components/Achievements";
+
+type Action =
+	| { type: "TICK" }
+	| { type: "MOVE_LEFT" }
+	| { type: "MOVE_RIGHT" }
+	| { type: "ROTATE" }
+	| { type: "SOFT_DROP" }
+	| { type: "HARD_DROP" }
+	| { type: "SWAP" }
+	| { type: "PAUSE" }
+	| { type: "RESET" };
+
+function reducer(state: GameState, action: Action): GameState {
+	switch (action.type) {
+		case "TICK":
+			return dropSync(state);
+
+		case "MOVE_LEFT":
+			return moveLeftSync(state);
+
+		case "MOVE_RIGHT":
+			return moveRightSync(state);
+
+		case "ROTATE":
+			return rotateSync(state);
+
+		case "SOFT_DROP":
+			return dropSync(state);
+
+		case "HARD_DROP":
+			return hardDropSync(state);
+
+		case "SWAP":
+			return switchStash(state);
+
+		case "PAUSE":
+			return { ...state, isPaused: !state.isPaused };
+
+		case "RESET":
+			return initializeGame(true);
+
+		default:
+			return state;
+	}
+}
+
+import { movePieceDown } from "./pieces";
+
+function dropSync(state: GameState): GameState {
+	if (state.isPaused || state.isGameOver || !state.currentPiece) return state;
+
+	const movedPiece = movePieceDown(state.grid, state.currentPiece);
+
+	if (movedPiece) {
+		return {
+			...state,
+			currentPiece: movedPiece
+		};
+	}
+
+	const newGrid = placePieceOnGrid(state.grid, state.currentPiece);
+	const { grid, clearedLines } = clearCompleteLines(newGrid);
+
+	const nextPiece = createNewPiece(state.nextPiece);
+	const isGameOver = !canPlacePiece(grid, nextPiece);
+
+	return {
+		...state,
+		grid,
+		currentPiece: isGameOver ? null : nextPiece,
+		nextPiece: getRandomPieceType(),
+		score: state.score + clearedLines * 100,
+		isGameOver
+	};
+}
+
+function moveLeftSync(state: GameState): GameState {
+	if (!state.currentPiece) return state;
+	return {
+		...state,
+		currentPiece: movePieceLeft(state.grid, state.currentPiece)
+	};
+}
+
+function moveRightSync(state: GameState): GameState {
+	if (!state.currentPiece) return state;
+	return {
+		...state,
+		currentPiece: movePieceRight(state.grid, state.currentPiece)
+	};
+}
+
+function rotateSync(state: GameState): GameState {
+	if (!state.currentPiece) return state;
+
+	const rotated = rotatePiece(state.currentPiece);
+
+	return canPlacePiece(state.grid, rotated)
+		? { ...state, currentPiece: rotated }
+		: state;
+}
+
+function hardDropSync(state: GameState): GameState {
+	if (!state.currentPiece) return state;
+
+	const y = getHardDropY(state.grid, state.currentPiece);
+	const dropped = { ...state.currentPiece, y };
+
+	const newGrid = placePieceOnGrid(state.grid, dropped);
+	const { grid, clearedLines } = clearCompleteLines(newGrid);
+
+	return {
+		...state,
+		grid,
+		currentPiece: createNewPiece(state.nextPiece),
+		nextPiece: getRandomPieceType(),
+		score: state.score + clearedLines * 100,
+		clearedLines: clearedLines
+	};
+}
+
 export function useTetrisGame() {
-	const [gameState, setGameState] = React.useState<GameState>(() => initializeGame(true));
+	const [state, dispatch] = React.useReducer(reducer, undefined, () =>
+		initializeGame(true)
+	);
 
-	// Auto-drop piece every tick
+	const displayGrid = useMemo(() => {
+		return getDisplayGrid(state);
+	}, [state]);
+
+	const inputQueue = React.useRef<Action[]>([]);
+	const rafRef = React.useRef<number | null>(null);
+	const lastTick = React.useRef(0);
+
 	React.useEffect(() => {
-		if (gameState.isPaused || gameState.isGameOver) return;
+		function loop(time: number) {
+			if (!state.isPaused && !state.isGameOver) {
+				if (time - lastTick.current > state.dropSpeed) {
+					dispatch({ type: "TICK" });
+					lastTick.current = time;
+				}
+			}
 
-		const interval = setInterval(() => {
-			setGameState(prev => dropPiece(prev));
-		}, gameState.dropSpeed);
+			if (inputQueue.current.length > 0) {
+				dispatch(inputQueue.current.shift()!);
+			}
 
-		return () => clearInterval(interval);
-	}, [gameState.dropSpeed, gameState.isPaused, gameState.isGameOver]);
+			rafRef.current = requestAnimationFrame(loop);
+		}
 
-	// Handle keyboard input
+		rafRef.current = requestAnimationFrame(loop);
+
+		return () => {
+			if (rafRef.current) cancelAnimationFrame(rafRef.current);
+		};
+	}, [state.isPaused, state.isGameOver, state.dropSpeed]);
+
 	React.useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent) => {
+		const onKeyDown = (e: KeyboardEvent) => {
 			switch (e.key) {
-				case 'ArrowLeft':
+				case "ArrowLeft":
 					e.preventDefault();
-					setGameState(state => moveLeft(state));
+					inputQueue.current.push({ type: "MOVE_LEFT" });
 					break;
-				case 'ArrowRight':
+				case "ArrowRight":
 					e.preventDefault();
-					setGameState(state => moveRight(state));
+					inputQueue.current.push({ type: "MOVE_RIGHT" });
 					break;
-				case 'ArrowUp':
+				case "ArrowUp":
 					e.preventDefault();
-					setGameState(state => rotateCurrent(state));
+					inputQueue.current.push({ type: "ROTATE" });
 					break;
-				case 'ArrowDown':
+				case "ArrowDown":
 					e.preventDefault();
-					setGameState(state => dropPiece(state));
+					inputQueue.current.push({ type: "SOFT_DROP" });
 					break;
-				case ' ':
+				case " ":
 					e.preventDefault();
-					setGameState(state => quickDrop(state));
+					inputQueue.current.push({ type: "HARD_DROP" });
 					break;
-				case 'Shift':
+				case "Shift":
 					e.preventDefault();
-					setGameState(state => switchStash(state));
+					inputQueue.current.push({ type: "SWAP" });
 					break;
-				case 'Escape':
+				case "Escape":
 					e.preventDefault();
-					setGameState(state => togglePause(state));
-					break;
-				default:
+					inputQueue.current.push({ type: "PAUSE" });
 					break;
 			}
 		};
 
-		window.addEventListener('keydown', handleKeyDown);
-		return () => window.removeEventListener('keydown', handleKeyDown);
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
 	}, []);
 
-	const resetGame = () => {
-		setGameState(initializeGame(true));
-	};
+	const prevLines = React.useRef(0);
+
+	React.useEffect(() => {
+		if (state.clearedLines === 4 && prevLines.current !== 4) {
+			unlockTetrisAchievement();
+		}
+		prevLines.current = state.clearedLines;
+	}, [state.clearedLines]);
 
 	return {
-		gameState,
-		resetGame,
-		moveLeft: () => setGameState(state => moveLeft(state)),
-		moveRight: () => setGameState(state => moveRight(state)),
-		rotate: () => setGameState(state => rotateCurrent(state)),
-		drop: () => setGameState(state => dropPiece(state)),
-		quickDrop: () => setGameState(state => quickDrop(state)),
-		togglePause: () => setGameState(state => togglePause(state))
+		gameState: state,
+		displayGrid,
+		resetGame: () => dispatch({ type: "RESET" }),
+		togglePause: () => dispatch({ type: "PAUSE" })
 	};
 }

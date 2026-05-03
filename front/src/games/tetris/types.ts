@@ -24,6 +24,7 @@ export interface GameState {
 	dropSpeed: number;
 	isGameOver: boolean;
 	isPaused: boolean;
+	clearedLines: number;
 }
 
 // Game constants

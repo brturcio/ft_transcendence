@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTetrisGame, getPieceShape, getDisplayGridWithPreview } from "../games/tetris";
+import { useTetrisGame, getPieceShape, getDisplayGrid } from "../games/tetris";
 import { useTranslation } from "react-i18next";
 
 const PIECE_COLORS: Record<string, string> = {
@@ -18,7 +18,7 @@ export default function TetrisGame() {
 	const game = useTetrisGame();
 	const { t } = useTranslation();
 	const [isStarted, setIsStarted] = useState(false);
-	const displayGrid = getDisplayGridWithPreview(game.gameState);
+	const displayGrid = getDisplayGrid(game.gameState);
 
 	const handleStart = () => {
 		setIsStarted(true);
