@@ -7,31 +7,6 @@ import { unlockAchievement } from "./Achievements.tsx";
 
 const LOCKED_BADGE = lockedBadgeImage;
 const activeNotifications = new Set<string>();
-const STORAGE_KEY = "unlocked_achievements";
-const USER_STORAGE_KEY = "ft_user";
-
-function getAchievementStorageKey() {
-	try {
-		const storedUser = localStorage.getItem(USER_STORAGE_KEY);
-		if (!storedUser) {
-			return STORAGE_KEY;
-		}
-
-		const user = JSON.parse(storedUser);
-		return typeof user?.id === "string" ? `${STORAGE_KEY}_${user.id}` : STORAGE_KEY;
-	} catch {
-		return STORAGE_KEY;
-	}
-}
-
-const getStoredAchievements = (): string[] => {
-	try {
-		const data = localStorage.getItem(getAchievementStorageKey());
-		return data ? JSON.parse(data) : [];
-	} catch {
-		return [];
-	}
-};
 
 let notificationContainer: HTMLDivElement | null = null;
 
@@ -153,21 +128,23 @@ if (typeof window !== "undefined") {
 type AchievementCardProps = {
 	achievement: Achievement;
 	unlocked?: boolean;
+	onAchievementUnlocked?: () => void | Promise<void>;
 };
 
 // Composant pour afficher un achievement
-const AchievementCard = ({ achievement, unlocked }: AchievementCardProps) => {
+const AchievementCard = ({ achievement, unlocked, onAchievementUnlocked }: AchievementCardProps) => {
 	const { t } = useTranslation();
 	const isLocked = !unlocked;
 	const displayImage = isLocked ? LOCKED_BADGE : achievement.image;
 	const title = isLocked ? t("achievements.locked.title") : achievement.title;
 	const description = isLocked ? t("achievements.locked.description") : achievement.description;
 
-	const handleClick = () => {
+	const handleClick = async () => {
 		if (achievement.id === "curious" && isLocked) {
-			unlockAchievement("curious");
-
-			window.dispatchEvent(new Event("storage"));
+			const unlocked = await unlockAchievement("curious");
+			if (unlocked) {
+				await onAchievementUnlocked?.();
+			}
 		}
 	};
 
@@ -193,26 +170,18 @@ const AchievementCard = ({ achievement, unlocked }: AchievementCardProps) => {
 	);
 };
 
-export const AchievementsGrid = ({ backendUnlockedIds = [] }: { backendUnlockedIds?: string[] }) => {
+export const AchievementsGrid = ({
+	backendUnlockedIds = [],
+	onAchievementUnlocked,
+}: {
+	backendUnlockedIds?: string[];
+	onAchievementUnlocked?: () => void | Promise<void>;
+}) => {
 	const achievements = getAllAchievements();
-	const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
+	const [unlockedIds, setUnlockedIds] = useState<string[]>(backendUnlockedIds);
 
 	useEffect(() => {
-		const local = getStoredAchievements();
-		const merged = Array.from(new Set([...local, ...backendUnlockedIds]));
-
-		setUnlockedIds(merged);
-	}, [backendUnlockedIds]);
-
-	useEffect(() => {
-		const update = () => {
-			const local = getStoredAchievements();
-			const merged = Array.from(new Set([...local, ...backendUnlockedIds]));
-			setUnlockedIds(merged);
-		};
-
-		window.addEventListener("achievements_updated", update);
-		return () => window.removeEventListener("achievements_updated", update);
+		setUnlockedIds(backendUnlockedIds);
 	}, [backendUnlockedIds]);
 
 	return (
@@ -222,6 +191,7 @@ export const AchievementsGrid = ({ backendUnlockedIds = [] }: { backendUnlockedI
 					key={achievement.id}
 					achievement={achievement}
 					unlocked={unlockedIds.includes(achievement.id)}
+					onAchievementUnlocked={onAchievementUnlocked}
 				/>
 			))}
 		</div>

@@ -135,6 +135,27 @@ export default function Profile({ onLogout }: ProfileProps) {
 		navigate("/login", { replace: true });
 	};
 
+	const refreshAchievements = async () => {
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+		if (!token) {
+			return;
+		}
+		const achievementsResponse = await fetch(ACHIEVEMENTS_ENDPOINT, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		if (!achievementsResponse.ok) {
+			return;
+		}
+		const achievementsData: BackendAchievements = await achievementsResponse.json();
+		setProfile((current) => ({
+			...current,
+			unlockedAchievements: achievementsData.achievements ?? [],
+		}));
+	};
+
 	useEffect(() => {
 		const controller = new AbortController();
 		const token = localStorage.getItem(AUTH_TOKEN_KEY);
@@ -248,10 +269,16 @@ export default function Profile({ onLogout }: ProfileProps) {
 			}
 			const data: BackendProfile = await response.json();
 			const updatedProfile = mapBackendProfile(data);
-			setProfile(updatedProfile);
+			setProfile((current) => ({
+				...updatedProfile,
+				unlockedAchievements: current.unlockedAchievements ?? [],
+			}));
 			setSaveMessage(t("profile.messages.updated"));
 			if (savedUsername !== "" && savedUsername !== updatedProfile.username) {
-				unlockAchievement("change_nickname");
+				const unlocked = await unlockAchievement("change_nickname");
+				if (unlocked) {
+					await refreshAchievements();
+				}
 			}
 			setSavedUsername(updatedProfile.username);
 		} catch (error) {
@@ -427,7 +454,10 @@ export default function Profile({ onLogout }: ProfileProps) {
 					<h2 className="font-['Orbitron',sans-serif] text-(--txt-main) mb-4">
 						{t("profile.achievements.title")}
 					</h2>
-					<AchievementsGrid backendUnlockedIds={profile.unlockedAchievements ?? []} />
+					<AchievementsGrid
+						backendUnlockedIds={profile.unlockedAchievements ?? []}
+						onAchievementUnlocked={refreshAchievements}
+					/>
 				</section>
 			</main>
 		</div>

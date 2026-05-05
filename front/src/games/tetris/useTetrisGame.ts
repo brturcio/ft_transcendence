@@ -11,7 +11,7 @@ import {
 	movePieceRight,
 	rotatePiece,
 	switchStash,
-	getHardDropY
+	getHardDropY,
 } from "./index";
 
 import { getDisplayGrid } from "./gameEngine";
@@ -27,7 +27,8 @@ type Action =
 	| { type: "HARD_DROP" }
 	| { type: "SWAP" }
 	| { type: "PAUSE" }
-	| { type: "RESET" };
+	| { type: "RESET" }
+	| { type: "REPORT_TETRIS_GAME" };
 
 function reducer(state: GameState, action: Action): GameState {
 	switch (action.type) {
@@ -58,6 +59,9 @@ function reducer(state: GameState, action: Action): GameState {
 		case "RESET":
 			return initializeGame(true);
 
+		case "REPORT_TETRIS_GAME":
+			return { ...state, hasReportedTetrisThisGame: true };
+
 		default:
 			return state;
 	}
@@ -73,7 +77,7 @@ function dropSync(state: GameState): GameState {
 	if (movedPiece) {
 		return {
 			...state,
-			currentPiece: movedPiece
+			currentPiece: movedPiece,
 		};
 	}
 
@@ -89,7 +93,9 @@ function dropSync(state: GameState): GameState {
 		currentPiece: isGameOver ? null : nextPiece,
 		nextPiece: getRandomPieceType(),
 		score: state.score + clearedLines * 100,
-		isGameOver
+		clearedLines,
+		hasCompletedTetrisThisGame: state.hasCompletedTetrisThisGame || clearedLines >= 2,
+		isGameOver,
 	};
 }
 
@@ -97,7 +103,7 @@ function moveLeftSync(state: GameState): GameState {
 	if (!state.currentPiece) return state;
 	return {
 		...state,
-		currentPiece: movePieceLeft(state.grid, state.currentPiece)
+		currentPiece: movePieceLeft(state.grid, state.currentPiece),
 	};
 }
 
@@ -105,7 +111,7 @@ function moveRightSync(state: GameState): GameState {
 	if (!state.currentPiece) return state;
 	return {
 		...state,
-		currentPiece: movePieceRight(state.grid, state.currentPiece)
+		currentPiece: movePieceRight(state.grid, state.currentPiece),
 	};
 }
 
@@ -114,9 +120,7 @@ function rotateSync(state: GameState): GameState {
 
 	const rotated = rotatePiece(state.currentPiece);
 
-	return canPlacePiece(state.grid, rotated)
-		? { ...state, currentPiece: rotated }
-		: state;
+	return canPlacePiece(state.grid, rotated) ? { ...state, currentPiece: rotated } : state;
 }
 
 function hardDropSync(state: GameState): GameState {
@@ -128,20 +132,23 @@ function hardDropSync(state: GameState): GameState {
 	const newGrid = placePieceOnGrid(state.grid, dropped);
 	const { grid, clearedLines } = clearCompleteLines(newGrid);
 
+	const nextPiece = createNewPiece(state.nextPiece);
+	const isGameOver = !canPlacePiece(grid, nextPiece);
+
 	return {
 		...state,
 		grid,
-		currentPiece: createNewPiece(state.nextPiece),
+		currentPiece: isGameOver ? null : nextPiece,
 		nextPiece: getRandomPieceType(),
 		score: state.score + clearedLines * 100,
-		clearedLines: clearedLines
+		clearedLines,
+		hasCompletedTetrisThisGame: state.hasCompletedTetrisThisGame || clearedLines >= 2,
+		isGameOver,
 	};
 }
 
 export function useTetrisGame() {
-	const [state, dispatch] = React.useReducer(reducer, undefined, () =>
-		initializeGame(true)
-	);
+	const [state, dispatch] = React.useReducer(reducer, undefined, () => initializeGame(true));
 
 	const displayGrid = useMemo(() => {
 		return getDisplayGrid(state);
@@ -212,19 +219,21 @@ export function useTetrisGame() {
 		return () => window.removeEventListener("keydown", onKeyDown);
 	}, []);
 
-	const prevLines = React.useRef(0);
-
 	React.useEffect(() => {
-		if (state.clearedLines === 4 && prevLines.current !== 4) {
+		if (
+			state.isGameOver &&
+			state.hasCompletedTetrisThisGame &&
+			!state.hasReportedTetrisThisGame
+		) {
 			unlockTetrisAchievement();
+			dispatch({ type: "REPORT_TETRIS_GAME" });
 		}
-		prevLines.current = state.clearedLines;
-	}, [state.clearedLines]);
+	}, [state.isGameOver, state.hasCompletedTetrisThisGame, state.hasReportedTetrisThisGame]);
 
 	return {
 		gameState: state,
 		displayGrid,
 		resetGame: () => dispatch({ type: "RESET" }),
-		togglePause: () => dispatch({ type: "PAUSE" })
+		togglePause: () => dispatch({ type: "PAUSE" }),
 	};
 }

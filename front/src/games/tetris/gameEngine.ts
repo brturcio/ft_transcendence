@@ -1,10 +1,4 @@
-import {
-	type GameState,
-	type PieceType,
-	GRID_ROWS,
-	GRID_COLS,
-	INITIAL_DROP_SPEED
-} from "./types";
+import { type GameState, type PieceType, GRID_ROWS, GRID_COLS, INITIAL_DROP_SPEED } from "./types";
 
 import {
 	createNewPiece,
@@ -15,13 +9,11 @@ import {
 	movePieceRight,
 	placePieceOnGrid,
 	canPlacePiece,
-	getPieceShape
+	getPieceShape,
 } from "./pieces";
 
 export function createEmptyGrid(): (PieceType | null)[][] {
-	return Array.from({ length: GRID_ROWS }, () =>
-		Array(GRID_COLS).fill(null)
-	);
+	return Array.from({ length: GRID_ROWS }, () => Array(GRID_COLS).fill(null));
 }
 
 export function initializeGame(startPaused = false): GameState {
@@ -38,7 +30,9 @@ export function initializeGame(startPaused = false): GameState {
 		dropSpeed: INITIAL_DROP_SPEED,
 		isGameOver: false,
 		isPaused: startPaused,
-		clearedLines: 0
+		clearedLines: 0,
+		hasCompletedTetrisThisGame: false,
+		hasReportedTetrisThisGame: false,
 	};
 }
 
@@ -46,7 +40,7 @@ export function clearCompleteLines(grid: (PieceType | null)[][]): {
 	grid: (PieceType | null)[][];
 	clearedLines: number;
 } {
-	const newGrid = grid.filter(row => row.some(cell => cell === null));
+	const newGrid = grid.filter((row) => row.some((cell) => cell === null));
 	const clearedLines = GRID_ROWS - newGrid.length;
 
 	while (newGrid.length < GRID_ROWS) {
@@ -71,7 +65,7 @@ export function getDropSpeed(level: number): number {
 
 export function getHardDropY(
 	grid: (PieceType | null)[][],
-	piece: { x: number; y: number; type: PieceType; rotation: number }
+	piece: { x: number; y: number; type: PieceType; rotation: number },
 ): number {
 	let y = piece.y;
 
@@ -116,7 +110,7 @@ export function dropPiece(state: GameState): GameState {
 		level,
 		dropSpeed,
 		isGameOver,
-		clearedLines: clearedLines
+		clearedLines: clearedLines,
 	};
 }
 
@@ -125,7 +119,7 @@ export function moveLeft(state: GameState): GameState {
 
 	return {
 		...state,
-		currentPiece: movePieceLeft(state.grid, state.currentPiece)
+		currentPiece: movePieceLeft(state.grid, state.currentPiece),
 	};
 }
 
@@ -134,7 +128,7 @@ export function moveRight(state: GameState): GameState {
 
 	return {
 		...state,
-		currentPiece: movePieceRight(state.grid, state.currentPiece)
+		currentPiece: movePieceRight(state.grid, state.currentPiece),
 	};
 }
 
@@ -181,14 +175,14 @@ export function quickDrop(state: GameState): GameState {
 		level,
 		dropSpeed,
 		isGameOver,
-		clearedLines: clearedLines
+		clearedLines: clearedLines,
 	};
 }
 
 export function togglePause(state: GameState): GameState {
 	return {
 		...state,
-		isPaused: !state.isPaused
+		isPaused: !state.isPaused,
 	};
 }
 
@@ -208,7 +202,7 @@ export function switchStash(state: GameState): GameState {
 			stashPiece: state.currentPiece.type,
 			currentPiece: isGameOver ? null : newCurrent,
 			nextPiece: newNext,
-			isGameOver
+			isGameOver,
 		};
 	}
 
@@ -218,19 +212,19 @@ export function switchStash(state: GameState): GameState {
 		return {
 			...state,
 			isGameOver: true,
-			currentPiece: null
+			currentPiece: null,
 		};
 	}
 
 	return {
 		...state,
 		stashPiece: state.currentPiece.type,
-		currentPiece: swapped
+		currentPiece: swapped,
 	};
 }
 
 export function getDisplayGrid(gameState: GameState): (PieceType | null | "preview")[][] {
-	const displayGrid = gameState.grid.map(row => [...row]) as (PieceType | null | "preview")[][];
+	const displayGrid = gameState.grid.map((row) => [...row]) as (PieceType | null | "preview")[][];
 
 	if (!gameState.currentPiece) return displayGrid;
 

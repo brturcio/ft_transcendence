@@ -1,5 +1,5 @@
 // Tetris piece types
-export type PieceType = 'I' | 'O' | 'T' | 'S' | 'Z' | 'J' | 'L';
+export type PieceType = "I" | "O" | "T" | "S" | "Z" | "J" | "L";
 
 // Tetris piece definition
 export interface Piece {
@@ -25,6 +25,8 @@ export interface GameState {
 	isGameOver: boolean;
 	isPaused: boolean;
 	clearedLines: number;
+	hasCompletedTetrisThisGame: boolean;
+	hasReportedTetrisThisGame: boolean;
 }
 
 // Game constants
