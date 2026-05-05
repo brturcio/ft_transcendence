@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar";
 import { useTranslation } from "react-i18next";
 
 export default function Privacy() {
@@ -12,8 +11,7 @@ export default function Privacy() {
 	const liClass = "ml-8 mt-2";
 
 	return (
-		<div className="privacy-page app-screen">
-			<Navbar />
+		<div className="privacy-page">
 
 			<main className="min-h-screen py-16 px-6 max-[768px]:py-8 max-[768px]:px-4 flex justify-center">
 				<section className="w-full max-w-225 p-12 max-[768px]:py-7 max-[768px]:px-5 rounded-3xl max-[768px]:rounded-[18px] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.14)] shadow-[0_24px_80px_rgba(0,0,0,0.25)] backdrop-blur-lg">

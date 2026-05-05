@@ -24,7 +24,10 @@
 		"loadError": "No se pudo cargar el perfil",
 		"saveError": "No se pudo actualizar el perfil",
 		"deleteConfirm": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
-		"deleteError": "No se pudo eliminar la cuenta"
+		"deleteError": "No se pudo eliminar la cuenta",
+		"validationError": "Revisa los campos e inténtalo de nuevo.",
+		"usernameTaken": "Ese nombre de usuario ya está en uso.",
+		"networkError": "No se pudo conectar con el servidor."
 	},
 	"stats": {
 		"games": "Partidas",

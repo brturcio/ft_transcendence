@@ -195,7 +195,7 @@ CREATE TABLE "UserAchievement" (
     "userId" TEXT NOT NULL,
     "achievementId" TEXT NOT NULL,
     "progress" INTEGER NOT NULL DEFAULT 0,
-    "unlockedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "unlockedAt" TIMESTAMP(3),
 
     CONSTRAINT "UserAchievement_pkey" PRIMARY KEY ("id")
 );

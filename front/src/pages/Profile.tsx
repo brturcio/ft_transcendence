@@ -1,6 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar.tsx";
 import { AchievementsGrid } from "../components/AchievementCard.tsx";
 import { unlockAchievement } from "../components/Achievements.tsx";
 import { useTranslation } from "react-i18next";
@@ -16,6 +15,7 @@ const actionButton =
 const AUTH_TOKEN_KEY = "ft_auth_token";
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const PROFILE_ENDPOINT = `${API_BASE_URL}/users/me`;
+const ACHIEVEMENTS_ENDPOINT = `${API_BASE_URL}/achievements/me`;
 
 type ProfileStats = {
 	games: number;
@@ -45,6 +45,10 @@ type BackendProfile = {
 		winRate?: number | string;
 	};
 	unlockedAchievements?: string[];
+};
+
+type BackendAchievements = {
+	achievements?: string[];
 };
 
 const DEFAULT_PROFILE: ProfileData = {
@@ -102,15 +106,34 @@ function getAvatarInitial(username: string, email: string): string {
 	return "?";
 }
 
-export default function Profile() {
+type ProfileProps = {
+	onLogout: () => void;
+};
+
+export default function Profile({ onLogout }: ProfileProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [profile, setProfile] = useState<ProfileData>(DEFAULT_PROFILE);
+	const [savedUsername, setSavedUsername] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [saveMessage, setSaveMessage] = useState("");
+
+	const getBackendError = async (response: Response) => {
+		try {
+			const data = await response.json();
+			return typeof data?.error === "string" ? data.error : undefined;
+		} catch {
+			return undefined;
+		}
+	};
+
+	const handleInvalidSession = () => {
+		onLogout();
+		navigate("/login", { replace: true });
+	};
 
 	useEffect(() => {
 		const controller = new AbortController();
@@ -130,17 +153,47 @@ export default function Profile() {
 				});
 
 				if (!response.ok) {
-					throw new Error(`${t("profile.messages.loadError")} (${response.status})`);
+					const backendError = await getBackendError(response);
+					if (
+						backendError === "MISSING_TOKEN" ||
+						backendError === "INVALID_TOKEN" ||
+						backendError === "USER_NOT_FOUND"
+					) {
+						handleInvalidSession();
+						return;
+					}
+					setErrorMessage(t("profile.messages.loadError"));
+					return;
 				}
 
 				const data: BackendProfile = await response.json();
-				setProfile(mapBackendProfile(data));
+				const mappedProfile = mapBackendProfile(data);
+				setSavedUsername(mappedProfile.username);
+				const achievementsResponse = await fetch(ACHIEVEMENTS_ENDPOINT, {
+					headers: {
+						"Content-Type": "application/json",
+						...(token ? { Authorization: `Bearer ${token}` } : {}),
+					},
+					signal: controller.signal,
+				});
+				if (achievementsResponse.ok) {
+					const achievementsData: BackendAchievements = await achievementsResponse.json();
+					setProfile({
+						...mappedProfile,
+						unlockedAchievements: achievementsData.achievements ?? [],
+					});
+					return;
+				}
+				setProfile(mappedProfile);
 			} catch (error) {
 				if (error instanceof DOMException && error.name === "AbortError") {
 					return;
 				}
-
-				setErrorMessage(error instanceof Error ? error.message : t("profile.messages.unexpectedLoadError"));
+				if (error instanceof TypeError) {
+					setErrorMessage(t("profile.messages.networkError"));
+					return;
+				}
+				setErrorMessage(t("profile.messages.loadError"));
 			} finally {
 				setIsLoading(false);
 			}
@@ -159,8 +212,6 @@ export default function Profile() {
 		setSaveMessage("");
 		setErrorMessage("");
 
-		const oldUsername = profile.username;
-
 		try {
 			const response = await fetch(PROFILE_ENDPOINT, {
 				method: "PATCH",
@@ -175,20 +226,40 @@ export default function Profile() {
 			});
 
 			if (!response.ok) {
-				throw new Error(`${t("profile.messages.saveError")} (${response.status})`);
+				const backendError = await getBackendError(response);
+				if (
+					backendError === "MISSING_TOKEN" ||
+					backendError === "INVALID_TOKEN" ||
+					backendError === "USER_NOT_FOUND"
+				) {
+					handleInvalidSession();
+					return;
+				}
+				if (backendError === "VALIDATION_ERROR") {
+					setErrorMessage(t("profile.messages.validationError"));
+					return;
+				}
+				if (backendError === "USERNAME_TAKEN") {
+					setErrorMessage(t("profile.messages.usernameTaken"));
+					return;
+				}
+				setErrorMessage(t("profile.messages.saveError"));
+				return;
 			}
-
 			const data: BackendProfile = await response.json();
 			const updatedProfile = mapBackendProfile(data);
-
 			setProfile(updatedProfile);
 			setSaveMessage(t("profile.messages.updated"));
-
-			if (oldUsername !== "" && oldUsername !== updatedProfile.username) {
+			if (savedUsername !== "" && savedUsername !== updatedProfile.username) {
 				unlockAchievement("change_nickname");
 			}
+			setSavedUsername(updatedProfile.username);
 		} catch (error) {
-			setErrorMessage(error instanceof Error ? error.message : t("profile.messages.saveError"));
+			if (error instanceof TypeError) {
+				setErrorMessage(t("profile.messages.networkError"));
+				return;
+			}
+			setErrorMessage(t("profile.messages.saveError"));
 		} finally {
 			setIsSaving(false);
 		}
@@ -215,22 +286,33 @@ export default function Profile() {
 			});
 
 			if (!response.ok) {
-				throw new Error(`${t("profile.messages.deleteError")} (${response.status})`);
+				const backendError = await getBackendError(response);
+				if (
+					backendError === "MISSING_TOKEN" ||
+					backendError === "INVALID_TOKEN" ||
+					backendError === "USER_NOT_FOUND"
+				) {
+					handleInvalidSession();
+					return;
+				}
+				setErrorMessage(t("profile.messages.deleteError"));
+				return;
 			}
-
-			localStorage.removeItem(AUTH_TOKEN_KEY);
+			onLogout();
 			navigate("/login", { replace: true });
 		} catch (error) {
-			setErrorMessage(error instanceof Error ? error.message : t("profile.messages.deleteError"));
+			if (error instanceof TypeError) {
+				setErrorMessage(t("profile.messages.networkError"));
+				return;
+			}
+			setErrorMessage(t("profile.messages.deleteError"));
 		} finally {
 			setIsDeleting(false);
 		}
 	};
 
 	return (
-		<div className="landing-page app-screen">
-			<Navbar />
-
+		<div className="profile-page ">
 			<main className="pt-14 px-6 pb-0 flex flex-col max-w-215 mx-auto gap-5 max-[980px]:pt-8 max-[980px]:px-2">
 				<section className="max-w-160 grid gap-2.5">
 					<h1 className="font-['Orbitron',sans-serif] text-[clamp(1.9rem,4vw,3rem)] uppercase text-shadow:none">

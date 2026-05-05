@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import Navbar from "../components/Navbar";
 import hideIcon from "../assets/register/hide.png";
 import showIcon from "../assets/register/show.png";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
+const REFRESH_TOKEN_KEY = "ft_refresh_token";
+const USER_STORAGE_KEY = "ft_user";
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const REGISTER_ENDPOINT = `${API_BASE_URL}/auth/register`;
+
+type RegisterProps = {
+	onLogin: () => void;
+};
 
 const input =
 	"bg-[rgba(14,22,48,0.8)] border border-[rgba(110,210,255,0.3)] rounded-xl px-[18px] py-[14px] text-[var(--txt-main)] font-['Rajdhani',sans-serif] text-base max-[620px]:text-base transition-all duration-300 placeholder:text-[rgba(142,170,199,0.6)] focus:outline-none focus:border-[var(--glow-cyan)] focus:bg-[rgba(14,22,48,0.95)] focus:shadow-[0_0_20px_rgba(0,229,255,0.25)] focus:placeholder:text-[rgba(142,170,199,0.3)]";
@@ -18,7 +23,7 @@ const googleButton =
 const formLink =
 	"text-(--glow-cyan) font-bold no-underline transition-all duration-200 [text-shadow:0_0_10px_rgba(0,229,255,0.3)] hover:text-(--glow-pink) hover:[text-shadow:0_0_15px_rgba(255,62,136,0.4)]";
 
-export default function Register() {
+export default function Register({ onLogin }: RegisterProps) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [email, setEmail] = useState("");
@@ -79,13 +84,20 @@ export default function Register() {
 				setError(data.message ?? t("register.errors.couldNotCreate"));
 				return;
 			}
+			if (!data.token || !data.refreshToken || !data.user) {
+				setError(t("register.errors.server"));
+				return;
+			}
 			localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+			localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+			localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user));
+			onLogin();
 			setEmail("");
 			setUsername("");
 			setPassword("");
 			setConfirmPassword("");
 			setAcceptTerms(false);
-			navigate("/profile");
+			navigate("/");
 		} catch (error) {
 			setError(t("register.errors.server"));
 		} finally {
@@ -94,8 +106,7 @@ export default function Register() {
 	};
 
 	return (
-		<div className="landing-page app-screen">
-			<Navbar />
+		<div className="landing-page">
 
 			<main className="min-h-screen flex items-center justify-center pt-14 px-6 pb-0 max-[620px]:pt-8 max-[620px]:px-2">
 				<div className="w-full max-w-150 relative z-10">

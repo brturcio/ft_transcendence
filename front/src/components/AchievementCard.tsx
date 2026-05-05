@@ -8,10 +8,25 @@ import { unlockAchievement } from "./Achievements.tsx";
 const LOCKED_BADGE = lockedBadgeImage;
 const activeNotifications = new Set<string>();
 const STORAGE_KEY = "unlocked_achievements";
+const USER_STORAGE_KEY = "ft_user";
+
+function getAchievementStorageKey() {
+	try {
+		const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+		if (!storedUser) {
+			return STORAGE_KEY;
+		}
+
+		const user = JSON.parse(storedUser);
+		return typeof user?.id === "string" ? `${STORAGE_KEY}_${user.id}` : STORAGE_KEY;
+	} catch {
+		return STORAGE_KEY;
+	}
+}
 
 const getStoredAchievements = (): string[] => {
 	try {
-		const data = localStorage.getItem(STORAGE_KEY);
+		const data = localStorage.getItem(getAchievementStorageKey());
 		return data ? JSON.parse(data) : [];
 	} catch {
 		return [];
@@ -58,13 +73,7 @@ if (typeof document !== "undefined") {
 	document.head.appendChild(styleSheet);
 }
 
-const AchievementNotificationItem = ({
-	achievement,
-	onExit,
-}: {
-	achievement: Achievement;
-	onExit: () => void;
-}) => {
+const AchievementNotificationItem = ({ achievement, onExit }: { achievement: Achievement; onExit: () => void }) => {
 	const { t } = useTranslation();
 	const [isExiting, setIsExiting] = useState(false);
 
@@ -87,21 +96,13 @@ const AchievementNotificationItem = ({
 		<div
 			className={`achievement-notification mb-4 flex min-w-80 items-center gap-4 rounded-lg border border-white/20 bg-[linear-gradient(135deg,#522cff_0%,#6b3fff_100%)] p-4 shadow-[0_8px_32px_rgba(82,44,255,0.3)] ${isExiting ? "exit" : ""}`}
 		>
-			<img
-				src={achievement.image}
-				alt={achievement.title}
-				className="h-16 w-16 shrink-0 rounded-md"
-			/>
+			<img src={achievement.image} alt={achievement.title} className="h-16 w-16 shrink-0 rounded-md" />
 			<div>
-				<h4 className="mb-1 mt-0 text-white">
-					🎉 {t("achievements.notification.unlocked")}
-				</h4>
+				<h4 className="mb-1 mt-0 text-white">🎉 {t("achievements.notification.unlocked")}</h4>
 				<p className="mb-0 mt-1 text-[#e8e4ff]">
 					<strong>{achievement.title}</strong>
 				</p>
-				<p className="mb-0 mt-1 text-[0.85rem] text-[#d0c9ff]">
-					{achievement.description}
-				</p>
+				<p className="mb-0 mt-1 text-[0.85rem] text-[#d0c9ff]">{achievement.description}</p>
 			</div>
 		</div>
 	);
@@ -141,7 +142,7 @@ export const showAchievementNotification = (achievementId: string) => {
 
 				activeNotifications.delete(achievementId);
 			}}
-		/>
+		/>,
 	);
 };
 // Exposer la fonction sur window pour accès via console
@@ -173,26 +174,26 @@ const AchievementCard = ({ achievement, unlocked }: AchievementCardProps) => {
 	return (
 		<div
 			onClick={handleClick}
-			className={`cursor-pointer rounded-lg border-2 p-4 text-center transition-all duration-300 ${isLocked ? "border-[#999] bg-[#522cffdc]" : "border-[#ccc] bg-transparent"}`}
+			className={`flex h-70 cursor-pointer flex-col items-center justify-between rounded-lg border-2 p-4 text-center transition-all duration-300 ${
+				isLocked ? "border-[#999] bg-[#522cffdc]" : "border-[#ccc] bg-transparent"
+			}`}
 		>
-			<h3>{title}</h3>
+			<h3 className="min-h-12">{title}</h3>
 			{displayImage && (
-				<img
-					src={displayImage}
-					alt={isLocked ? t("achievements.locked.imageAlt") : achievement.title}
-					className="mt-2 w-full rounded"
-				/>
+				<div className="flex h-32 w-full items-center justify-center">
+					<img
+						src={displayImage}
+						alt={isLocked ? t("achievements.locked.imageAlt") : achievement.title}
+						className="max-h-full max-w-full rounded object-contain"
+					/>
+				</div>
 			)}
-			<p className="text-[0.9rem] text-white">{description}</p>
+			<p className="min-h-12 text-[0.9rem] text-white">{description}</p>
 		</div>
 	);
 };
 
-export const AchievementsGrid = ({
-	backendUnlockedIds = [],
-}: {
-	backendUnlockedIds?: string[];
-}) => {
+export const AchievementsGrid = ({ backendUnlockedIds = [] }: { backendUnlockedIds?: string[] }) => {
 	const achievements = getAllAchievements();
 	const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
 

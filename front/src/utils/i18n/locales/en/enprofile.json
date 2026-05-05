@@ -25,7 +25,10 @@
 		"saveError": "Could not update profile",
 		"deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
 		"deleteError": "Could not delete account",
-		"unexpectedLoadError": "Unexpected error while loading profile"
+		"unexpectedLoadError": "Unexpected error while loading profile",
+		"validationError": "Please check the fields and try again.",
+		"usernameTaken": "That username is already in use.",
+		"networkError": "Could not connect to the server."
 	},
 	"stats": {
 		"games": "Games",

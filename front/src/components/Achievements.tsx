@@ -1,11 +1,44 @@
 import { showAchievementNotification } from "./AchievementCard";
 
+const AUTH_TOKEN_KEY = "ft_auth_token";
 const STORAGE_KEY = "unlocked_achievements";
-const TETRIS_COUNT_KEY = "tetris_count"; //a changer pour le stocker dans la bdd
+const USER_STORAGE_KEY = "ft_user";
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+
+type TetrisProgressResponse = {
+	tetrises: number;
+	newlyUnlocked: string[];
+};
+
+function getAchievementStorageKey() {
+	try {
+		const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+		if (!storedUser) {
+			return STORAGE_KEY;
+		}
+
+		const user = JSON.parse(storedUser);
+		return typeof user?.id === "string" ? `${STORAGE_KEY}_${user.id}` : STORAGE_KEY;
+	} catch {
+		return STORAGE_KEY;
+	}
+}
+
+function saveUnlockedAchievements(ids: string[]) {
+	const current = getUnlockedAchievements();
+	const updated = Array.from(new Set([...current, ...ids]));
+	localStorage.setItem(getAchievementStorageKey(), JSON.stringify(updated));
+	for (const id of ids) {
+		if (!current.includes(id)) {
+			showAchievementNotification(id);
+		}
+	}
+	window.dispatchEvent(new Event("achievements_updated"));
+}
 
 export function getUnlockedAchievements(): string[] {
 	try {
-		const data = localStorage.getItem(STORAGE_KEY);
+		const data = localStorage.getItem(getAchievementStorageKey());
 		return data ? JSON.parse(data) : [];
 	} catch {
 		return [];
@@ -18,56 +51,53 @@ export function isAchievementUnlocked(id: string): boolean {
 
 export const unlockAchievement = async (id: string) => {
 	try {
-		const existing = localStorage.getItem(STORAGE_KEY);
-		const unlocked: string[] = existing ? JSON.parse(existing) : [];
-
-		if (unlocked.includes(id)) return;
-
-		const updated = [...unlocked, id];
-
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-
-		showAchievementNotification(id);
-
-		window.dispatchEvent(new Event("achievements_updated"));
-
-		await fetch("/api/achievements/unlock", {
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+		if (!token) {
+			saveUnlockedAchievements([id]);
+			return;
+		}
+		const response = await fetch(`${API_BASE_URL}/achievements/unlock`, {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
 			body: JSON.stringify({ achievementId: id }),
 		});
+		if (!response.ok) {
+			saveUnlockedAchievements([id]);
+			return;
+		}
+		const data: { alreadyUnlocked?: boolean } = await response.json();
+		if (!data.alreadyUnlocked) {
+			saveUnlockedAchievements([id]);
+		}
 	} catch (err) {
 		console.error(err);
+		saveUnlockedAchievements([id]);
 	}
 };
 
 export const unlockTetrisAchievement = async () => {
 	try {
-		const stored = localStorage.getItem(TETRIS_COUNT_KEY);
-		let count = stored ? parseInt(stored, 10) : 0;
-
-		count++;
-
-		console.log("tetris: ", count);
-
-		localStorage.setItem(TETRIS_COUNT_KEY, count.toString());
-
-		if (count == 1) {
-			unlockAchievement("first_tetris");
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+		if (!token) {
+			return;
 		}
-
-		if (count == 5) {
-			unlockAchievement("five_tetrises");
+		const response = await fetch(`${API_BASE_URL}/achievements/tetris-progress`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		if (!response.ok) {
+			return;
 		}
-
-		if (count == 10) {
-			unlockAchievement("ten_tetrises");
+		const data: TetrisProgressResponse = await response.json();
+		if (data.newlyUnlocked.length > 0) {
+			saveUnlockedAchievements(data.newlyUnlocked);
 		}
-
-		if (count == 50) {
-			unlockAchievement("fifty_tetrises");
-		}
-
 	} catch (err) {
 		console.error("Tetris achievement error:", err);
 	}

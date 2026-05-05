@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import { useTranslation } from "react-i18next";
 import TetrisGame from "../components/TetrisGame";
 
-const AUTH_TOKEN_KEY = "ft_auth_token";
+type LandingProps = {
+	isAuthenticated: boolean;
+};
 
 const introUpKeyframes = `
 	@keyframes intro-up {
@@ -30,15 +31,12 @@ const dashboardTitle =
 const actionButton =
 	"w-full h-[50px] border-0 rounded-lg font-['Orbitron',sans-serif] text-[0.9rem] uppercase cursor-pointer tracking-[0.04rem] transition-all duration-200 max-[760px]:h-[45px] max-[760px]:text-[0.85rem]";
 
-export default function Landing() {
+export default function Landing({ isAuthenticated }: LandingProps) {
 	const { t } = useTranslation();
-
-	const isAuthenticated = Boolean(localStorage.getItem(AUTH_TOKEN_KEY));
 
 	return (
 		<div className="min-h-screen text-(--txt-main) pt-6 px-10 pb-27.5 max-[1100px]:pt-4 max-[1100px]:px-3.5 max-[1100px]:pb-22 max-[760px]:pb-20">
 			<style>{introUpKeyframes}</style>
-			<Navbar />
 
 			<main className="flex justify-center items-center pt-14 px-6 min-h-[calc(100vh-210px)] max-[1100px]:pt-16 max-[1100px]:px-2 max-[1100px]:gap-7.5 max-[760px]:pt-9 max-[760px]:min-h-[calc(100vh-170px)]">
 				{!isAuthenticated ? (

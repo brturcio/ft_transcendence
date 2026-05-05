@@ -14,7 +14,7 @@ import {
 	getHardDropY
 } from "./index";
 
-import { dropPiece, getDisplayGrid } from "./gameEngine";
+import { getDisplayGrid } from "./gameEngine";
 
 import { unlockTetrisAchievement } from "../../components/Achievements";
 

@@ -24,7 +24,10 @@
 		"loadError": "Impossible de charger le profil",
 		"saveError": "Impossible de mettre a jour le profil",
 		"deleteConfirm": "Etes-vous sur de vouloir supprimer votre compte ? Cette action est irreversible.",
-		"deleteError": "Impossible de supprimer le compte"
+		"deleteError": "Impossible de supprimer le compte",
+		"validationError": "Verifie les champs puis reessaie.",
+		"usernameTaken": "Ce nom d'utilisateur est deja utilise.",
+		"networkError": "Impossible de se connecter au serveur."
 	},
 	"stats": {
 		"games": "Parties",
