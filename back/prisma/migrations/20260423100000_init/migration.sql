@@ -204,16 +204,23 @@ CREATE TABLE "UserAchievement" (
 CREATE TABLE "UserStat" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "gamesPlayed" INTEGER NOT NULL DEFAULT 0,
-    "gamesWon" INTEGER NOT NULL DEFAULT 0,
-    "gamesLost" INTEGER NOT NULL DEFAULT 0,
-    "winRate" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "linesCompleted" INTEGER NOT NULL DEFAULT 0,
-    "linesSent" INTEGER NOT NULL DEFAULT 0,
-    "linesReceived" INTEGER NOT NULL DEFAULT 0,
-    "tetrises" INTEGER NOT NULL DEFAULT 0,
+
+    "soloGamesPlayed" INTEGER NOT NULL DEFAULT 0,
+    "soloLastScore" INTEGER NOT NULL DEFAULT 0,
+    "soloBestScore" INTEGER NOT NULL DEFAULT 0,
+    "soloLinesCompleted" INTEGER NOT NULL DEFAULT 0,
+    "soloTetrises" INTEGER NOT NULL DEFAULT 0,
+
+    "multiGamesPlayed" INTEGER NOT NULL DEFAULT 0,
+    "multiGamesWon" INTEGER NOT NULL DEFAULT 0,
+    "multiGamesLost" INTEGER NOT NULL DEFAULT 0,
+    "multiWinRate" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "multiLinesSent" INTEGER NOT NULL DEFAULT 0,
+    "multiLinesReceived" INTEGER NOT NULL DEFAULT 0,
+
     "tournamentsPlayed" INTEGER NOT NULL DEFAULT 0,
     "tournamentsWon" INTEGER NOT NULL DEFAULT 0,
+
     "xp" INTEGER NOT NULL DEFAULT 0,
     "level" INTEGER NOT NULL DEFAULT 1,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

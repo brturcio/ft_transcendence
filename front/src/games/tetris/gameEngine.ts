@@ -31,8 +31,9 @@ export function initializeGame(startPaused = false): GameState {
 		isGameOver: false,
 		isPaused: startPaused,
 		clearedLines: 0,
-		hasCompletedTetrisThisGame: false,
-		hasReportedTetrisThisGame: false,
+		linesCompletedThisGame: 0,
+		tetrisesThisGame: 0,
+		hasReportedSoloGame: false,
 	};
 }
 
@@ -111,6 +112,8 @@ export function dropPiece(state: GameState): GameState {
 		dropSpeed,
 		isGameOver,
 		clearedLines: clearedLines,
+		linesCompletedThisGame: state.linesCompletedThisGame + clearedLines,
+		tetrisesThisGame: state.tetrisesThisGame + (clearedLines === 4 ? 1 : 0),
 	};
 }
 
@@ -176,6 +179,8 @@ export function quickDrop(state: GameState): GameState {
 		dropSpeed,
 		isGameOver,
 		clearedLines: clearedLines,
+		linesCompletedThisGame: state.linesCompletedThisGame + clearedLines,
+		tetrisesThisGame: state.tetrisesThisGame + (clearedLines === 4 ? 1 : 0),
 	};
 }
 

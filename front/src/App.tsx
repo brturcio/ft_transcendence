@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
-import Profile from "./pages/Profile";
+import Profile from "./pages/Profile/Profile";
 import Register from "./pages/Register";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";

@@ -16,7 +16,10 @@
 		"save": "[ ENREGISTRER LES CHANGEMENTS ]",
 		"saving": "[ ENREGISTREMENT... ]",
 		"delete": "[ SUPPRIMER ]",
-		"deleting": "[ SUPPRESSION ]"
+		"deleting": "[ SUPPRESSION ]",
+		"changeAvatar": "Changer la photo",
+		"removeAvatar": "Supprimer la photo",
+		"uploadingAvatar": "Envoi..."
 	},
 	"messages": {
 		"loading": "Chargement du profil...",
@@ -27,10 +30,23 @@
 		"deleteError": "Impossible de supprimer le compte",
 		"validationError": "Verifie les champs puis reessaie.",
 		"usernameTaken": "Ce nom d'utilisateur est deja utilise.",
-		"networkError": "Impossible de se connecter au serveur."
+		"networkError": "Impossible de se connecter au serveur.",
+		"avatarUpdated": "Photo de profil mise a jour avec succes.",
+		"avatarRemoved": "Photo de profil supprimee avec succes.",
+		"avatarUploadError": "Impossible de mettre a jour la photo de profil.",
+		"avatarDeleteError": "Impossible de supprimer la photo de profil.",
+		"avatarTooLarge": "La photo de profil doit faire 2 Mo ou moins.",
+		"invalidAvatarType": "La photo de profil doit etre une image PNG, JPG ou WEBP."
 	},
 	"stats": {
 		"games": "Parties",
+		"soloGames": "Parties solo",
+		"bestScore": "Meilleur score",
+		"lastScore": "Dernier score",
+		"linesCompleted": "Lignes completees",
+		"tetrises": "Tetrises",
+		"multiWins": "Victoires multijoueur",
+		"tournamentsPlayed": "Tournois joues",
 		"wins": "Victoires",
 		"winRate": "Taux de victoire"
 	},

@@ -1,48 +1,53 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import { AchievementsGrid } from "../components/AchievementCard.tsx";
-import { unlockAchievement } from "../components/Achievements.tsx";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { AchievementsGrid } from "../../components/AchievementCard.tsx";
+import { unlockAchievement } from "../../components/Achievements.tsx";
+import { ProfileForm } from "./ProfileForm.tsx";
+import { ProfileHeader } from "./ProfileHeader.tsx";
+import { ProfileStats } from "./ProfileStats.tsx";
+import type { ProfileData } from "./Profile.types.ts";
 
 const card = "bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.18)] rounded-[14px] p-5 shadow-none";
-const label =
-	"font-['Rajdhani',sans-serif] text-[0.95rem] text-[var(--txt-soft)] font-semibold uppercase tracking-[0.05rem]";
-const field =
-	"bg-[rgba(14,22,48,0.78)] border border-[rgba(110,210,255,0.24)] rounded-xl py-[14px] px-4 text-[var(--txt-main)] font-['Rajdhani',sans-serif] text-base resize-y focus:outline-none focus:border-[var(--glow-cyan)] focus:shadow-[0_0_18px_rgba(0,229,255,0.18)]";
-const actionButton =
-	"border-0 rounded-xl py-4 px-6 text-[#021318] font-['Orbitron',sans-serif] text-[0.95rem] font-bold uppercase tracking-[0.04rem] cursor-pointer transition-all duration-300 flex-1 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const PROFILE_ENDPOINT = `${API_BASE_URL}/users/me`;
+const AVATAR_ENDPOINT = `${API_BASE_URL}/users/me/avatar`;
 const ACHIEVEMENTS_ENDPOINT = `${API_BASE_URL}/achievements/me`;
-
-type ProfileStats = {
-	games: number;
-	wins: number;
-	winRate: string;
-};
-
-type ProfileData = {
-	username: string;
-	email: string;
-	bio: string;
-	rank: string;
-	stats: ProfileStats;
-	unlockedAchievements?: string[];
-};
 
 type BackendProfile = {
 	username?: string;
 	userName?: string;
 	login?: string;
 	email?: string;
+	avatarUrl?: string | null;
 	bio?: string;
 	rank?: number | string;
 	stats?: {
-		games?: number;
-		wins?: number;
-		winRate?: number | string;
+		solo?: {
+			gamesPlayed?: number;
+			lastScore?: number;
+			bestScore?: number;
+			linesCompleted?: number;
+			tetrises?: number;
+		};
+		multi?: {
+			gamesPlayed?: number;
+			wins?: number;
+			losses?: number;
+			winRate?: number | string;
+			linesSent?: number;
+			linesReceived?: number;
+		};
+		tournaments?: {
+			played?: number;
+			won?: number;
+		};
+		gamification?: {
+			xp?: number;
+			level?: number;
+		};
 	};
 	unlockedAchievements?: string[];
 };
@@ -51,15 +56,40 @@ type BackendAchievements = {
 	achievements?: string[];
 };
 
+type AvatarUploadResponse = {
+	avatarUrl?: string | null;
+};
+
 const DEFAULT_PROFILE: ProfileData = {
 	username: "",
 	email: "",
+	avatarUrl: null,
 	bio: "",
 	rank: "-",
 	stats: {
-		games: 0,
-		wins: 0,
-		winRate: "0%",
+		solo: {
+			gamesPlayed: 0,
+			lastScore: 0,
+			bestScore: 0,
+			linesCompleted: 0,
+			tetrises: 0,
+		},
+		multi: {
+			gamesPlayed: 0,
+			wins: 0,
+			losses: 0,
+			winRate: "0%",
+			linesSent: 0,
+			linesReceived: 0,
+		},
+		tournaments: {
+			played: 0,
+			won: 0,
+		},
+		gamification: {
+			xp: 0,
+			level: 1,
+		},
 	},
 	unlockedAchievements: [],
 };
@@ -77,33 +107,39 @@ function formatWinRate(value: number | string | undefined): string {
 }
 
 function mapBackendProfile(data: BackendProfile): ProfileData {
-	const username = data.username ?? data.userName ?? data.login ?? "";
-	const email = data.email ?? "";
-
 	return {
-		username,
-		email,
+		username: data.username ?? data.userName ?? data.login ?? "",
+		email: data.email ?? "",
+		avatarUrl: data.avatarUrl ?? null,
 		bio: data.bio ?? "",
 		rank: data.rank !== undefined ? String(data.rank) : "-",
 		stats: {
-			games: data.stats?.games ?? 0,
-			wins: data.stats?.wins ?? 0,
-			winRate: formatWinRate(data.stats?.winRate),
+			solo: {
+				gamesPlayed: data.stats?.solo?.gamesPlayed ?? 0,
+				lastScore: data.stats?.solo?.lastScore ?? 0,
+				bestScore: data.stats?.solo?.bestScore ?? 0,
+				linesCompleted: data.stats?.solo?.linesCompleted ?? 0,
+				tetrises: data.stats?.solo?.tetrises ?? 0,
+			},
+			multi: {
+				gamesPlayed: data.stats?.multi?.gamesPlayed ?? 0,
+				wins: data.stats?.multi?.wins ?? 0,
+				losses: data.stats?.multi?.losses ?? 0,
+				winRate: formatWinRate(data.stats?.multi?.winRate),
+				linesSent: data.stats?.multi?.linesSent ?? 0,
+				linesReceived: data.stats?.multi?.linesReceived ?? 0,
+			},
+			tournaments: {
+				played: data.stats?.tournaments?.played ?? 0,
+				won: data.stats?.tournaments?.won ?? 0,
+			},
+			gamification: {
+				xp: data.stats?.gamification?.xp ?? 0,
+				level: data.stats?.gamification?.level ?? 1,
+			},
 		},
 		unlockedAchievements: data.unlockedAchievements ?? [],
 	};
-}
-
-function getAvatarInitial(username: string, email: string): string {
-	if (username.trim()) {
-		return username[0].toUpperCase();
-	}
-
-	if (email.trim()) {
-		return email[0].toUpperCase();
-	}
-
-	return "?";
 }
 
 type ProfileProps = {
@@ -118,6 +154,7 @@ export default function Profile({ onLogout }: ProfileProps) {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [saveMessage, setSaveMessage] = useState("");
 
@@ -338,6 +375,119 @@ export default function Profile({ onLogout }: ProfileProps) {
 		}
 	};
 
+	const handleAvatarChange = async (file: File) => {
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+		if (!token) {
+			handleInvalidSession();
+			return;
+		}
+
+		setIsAvatarUploading(true);
+		setSaveMessage("");
+		setErrorMessage("");
+
+		try {
+			const formData = new FormData();
+			formData.append("avatar", file);
+
+			const response = await fetch(AVATAR_ENDPOINT, {
+				method: "PATCH",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+				body: formData,
+			});
+
+			if (!response.ok) {
+				const backendError = await getBackendError(response);
+				if (
+					backendError === "MISSING_TOKEN" ||
+					backendError === "INVALID_TOKEN" ||
+					backendError === "USER_NOT_FOUND"
+				) {
+					handleInvalidSession();
+					return;
+				}
+				if (backendError === "AVATAR_TOO_LARGE") {
+					setErrorMessage(t("profile.messages.avatarTooLarge"));
+					return;
+				}
+				if (backendError === "INVALID_AVATAR_TYPE") {
+					setErrorMessage(t("profile.messages.invalidAvatarType"));
+					return;
+				}
+				setErrorMessage(t("profile.messages.avatarUploadError"));
+				return;
+			}
+
+			const data: AvatarUploadResponse = await response.json();
+			if (data.avatarUrl) {
+				setProfile((current) => ({
+					...current,
+					avatarUrl: data.avatarUrl ?? null,
+				}));
+				setSaveMessage(t("profile.messages.avatarUpdated"));
+			}
+		} catch (error) {
+			if (error instanceof TypeError) {
+				setErrorMessage(t("profile.messages.networkError"));
+				return;
+			}
+			setErrorMessage(t("profile.messages.avatarUploadError"));
+		} finally {
+			setIsAvatarUploading(false);
+		}
+	};
+
+	const handleAvatarDelete = async () => {
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+		if (!token) {
+			handleInvalidSession();
+			return;
+		}
+
+		setIsAvatarUploading(true);
+		setSaveMessage("");
+		setErrorMessage("");
+
+		try {
+			const response = await fetch(AVATAR_ENDPOINT, {
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!response.ok) {
+				const backendError = await getBackendError(response);
+				if (
+					backendError === "MISSING_TOKEN" ||
+					backendError === "INVALID_TOKEN" ||
+					backendError === "USER_NOT_FOUND"
+				) {
+					handleInvalidSession();
+					return;
+				}
+				setErrorMessage(t("profile.messages.avatarDeleteError"));
+				return;
+			}
+
+			setProfile((current) => ({
+				...current,
+				avatarUrl: null,
+			}));
+			setSaveMessage(t("profile.messages.avatarRemoved"));
+		} catch (error) {
+			if (error instanceof TypeError) {
+				setErrorMessage(t("profile.messages.networkError"));
+				return;
+			}
+			setErrorMessage(t("profile.messages.avatarDeleteError"));
+		} finally {
+			setIsAvatarUploading(false);
+		}
+	};
+
 	return (
 		<div className="profile-page ">
 			<main className="pt-14 px-6 pb-0 flex flex-col max-w-215 mx-auto gap-5 max-[980px]:pt-8 max-[980px]:px-2">
@@ -347,108 +497,27 @@ export default function Profile({ onLogout }: ProfileProps) {
 					</h1>
 				</section>
 
-				<section className={`${card} flex items-center gap-4.5 max-w-full max-[720px]:items-start`}>
-					<div className="w-18 h-18 rounded-full grid place-items-center bg-[rgba(255,255,255,0.12)] text-(--txt-main) font-['Orbitron',sans-serif] text-[1.7rem] font-bold">
-						{getAvatarInitial(profile.username, profile.email)}
-					</div>
-					<div className="grid gap-1">
-						<h2 className="font-['Orbitron',sans-serif] text-[1.35rem] text-(--txt-main) m-0">
-							{profile.username || t("profile.fallback.username")}
-						</h2>
-						<p className="text-(--txt-soft) text-[0.98rem]">
-							{profile.email || t("profile.fallback.email")}
-						</p>
-						<span className="text-(--txt-soft) text-[0.98rem]">
-							{t("profile.summary.rankPrefix")}
-							{profile.rank}
-						</span>
-					</div>
-				</section>
+				<ProfileHeader
+					profile={profile}
+					isAvatarUploading={isAvatarUploading}
+					onAvatarChange={handleAvatarChange}
+					onAvatarDelete={handleAvatarDelete}
+				/>
 
-				<form className={`${card} grid gap-4`} onSubmit={handleSave}>
-					<div className="flex flex-col gap-2">
-						<label className={label} htmlFor="profile-username">
-							{t("profile.fields.username")}
-						</label>
-						<input
-							className={field}
-							id="profile-username"
-							type="text"
-							placeholder={t("profile.fields.username")}
-							value={profile.username}
-							onChange={(event) =>
-								setProfile((current) => ({
-									...current,
-									username: event.target.value,
-								}))
-							}
-						/>
-					</div>
-
-					<div className="flex flex-col gap-2">
-						<label className={label} htmlFor="profile-bio">
-							{t("profile.fields.bio")}
-						</label>
-						<textarea
-							className={field}
-							id="profile-bio"
-							rows={4}
-							placeholder={t("profile.fields.bioPlaceholder")}
-							value={profile.bio}
-							onChange={(event) =>
-								setProfile((current) => ({
-									...current,
-									bio: event.target.value,
-								}))
-							}
-						/>
-					</div>
-
-					<div className="flex justify-center p-2.5">
-						<button
-							type="submit"
-							className={`${actionButton} mr-2.5 bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] shadow-[0_0_5px_rgba(0,229,255,0.4)] hover:-translate-y-0.5 hover:shadow-[0_0_10px_rgba(0,229,255,0.6)]`}
-							disabled={isSaving || isDeleting}
-						>
-							{isSaving ? t("profile.actions.saving") : t("profile.actions.save")}
-						</button>
-
-						<button
-							type="button"
-							className={`${actionButton} bg-[linear-gradient(95deg,#ff4d4f,#ff1744)] shadow-[0_0_15px_rgba(255,62,136,0.4)] hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(255,62,136,0.4)]`}
-							onClick={handleDeleteAccount}
-							disabled={isSaving || isDeleting}
-						>
-							{isDeleting ? t("profile.actions.deleting") : t("profile.actions.delete")}
-						</button>
-					</div>
-
-					{saveMessage && <p>{saveMessage}</p>}
-					{errorMessage && <p>{errorMessage}</p>}
-				</form>
+				<ProfileForm
+					profile={profile}
+					isSaving={isSaving}
+					isDeleting={isDeleting}
+					saveMessage={saveMessage}
+					errorMessage={errorMessage}
+					onSubmit={handleSave}
+					onDelete={handleDeleteAccount}
+					onChange={setProfile}
+				/>
 
 				{isLoading && <p>{t("profile.messages.loading")}</p>}
 
-				<section className="grid grid-cols-3 gap-3 max-[720px]:grid-cols-1">
-					<div className="bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.14)] rounded-[14px] p-4 text-center grid gap-1.5">
-						<strong className="font-['Orbitron',sans-serif] text-2xl text-(--txt-main)">
-							{profile.stats.games}
-						</strong>
-						<span className="text-(--txt-soft) text-[0.95rem]">{t("profile.stats.games")}</span>
-					</div>
-					<div className="bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.14)] rounded-[14px] p-4 text-center grid gap-1.5">
-						<strong className="font-['Orbitron',sans-serif] text-2xl text-(--txt-main)">
-							{profile.stats.wins}
-						</strong>
-						<span className="text-(--txt-soft) text-[0.95rem]">{t("profile.stats.wins")}</span>
-					</div>
-					<div className="bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.14)] rounded-[14px] p-4 text-center grid gap-1.5">
-						<strong className="font-['Orbitron',sans-serif] text-2xl text-(--txt-main)">
-							{profile.stats.winRate}
-						</strong>
-						<span className="text-(--txt-soft) text-[0.95rem]">{t("profile.stats.winRate")}</span>
-					</div>
-				</section>
+				<ProfileStats stats={profile.stats} />
 
 				<section className={card}>
 					<h2 className="font-['Orbitron',sans-serif] text-(--txt-main) mb-4">

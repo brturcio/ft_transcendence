@@ -16,7 +16,10 @@
 		"save": "[ SAVE CHANGES ]",
 		"saving": "[ SAVING... ]",
 		"delete": "[ DELETE ]",
-		"deleting": "[ DELETING ]"
+		"deleting": "[ DELETING ]",
+		"changeAvatar": "Change photo",
+		"removeAvatar": "Remove photo",
+		"uploadingAvatar": "Uploading..."
 	},
 	"messages": {
 		"loading": "Loading profile...",
@@ -28,10 +31,23 @@
 		"unexpectedLoadError": "Unexpected error while loading profile",
 		"validationError": "Please check the fields and try again.",
 		"usernameTaken": "That username is already in use.",
-		"networkError": "Could not connect to the server."
+		"networkError": "Could not connect to the server.",
+		"avatarUpdated": "Profile photo updated successfully.",
+		"avatarRemoved": "Profile photo removed successfully.",
+		"avatarUploadError": "Could not update profile photo.",
+		"avatarDeleteError": "Could not remove profile photo.",
+		"avatarTooLarge": "Profile photo must be 2MB or less.",
+		"invalidAvatarType": "Profile photo must be a PNG, JPG, or WEBP image."
 	},
 	"stats": {
 		"games": "Games",
+		"soloGames": "Solo games",
+		"bestScore": "Best score",
+		"lastScore": "Last score",
+		"linesCompleted": "Lines completed",
+		"tetrises": "Tetrises",
+		"multiWins": "Multiplayer wins",
+		"tournamentsPlayed": "Tournaments played",
 		"wins": "Wins",
 		"winRate": "Win rate"
 	},

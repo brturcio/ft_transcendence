@@ -276,7 +276,7 @@ model UserAchievement {
   userId        String
   achievementId String
   progress      Int         @default(0)
-  unlockedAt    DateTime    @default(now())
+  unlockedAt    DateTime?
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
 
@@ -285,21 +285,24 @@ model UserAchievement {
 }
 
 model UserStat {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-  gamesPlayed       Int      @default(0)
-  gamesWon          Int      @default(0)
-  gamesLost         Int      @default(0)
-  winRate           Float    @default(0)
-  linesCompleted    Int      @default(0)
-  linesSent         Int      @default(0)
-  linesReceived     Int      @default(0)
-  tetrises          Int      @default(0)
-  tournamentsPlayed Int      @default(0)
-  tournamentsWon    Int      @default(0)
-  xp                Int      @default(0)
-  level             Int      @default(1)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  soloGamesPlayed      Int      @default(0)
+  soloLastScore        Int      @default(0)
+  soloBestScore        Int      @default(0)
+  soloLinesCompleted   Int      @default(0)
+  soloTetrises         Int      @default(0)
+  multiGamesPlayed     Int      @default(0)
+  multiGamesWon        Int      @default(0)
+  multiGamesLost       Int      @default(0)
+  multiWinRate         Float    @default(0)
+  multiLinesSent       Int      @default(0)
+  multiLinesReceived   Int      @default(0)
+  tournamentsPlayed    Int      @default(0)
+  tournamentsWon       Int      @default(0)
+  xp                   Int      @default(0)
+  level                Int      @default(1)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

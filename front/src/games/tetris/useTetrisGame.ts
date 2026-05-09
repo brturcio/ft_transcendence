@@ -16,7 +16,7 @@ import {
 
 import { getDisplayGrid } from "./gameEngine";
 
-import { unlockTetrisAchievement } from "../../components/Achievements";
+import { reportSoloGameResult } from "../../components/Achievements";
 
 type Action =
 	| { type: "TICK" }
@@ -28,7 +28,7 @@ type Action =
 	| { type: "SWAP" }
 	| { type: "PAUSE" }
 	| { type: "RESET" }
-	| { type: "REPORT_TETRIS_GAME" };
+	| { type: "REPORT_SOLO_GAME" };
 
 function reducer(state: GameState, action: Action): GameState {
 	switch (action.type) {
@@ -59,8 +59,8 @@ function reducer(state: GameState, action: Action): GameState {
 		case "RESET":
 			return initializeGame(true);
 
-		case "REPORT_TETRIS_GAME":
-			return { ...state, hasReportedTetrisThisGame: true };
+		case "REPORT_SOLO_GAME":
+			return { ...state, hasReportedSoloGame: true };
 
 		default:
 			return state;
@@ -93,8 +93,10 @@ function dropSync(state: GameState): GameState {
 		currentPiece: isGameOver ? null : nextPiece,
 		nextPiece: getRandomPieceType(),
 		score: state.score + clearedLines * 100,
+		lines: state.lines + clearedLines,
 		clearedLines,
-		hasCompletedTetrisThisGame: state.hasCompletedTetrisThisGame || clearedLines >= 2,
+		linesCompletedThisGame: state.linesCompletedThisGame + clearedLines,
+		tetrisesThisGame: state.tetrisesThisGame + (clearedLines === 4 ? 1 : 0),
 		isGameOver,
 	};
 }
@@ -141,8 +143,10 @@ function hardDropSync(state: GameState): GameState {
 		currentPiece: isGameOver ? null : nextPiece,
 		nextPiece: getRandomPieceType(),
 		score: state.score + clearedLines * 100,
+		lines: state.lines + clearedLines,
 		clearedLines,
-		hasCompletedTetrisThisGame: state.hasCompletedTetrisThisGame || clearedLines >= 2,
+		linesCompletedThisGame: state.linesCompletedThisGame + clearedLines,
+		tetrisesThisGame: state.tetrisesThisGame + (clearedLines === 4 ? 1 : 0),
 		isGameOver,
 	};
 }
@@ -220,15 +224,21 @@ export function useTetrisGame() {
 	}, []);
 
 	React.useEffect(() => {
-		if (
-			state.isGameOver &&
-			state.hasCompletedTetrisThisGame &&
-			!state.hasReportedTetrisThisGame
-		) {
-			unlockTetrisAchievement();
-			dispatch({ type: "REPORT_TETRIS_GAME" });
+		if (state.isGameOver && !state.hasReportedSoloGame) {
+			reportSoloGameResult({
+				score: state.score,
+				linesCompleted: state.linesCompletedThisGame,
+				tetrises: state.tetrisesThisGame,
+			});
+			dispatch({ type: "REPORT_SOLO_GAME" });
 		}
-	}, [state.isGameOver, state.hasCompletedTetrisThisGame, state.hasReportedTetrisThisGame]);
+	}, [
+		state.isGameOver,
+		state.hasReportedSoloGame,
+		state.score,
+		state.linesCompletedThisGame,
+		state.tetrisesThisGame,
+	]);
 
 	return {
 		gameState: state,

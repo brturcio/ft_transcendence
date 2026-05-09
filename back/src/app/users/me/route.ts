@@ -23,28 +23,59 @@ const updateProfileSchema = z
 	});
 
 function toProfileResponse(input: {
+	id: string;
 	username: string;
 	email: string;
+	avatarUrl: string | null;
 	bio: string | null;
 	stats: {
-		gamesPlayed: number;
-		gamesWon: number;
-		winRate: number;
+		soloGamesPlayed: number;
+		soloLastScore: number;
+		soloBestScore: number;
+		soloLinesCompleted: number;
+		soloTetrises: number;
+		multiGamesPlayed: number;
+		multiGamesWon: number;
+		multiGamesLost: number;
+		multiWinRate: number;
+		multiLinesSent: number;
+		multiLinesReceived: number;
+		tournamentsPlayed: number;
+		tournamentsWon: number;
+		xp: number;
+		level: number;
 	} | null;
 }) {
-	const games = input.stats?.gamesPlayed ?? 0;
-	const wins = input.stats?.gamesWon ?? 0;
-	const winRate = `${Math.round(input.stats?.winRate ?? 0)}%`;
-
 	return {
 		username: input.username,
 		email: input.email,
+		avatarUrl: input.avatarUrl,
 		bio: input.bio ?? "",
 		rank: "-",
 		stats: {
-			games,
-			wins,
-			winRate,
+			solo: {
+				gamesPlayed: input.stats?.soloGamesPlayed ?? 0,
+				lastScore: input.stats?.soloLastScore ?? 0,
+				bestScore: input.stats?.soloBestScore ?? 0,
+				linesCompleted: input.stats?.soloLinesCompleted ?? 0,
+				tetrises: input.stats?.soloTetrises ?? 0,
+			},
+			multi: {
+				gamesPlayed: input.stats?.multiGamesPlayed ?? 0,
+				wins: input.stats?.multiGamesWon ?? 0,
+				losses: input.stats?.multiGamesLost ?? 0,
+				winRate: `${Math.round(input.stats?.multiWinRate ?? 0)}%`,
+				linesSent: input.stats?.multiLinesSent ?? 0,
+				linesReceived: input.stats?.multiLinesReceived ?? 0,
+			},
+			tournaments: {
+				played: input.stats?.tournamentsPlayed ?? 0,
+				won: input.stats?.tournamentsWon ?? 0,
+			},
+			gamification: {
+				xp: input.stats?.xp ?? 0,
+				level: input.stats?.level ?? 1,
+			},
 		},
 	};
 }
@@ -58,11 +89,24 @@ async function getAuthenticatedUser(authorizationHeader: string | null) {
 			id: users.id,
 			email: users.email,
 			username: users.username,
+			avatarUrl: users.avatarUrl,
 			bio: users.bio,
 			isActive: users.isActive,
-			statsGamesPlayed: userStats.gamesPlayed,
-			statsGamesWon: userStats.gamesWon,
-			statsWinRate: userStats.winRate,
+			statsSoloGamesPlayed: userStats.soloGamesPlayed,
+			statsSoloLastScore: userStats.soloLastScore,
+			statsSoloBestScore: userStats.soloBestScore,
+			statsSoloLinesCompleted: userStats.soloLinesCompleted,
+			statsSoloTetrises: userStats.soloTetrises,
+			statsMultiGamesPlayed: userStats.multiGamesPlayed,
+			statsMultiGamesWon: userStats.multiGamesWon,
+			statsMultiGamesLost: userStats.multiGamesLost,
+			statsMultiWinRate: userStats.multiWinRate,
+			statsMultiLinesSent: userStats.multiLinesSent,
+			statsMultiLinesReceived: userStats.multiLinesReceived,
+			statsTournamentsPlayed: userStats.tournamentsPlayed,
+			statsTournamentsWon: userStats.tournamentsWon,
+			statsXp: userStats.xp,
+			statsLevel: userStats.level,
 		})
 		.from(users)
 		.leftJoin(userStats, eq(userStats.userId, users.id))
@@ -80,14 +124,41 @@ async function getAuthenticatedUser(authorizationHeader: string | null) {
 		id: record.id,
 		email: record.email,
 		username: record.username,
+		avatarUrl: record.avatarUrl,
 		bio: record.bio,
 		stats:
-			record.statsGamesPlayed === null || record.statsGamesWon === null || record.statsWinRate === null
+			record.statsSoloGamesPlayed === null ||
+			record.statsSoloLastScore === null ||
+			record.statsSoloBestScore === null ||
+			record.statsSoloLinesCompleted === null ||
+			record.statsSoloTetrises === null ||
+			record.statsMultiGamesPlayed === null ||
+			record.statsMultiGamesWon === null ||
+			record.statsMultiGamesLost === null ||
+			record.statsMultiWinRate === null ||
+			record.statsMultiLinesSent === null ||
+			record.statsMultiLinesReceived === null ||
+			record.statsTournamentsPlayed === null ||
+			record.statsTournamentsWon === null ||
+			record.statsXp === null ||
+			record.statsLevel === null
 				? null
 				: {
-						gamesPlayed: record.statsGamesPlayed,
-						gamesWon: record.statsGamesWon,
-						winRate: record.statsWinRate,
+						soloGamesPlayed: record.statsSoloGamesPlayed,
+						soloLastScore: record.statsSoloLastScore,
+						soloBestScore: record.statsSoloBestScore,
+						soloLinesCompleted: record.statsSoloLinesCompleted,
+						soloTetrises: record.statsSoloTetrises,
+						multiGamesPlayed: record.statsMultiGamesPlayed,
+						multiGamesWon: record.statsMultiGamesWon,
+						multiGamesLost: record.statsMultiGamesLost,
+						multiWinRate: record.statsMultiWinRate,
+						multiLinesSent: record.statsMultiLinesSent,
+						multiLinesReceived: record.statsMultiLinesReceived,
+						tournamentsPlayed: record.statsTournamentsPlayed,
+						tournamentsWon: record.statsTournamentsWon,
+						xp: record.statsXp,
+						level: record.statsLevel,
 					},
 	};
 }
@@ -131,30 +202,29 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-		return handleRoute(async () => {
-			const authUser = await getAuthenticatedUser(request.headers.get("authorization"));
-			const deletedUserId = randomUUID();
-			const now = new Date();
-			await db
-				.update(users)
-				.set({
-					email: `deleted_${deletedUserId}@deleted.local`,
-					username: `deleted_${deletedUserId.slice(0, 16)}`,
-					passwordHash: "",
-					bio: null,
-					avatarUrl: null,
-					isActive: false,
-					updatedAt: now,
-				})
-				.where(eq(users.id, authUser.id));
-			await db
-				.update(sessions)
-				.set({
-					revokedAt: now,
-					updatedAt: now,
-				})
-				.where(eq(sessions.userId, authUser.id));
-			return { success: true };
-		});
+	return handleRoute(async () => {
+		const authUser = await getAuthenticatedUser(request.headers.get("authorization"));
+		const deletedUserId = randomUUID();
+		const now = new Date();
+		await db
+			.update(users)
+			.set({
+				email: `deleted_${deletedUserId}@deleted.local`,
+				username: `deleted_${deletedUserId.slice(0, 16)}`,
+				passwordHash: "",
+				bio: null,
+				avatarUrl: null,
+				isActive: false,
+				updatedAt: now,
+			})
+			.where(eq(users.id, authUser.id));
+		await db
+			.update(sessions)
+			.set({
+				revokedAt: now,
+				updatedAt: now,
+			})
+			.where(eq(sessions.userId, authUser.id));
+		return { success: true };
+	});
 }
-

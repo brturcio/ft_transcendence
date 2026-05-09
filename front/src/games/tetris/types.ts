@@ -25,8 +25,9 @@ export interface GameState {
 	isGameOver: boolean;
 	isPaused: boolean;
 	clearedLines: number;
-	hasCompletedTetrisThisGame: boolean;
-	hasReportedTetrisThisGame: boolean;
+	linesCompletedThisGame: number;
+	tetrisesThisGame: number;
+	hasReportedSoloGame: boolean;
 }
 
 // Game constants

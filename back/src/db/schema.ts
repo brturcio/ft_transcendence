@@ -30,16 +30,27 @@ export const sessions = pgTable("Session", {
 export const userStats = pgTable("UserStat", {
 	id: text("id").primaryKey(),
 	userId: text("userId").notNull(),
-	gamesPlayed: integer("gamesPlayed").notNull().default(0),
-	gamesWon: integer("gamesWon").notNull().default(0),
-	gamesLost: integer("gamesLost").notNull().default(0),
-	winRate: doublePrecision("winRate").notNull().default(0),
-	linesCompleted: integer("linesCompleted").notNull().default(0),
-	linesSent: integer("linesSent").notNull().default(0),
-	linesReceived: integer("linesReceived").notNull().default(0),
-	tetrises: integer("tetrises").notNull().default(0),
+
+	// Solo stats
+	soloGamesPlayed: integer("soloGamesPlayed").notNull().default(0),
+	soloLastScore: integer("soloLastScore").notNull().default(0),
+	soloBestScore: integer("soloBestScore").notNull().default(0),
+	soloLinesCompleted: integer("soloLinesCompleted").notNull().default(0),
+	soloTetrises: integer("soloTetrises").notNull().default(0),
+
+	// Multiplayer stats
+	multiGamesPlayed: integer("multiGamesPlayed").notNull().default(0),
+	multiGamesWon: integer("multiGamesWon").notNull().default(0),
+	multiGamesLost: integer("multiGamesLost").notNull().default(0),
+	multiWinRate: doublePrecision("multiWinRate").notNull().default(0),
+	multiLinesSent: integer("multiLinesSent").notNull().default(0),
+	multiLinesReceived: integer("multiLinesReceived").notNull().default(0),
+
+	// Tournament stats
 	tournamentsPlayed: integer("tournamentsPlayed").notNull().default(0),
 	tournamentsWon: integer("tournamentsWon").notNull().default(0),
+
+	// Gamification
 	xp: integer("xp").notNull().default(0),
 	level: integer("level").notNull().default(1),
 	createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
