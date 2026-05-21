@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import TetrisGame from "../components/TetrisGame";
+import Leaderboard from "../components/Leaderboard";
 
 type LandingProps = {
 	isAuthenticated: boolean;
@@ -75,14 +76,10 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 					<div className="grid grid-cols-[280px_1fr_200px] gap-6 w-full max-w-350 animate-[intro-up_500ms_ease] max-[760px]:grid-cols-1 max-[760px]:gap-4">
 						<aside className={dashboardPanel}>
 							<h2 className={dashboardTitle}>{t("landing.dashboard.leaderboard.title")}</h2>
-							<div className="flex flex-col gap-2.5 flex-1 overflow-y-auto max-h-100">
-								<div className="text-(--txt-soft) text-center p-5 italic">
-									{t("landing.dashboard.leaderboard.loading")}
-								</div>
-							</div>
-						</aside>
+						<Leaderboard />
+					</aside>
 
-						<section className="flex flex-col p-5 bg-[rgba(0,0,0,0.3)] border border-(--line-soft) rounded-lg max-[760px]:p-4">
+					<section className="flex flex-col p-5 bg-[rgba(0,0,0,0.3)] border border-(--line-soft) rounded-lg max-[760px]:p-4">
 							<TetrisGame />
 						</section>
 

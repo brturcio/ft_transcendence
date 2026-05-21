@@ -16,7 +16,8 @@
   "dashboard": {
     "leaderboard": {
       "title": "Clasificación Global",
-      "loading": "Cargando..."
+      "loading": "Cargando...",
+      "empty": "Sin jugadores aún"
     },
     "game": {
       "score": "PUNTOS",
@@ -26,5 +27,9 @@
       "join": "[ UNIRSE ]",
       "host": "[ CREAR ]"
     }
+  },
+  "leaderboard": {
+    "player": "Jugador",
+    "score": "Puntuación"
   }
 }

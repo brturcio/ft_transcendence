@@ -16,7 +16,8 @@
   "dashboard": {
     "leaderboard": {
       "title": "Global Leaderboard",
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "empty": "No players yet"
     },
     "game": {
       "score": "SCORE",
@@ -26,5 +27,9 @@
       "join": "[ JOIN ]",
       "host": "[ HOST ]"
     }
+  },
+  "leaderboard": {
+    "player": "Player",
+    "score": "Score"
   }
 }
