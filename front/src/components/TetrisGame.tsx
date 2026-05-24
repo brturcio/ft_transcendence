@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTetrisGame, getPieceShape, getDisplayGrid } from "../games/tetris";
+import { useTetrisGame, getPieceShape } from "../games/tetris";
 import { useTranslation } from "react-i18next";
 
 const PIECE_COLORS: Record<string, string> = {
@@ -18,7 +18,7 @@ export default function TetrisGame() {
 	const game = useTetrisGame();
 	const { t } = useTranslation();
 	const [isStarted, setIsStarted] = useState(false);
-	const displayGrid = getDisplayGrid(game.gameState);
+	const displayGrid = game.displayGrid;
 
 	const handleStart = () => {
 		setIsStarted(true);
@@ -130,7 +130,7 @@ export default function TetrisGame() {
 						row.map((cell, colIdx) => (
 							<div
 								key={`${rowIdx}-${colIdx}`}
-								className="bg-[rgba(0,229,255,0.05)] border-[0.5px] border-[rgba(0,229,255,0.15)] rounded-xs transition-[background-color,box-shadow] duration-100 ease-in-out"
+								className="bg-[rgba(0,229,255,0.05)] border-[0.5px] border-[rgba(0,229,255,0.15)] rounded-xs"
 								style={{
 									backgroundColor:
 										cell === "preview"

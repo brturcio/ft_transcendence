@@ -14,7 +14,7 @@ import {
 	getHardDropY,
 } from "./index";
 
-import { getDisplayGrid } from "./gameEngine";
+import { getDisplayGrid, updateLevel, getDropSpeed } from "./gameEngine";
 
 import { reportSoloGameResult } from "../../components/Achievements";
 
@@ -84,6 +84,10 @@ function dropSync(state: GameState): GameState {
 	const newGrid = placePieceOnGrid(state.grid, state.currentPiece);
 	const { grid, clearedLines } = clearCompleteLines(newGrid);
 
+	const lines = state.lines + clearedLines;
+	const level = updateLevel(lines);
+	const dropSpeed = getDropSpeed(level);
+
 	const nextPiece = createNewPiece(state.nextPiece);
 	const isGameOver = !canPlacePiece(grid, nextPiece);
 
@@ -93,7 +97,9 @@ function dropSync(state: GameState): GameState {
 		currentPiece: isGameOver ? null : nextPiece,
 		nextPiece: getRandomPieceType(),
 		score: state.score + clearedLines * 100,
-		lines: state.lines + clearedLines,
+		lines,
+		level,
+		dropSpeed,
 		clearedLines,
 		linesCompletedThisGame: state.linesCompletedThisGame + clearedLines,
 		tetrisesThisGame: state.tetrisesThisGame + (clearedLines === 4 ? 1 : 0),
@@ -102,7 +108,7 @@ function dropSync(state: GameState): GameState {
 }
 
 function moveLeftSync(state: GameState): GameState {
-	if (!state.currentPiece) return state;
+	if (state.isPaused || state.isGameOver || !state.currentPiece) return state;
 	return {
 		...state,
 		currentPiece: movePieceLeft(state.grid, state.currentPiece),
@@ -110,7 +116,7 @@ function moveLeftSync(state: GameState): GameState {
 }
 
 function moveRightSync(state: GameState): GameState {
-	if (!state.currentPiece) return state;
+	if (state.isPaused || state.isGameOver || !state.currentPiece) return state;
 	return {
 		...state,
 		currentPiece: movePieceRight(state.grid, state.currentPiece),
@@ -118,7 +124,7 @@ function moveRightSync(state: GameState): GameState {
 }
 
 function rotateSync(state: GameState): GameState {
-	if (!state.currentPiece) return state;
+	if (state.isPaused || state.isGameOver || !state.currentPiece) return state;
 
 	const rotated = rotatePiece(state.currentPiece);
 
@@ -126,13 +132,17 @@ function rotateSync(state: GameState): GameState {
 }
 
 function hardDropSync(state: GameState): GameState {
-	if (!state.currentPiece) return state;
+	if (state.isPaused || state.isGameOver || !state.currentPiece) return state;
 
 	const y = getHardDropY(state.grid, state.currentPiece);
 	const dropped = { ...state.currentPiece, y };
 
 	const newGrid = placePieceOnGrid(state.grid, dropped);
 	const { grid, clearedLines } = clearCompleteLines(newGrid);
+
+	const lines = state.lines + clearedLines;
+	const level = updateLevel(lines);
+	const dropSpeed = getDropSpeed(level);
 
 	const nextPiece = createNewPiece(state.nextPiece);
 	const isGameOver = !canPlacePiece(grid, nextPiece);
@@ -143,7 +153,9 @@ function hardDropSync(state: GameState): GameState {
 		currentPiece: isGameOver ? null : nextPiece,
 		nextPiece: getRandomPieceType(),
 		score: state.score + clearedLines * 100,
-		lines: state.lines + clearedLines,
+		lines,
+		level,
+		dropSpeed,
 		clearedLines,
 		linesCompletedThisGame: state.linesCompletedThisGame + clearedLines,
 		tetrisesThisGame: state.tetrisesThisGame + (clearedLines === 4 ? 1 : 0),

@@ -7,6 +7,7 @@ export interface Piece {
 	rotation: number; // 0-3 for rotation states
 	x: number; // column position
 	y: number; // row position
+	hasSwapped?: boolean; // whether this piece has already been swapped
 }
 
 // Cell state in the grid

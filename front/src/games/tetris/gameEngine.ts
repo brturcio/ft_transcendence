@@ -192,7 +192,7 @@ export function togglePause(state: GameState): GameState {
 }
 
 export function switchStash(state: GameState): GameState {
-	if (state.isPaused || state.isGameOver || !state.currentPiece) {
+	if (state.isPaused || state.isGameOver || !state.currentPiece || state.currentPiece.hasSwapped) {
 		return state;
 	}
 
@@ -212,6 +212,7 @@ export function switchStash(state: GameState): GameState {
 	}
 
 	const swapped = createNewPiece(state.stashPiece);
+	swapped.hasSwapped = true;
 
 	if (!canPlacePiece(state.grid, swapped)) {
 		return {

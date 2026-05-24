@@ -62,7 +62,8 @@ export function createNewPiece(type: PieceType): Piece {
 		type,
 		rotation: 0,
 		x: Math.floor((10 - 3) / 2), // Center horizontally (column 3-4)
-		y: 0
+		y: 0,
+		hasSwapped: false
 	};
 }
 
