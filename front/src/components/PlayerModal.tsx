@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { AchievementCard } from "./AchievementCard";
+import { type Achievement, getAchievement } from "../constants/achievements";
 
 type LeaderboardEntry = {
 	id: string;
@@ -74,6 +76,10 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 
 	if (!player) return null;
 
+	const unlockedAchievementItems = (profile?.unlockedAchievements ?? [])
+		.map((achievementId) => getAchievement(achievementId))
+		.filter((achievement): achievement is Achievement => Boolean(achievement));
+
 	return (
 		<div
 			className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 overflow-y-auto"
@@ -98,7 +104,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 
 				{loading ? (
 					<div className="text-center text-[var(--txt-soft)] py-12">
-						{t("common.loading") || "Chargement..."}
+						{t("profile.messages.loading")}
 					</div>
 				) : profile ? (
 					<div className="space-y-6">
@@ -120,7 +126,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 							<div className="flex-1">
 								<h3 className="text-white font-bold text-2xl mb-1">{profile.username}</h3>
 								<p className="text-[var(--glow-cyan)] text-sm">
-									{t("profile.level") || "Level"} {profile.stats.gamification.level}
+									{t("profile.level")} {profile.stats.gamification.level}
 								</p>
 								{profile.bio && (
 									<p className="text-[var(--txt-soft)] text-sm italic mt-2">{profile.bio}</p>
@@ -131,23 +137,23 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 						{/* Solo Stats */}
 						<div className="border-t border-[rgba(110,210,255,0.18)] pt-4">
 							<h4 className="text-[var(--glow-cyan)] font-bold mb-3 text-sm uppercase">
-								{t("profile.stats.solo") || "Solo Stats"}
+								{t("profile.stats.soloTitle")}
 							</h4>
 							<div className="grid grid-cols-2 gap-3">
 								<div className="bg-[rgba(0,229,255,0.05)] p-3 rounded">
-									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.best_score") || "Best Score"}</p>
+									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.bestScore")}</p>
 									<p className="text-[var(--glow-pink)] font-bold text-lg">{profile.stats.solo.bestScore}</p>
 								</div>
 								<div className="bg-[rgba(0,229,255,0.05)] p-3 rounded">
-									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.games") || "Games Played"}</p>
+									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.games")}</p>
 									<p className="text-white font-bold">{profile.stats.solo.gamesPlayed}</p>
 								</div>
 								<div className="bg-[rgba(0,229,255,0.05)] p-3 rounded">
-									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.lines") || "Lines"}</p>
+									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.lines")}</p>
 									<p className="text-white font-bold">{profile.stats.solo.linesCompleted}</p>
 								</div>
 								<div className="bg-[rgba(0,229,255,0.05)] p-3 rounded">
-									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.tetrises") || "Tetrises"}</p>
+									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.tetrises")}</p>
 									<p className="text-white font-bold">{profile.stats.solo.tetrises}</p>
 								</div>
 							</div>
@@ -157,30 +163,25 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 						<div className="border-t border-[rgba(110,210,255,0.18)] pt-4">
 							<div className="flex gap-4">
 								<div className="flex-1 bg-[rgba(0,229,255,0.05)] p-4 rounded">
-									<p className="text-[var(--txt-soft)] text-xs mb-1">{t("profile.xp") || "XP"}</p>
+									<p className="text-[var(--txt-soft)] text-xs mb-1">{t("profile.xp")}</p>
 									<p className="text-[var(--glow-cyan)] font-bold text-xl">{profile.stats.gamification.xp}</p>
 								</div>
 								<div className="flex-1 bg-[rgba(255,62,136,0.05)] p-4 rounded">
-									<p className="text-[var(--txt-soft)] text-xs mb-1">{t("profile.level") || "Level"}</p>
+									<p className="text-[var(--txt-soft)] text-xs mb-1">{t("profile.level")}</p>
 									<p className="text-[var(--glow-pink)] font-bold text-xl">{profile.stats.gamification.level}</p>
 								</div>
 							</div>
 						</div>
 
 						{/* Achievements */}
-						{profile.unlockedAchievements.length > 0 && (
+						{unlockedAchievementItems.length > 0 && (
 							<div className="border-t border-[rgba(110,210,255,0.18)] pt-4">
 								<h4 className="text-[var(--glow-cyan)] font-bold mb-3 text-sm uppercase">
-									{t("profile.achievements") || "Achievements"} ({profile.unlockedAchievements.length})
+									{t("profile.achievements.title")} ({unlockedAchievementItems.length})
 								</h4>
-								<div className="flex flex-wrap gap-2">
-									{profile.unlockedAchievements.map((achievement) => (
-										<div
-											key={achievement}
-											className="bg-[rgba(255,62,136,0.2)] border border-[var(--glow-pink)] px-3 py-1 rounded text-xs text-[var(--glow-pink)] font-bold"
-										>
-											{achievement}
-										</div>
+								<div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-3">
+									{unlockedAchievementItems.map((achievement) => (
+										<AchievementCard key={achievement.id} achievement={achievement} unlocked />
 									))}
 								</div>
 							</div>
@@ -190,12 +191,12 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 							onClick={onClose}
 							className="w-full mt-6 h-[42px] bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] font-bold rounded-lg font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] hover:shadow-[0_0_24px_rgba(0,229,255,0.5)] transition-shadow"
 						>
-							{t("common.close") || "Fermer"}
+							{t("profile.actions.close")}
 						</button>
 					</div>
 				) : (
 					<div className="text-center text-[var(--txt-soft)] py-12">
-						{t("profile.not_found") || "Profil non trouvé"}
+						{t("profile.messages.notFound")}
 					</div>
 				)}
 			</div>

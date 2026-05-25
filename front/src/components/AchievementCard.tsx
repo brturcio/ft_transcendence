@@ -132,7 +132,7 @@ type AchievementCardProps = {
 };
 
 // Composant pour afficher un achievement
-const AchievementCard = ({ achievement, unlocked, onAchievementUnlocked }: AchievementCardProps) => {
+export const AchievementCard = ({ achievement, unlocked, onAchievementUnlocked }: AchievementCardProps) => {
 	const { t } = useTranslation();
 	const isLocked = !unlocked;
 	const displayImage = isLocked ? LOCKED_BADGE : achievement.image;

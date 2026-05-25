@@ -7,6 +7,8 @@
 	"summary": {
 		"rankPrefix": "Rank #"
 	},
+	"level": "Level",
+	"xp": "XP",
 	"fields": {
 		"username": "Username",
 		"bio": "Bio",
@@ -19,12 +21,14 @@
 		"deleting": "[ DELETING ]",
 		"changeAvatar": "Change photo",
 		"removeAvatar": "Remove photo",
-		"uploadingAvatar": "Uploading..."
+		"uploadingAvatar": "Uploading...",
+		"close": "Close"
 	},
 	"messages": {
 		"loading": "Loading profile...",
 		"updated": "Profile updated successfully.",
 		"loadError": "Could not load profile",
+		"notFound": "Profile not found.",
 		"saveError": "Could not update profile",
 		"deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
 		"deleteError": "Could not delete account",
@@ -41,10 +45,12 @@
 	},
 	"stats": {
 		"games": "Games",
+		"soloTitle": "Solo",
 		"soloGames": "Solo games",
 		"bestScore": "Best score",
 		"lastScore": "Last score",
 		"linesCompleted": "Lines completed",
+		"lines": "Lines",
 		"tetrises": "Tetrises",
 		"multiWins": "Multiplayer wins",
 		"tournamentsPlayed": "Tournaments played",

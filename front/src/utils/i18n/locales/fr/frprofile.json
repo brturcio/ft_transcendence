@@ -7,6 +7,8 @@
 	"summary": {
 		"rankPrefix": "Rang #"
 	},
+	"level": "Niveau",
+	"xp": "XP",
 	"fields": {
 		"username": "Nom d'utilisateur",
 		"bio": "Bio",
@@ -19,12 +21,14 @@
 		"deleting": "[ SUPPRESSION ]",
 		"changeAvatar": "Changer la photo",
 		"removeAvatar": "Supprimer la photo",
-		"uploadingAvatar": "Envoi..."
+		"uploadingAvatar": "Envoi...",
+		"close": "Fermer"
 	},
 	"messages": {
 		"loading": "Chargement du profil...",
 		"updated": "Profil mis a jour avec succes.",
 		"loadError": "Impossible de charger le profil",
+		"notFound": "Profil introuvable.",
 		"saveError": "Impossible de mettre a jour le profil",
 		"deleteConfirm": "Etes-vous sur de vouloir supprimer votre compte ? Cette action est irreversible.",
 		"deleteError": "Impossible de supprimer le compte",
@@ -40,10 +44,12 @@
 	},
 	"stats": {
 		"games": "Parties",
+		"soloTitle": "Solo",
 		"soloGames": "Parties solo",
 		"bestScore": "Meilleur score",
 		"lastScore": "Dernier score",
 		"linesCompleted": "Lignes completees",
+		"lines": "Lignes",
 		"tetrises": "Tetrises",
 		"multiWins": "Victoires multijoueur",
 		"tournamentsPlayed": "Tournois joues",
