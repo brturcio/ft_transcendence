@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import flagsEs from "../assets/Language/squareEspaña.png";
 import flagsFr from "../assets/Language/squareFrance.png";
@@ -25,6 +25,7 @@ type LanguageOption = {
 type NavbarProps = {
 	isAuthenticated: boolean;
 	onLogout: () => Promise<void>;
+	onSelectUser?: (user: LeaderboardEntry) => void;
 };
 
 const LANGUAGE_OPTIONS: LanguageOption[] = [
@@ -33,12 +34,20 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
 	{ code: "fr", label: "navbar.language.french", flag: flagsFr },
 ];
 
-export default function Navbar({ isAuthenticated, onLogout }: NavbarProps) {
+export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: NavbarProps) {
 	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedLanguage, setSelectedLanguage] = useState<LanguageOption>(LANGUAGE_OPTIONS[0]);
+
+	// Search state
+	const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+	const [searchQuery, setSearchQuery] = useState("");
+	const [searchResults, setSearchResults] = useState<LeaderboardEntry[]>([]);
+	const [searchLoading, setSearchLoading] = useState(false);
+	const [showResults, setShowResults] = useState(false);
+	const debounceRef = useRef<number | null>(null);
 
 	const getNavClass = ({ isActive }: { isActive: boolean }) => (isActive ? activeNavLink : navLink);
 
@@ -48,6 +57,50 @@ export default function Navbar({ isAuthenticated, onLogout }: NavbarProps) {
 	};
 
 	void location.pathname;
+
+	// fetch + filter leaderboard when query changes (debounced)
+	useEffect(() => {
+		if (!isAuthenticated) return;
+
+		if (debounceRef.current) window.clearTimeout(debounceRef.current);
+
+		if (searchQuery.trim().length === 0) {
+			setSearchResults([]);
+			setSearchLoading(false);
+			return;
+		}
+
+		debounceRef.current = window.setTimeout(async () => {
+			setSearchLoading(true);
+			try {
+				const resp = await fetch(`${API_BASE_URL}/users/leaderboard`);
+				if (!resp.ok) {
+					setSearchResults([]);
+					return;
+				}
+				const json = await resp.json();
+				const list: LeaderboardEntry[] = json.data || [];
+				const q = searchQuery.trim().toLowerCase();
+				const filtered = list
+					.map((u) => ({ u, score: u.username.toLowerCase().indexOf(q) }))
+					.filter((x) => x.score !== -1)
+					.sort((a, b) => a.score - b.score)
+					.map((x) => x.u)
+					.slice(0, 5);
+				setSearchResults(filtered);
+			} catch (err) {
+				console.error("Search users failed", err);
+				setSearchResults([]);
+			} finally {
+				setSearchLoading(false);
+			}
+		}, 300);
+
+		return () => {
+			if (debounceRef.current) window.clearTimeout(debounceRef.current);
+		};
+	}, [searchQuery, isAuthenticated]);
+
 
 	return (
 		<header className="h-18 flex items-center justify-between border border-(--line-soft) rounded-2xl bg-[rgba(8,14,32,0.7)] backdrop-blur-[6px] px-6 relative z-11 max-[1100px]:h-auto max-[1100px]:p-3.5 max-[1100px]:gap-3 max-[1100px]:flex-wrap">
@@ -75,7 +128,58 @@ export default function Navbar({ isAuthenticated, onLogout }: NavbarProps) {
 				)}
 			</nav>
 
-			<div></div>
+			{/* Search (authenticated only) */}
+			{isAuthenticated && (
+				<div className="relative">
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+							if (searchResults.length > 0) {
+								if (typeof onSelectUser === "function") onSelectUser(searchResults[0]);
+								setShowResults(false);
+							}
+						}}
+					>
+						<input
+							type="text"
+							value={searchQuery}
+							onChange={(e) => {
+								setSearchQuery(e.target.value);
+								setShowResults(true);
+							}}
+							placeholder={t("navbar.search.placeholder", "Search users...")}
+							className="bg-[rgba(0,0,0,0.3)] border border-[rgba(255,62,136,0.2)] rounded-lg py-2 px-3 text-white w-64 max-[760px]:w-40"
+						/>
+					</form>
+
+					{showResults && searchQuery.trim().length > 0 && (
+						<div className="absolute right-0 mt-2 w-64 max-w-full bg-[rgba(10,14,30,0.95)] border border-[rgba(255,62,136,0.65)] rounded-lg p-2 z-20">
+							{searchLoading ? (
+								<div className="text-[var(--txt-soft)] p-2">{t("navbar.search.loading", "Searching...")}</div>
+							) : searchResults.length === 0 ? (
+								<div className="text-[var(--txt-soft)] p-2">{t("navbar.search.noResults", "No users")}</div>
+							) : (
+								<div className="flex flex-col gap-1">
+									{searchResults.map((u) => (
+										<button
+											key={u.id}
+											type="button"
+											className="text-left px-2 py-1 rounded hover:bg-[rgba(0,229,255,0.04)]"
+											onClick={() => {
+												if (typeof onSelectUser === "function") onSelectUser(u);
+												setShowResults(false);
+											}}
+										>
+											<span className="font-semibold">{u.username}</span>
+											{u.avatarUrl && <img src={u.avatarUrl} alt={u.username} className="inline-block w-6 h-6 rounded-full ml-2 align-middle" />}
+										</button>
+									))}
+								</div>
+							)}
+						</div>
+					)}
+				</div>
+			)}
 
 			<div className="relative inline-block">
 				<button type="button" className={navButton} onClick={() => setIsOpen(!isOpen)}>
@@ -119,6 +223,8 @@ export default function Navbar({ isAuthenticated, onLogout }: NavbarProps) {
 					</Link>
 				)}
 			</div>
+
+            
 		</header>
 	);
 }

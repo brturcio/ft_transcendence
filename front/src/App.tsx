@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Navbar from "./components/Navbar";
+import PlayerModal from "./components/PlayerModal";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 const REFRESH_TOKEN_KEY = "ft_refresh_token";
@@ -37,9 +38,20 @@ function App() {
 			// Logout local already happened. Backend revocation failure should not keep the user logged in.
 		}
 	};
+
+	const [selectedPlayer, setSelectedPlayer] = useState<{
+		id: string;
+		username: string;
+		avatarUrl: string | null;
+		soloBestScore: number;
+	} | null>(null);
 	return (
 		<div className="app-shell app-screen">
-			<Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+			<Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} onSelectUser={(u) => setSelectedPlayer(u)} />
+
+			{selectedPlayer && (
+				<PlayerModal player={selectedPlayer} onClose={() => setSelectedPlayer(null)} />
+			)}
 
 			<Routes>
 				<Route path="/" element={<Landing isAuthenticated={isAuthenticated} />} />

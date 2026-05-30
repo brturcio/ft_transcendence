@@ -179,7 +179,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 								<h4 className="text-[var(--glow-cyan)] font-bold mb-3 text-sm uppercase">
 									{t("profile.achievements.title")} ({unlockedAchievementItems.length})
 								</h4>
-								<div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-3">
+								<div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-3 max-h-56 overflow-auto pr-2">
 									{unlockedAchievementItems.map((achievement) => (
 										<AchievementCard key={achievement.id} achievement={achievement} unlocked />
 									))}
