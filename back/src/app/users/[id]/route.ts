@@ -5,14 +5,15 @@ import { AppError } from "../../../shared/errors/app-error";
 import { handleRoute } from "../../../shared/http/route-handler";
 
 type RouteParams = {
-	params: {
+	params: Promise<{
 		id: string;
-	};
+	}>;
 };
 
 export async function GET(_request: Request, { params }: RouteParams) {
 	return handleRoute(async () => {
-		const userId = params.id?.trim();
+		const { id } = await params;
+		const userId = id?.trim();
 		if (!userId) {
 			throw new AppError("User id is required", 400, "USER_ID_REQUIRED");
 		}
