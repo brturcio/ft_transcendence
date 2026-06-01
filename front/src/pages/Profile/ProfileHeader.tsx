@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { ProfileData } from "./Profile.types";
 import defaultImgAvatar from "../../assets/placeholdeUser/person.png";
+import { resolveMediaUrl } from "../../config/network";
 
 const card = "bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.18)] rounded-[14px] p-5 shadow-none";
 const actionButton =
@@ -15,13 +16,14 @@ type ProfileHeaderProps = {
 
 export function ProfileHeader({ profile, isAvatarUploading, onAvatarChange, onAvatarDelete }: ProfileHeaderProps) {
 	const { t } = useTranslation();
+	const avatarSrc = resolveMediaUrl(profile.avatarUrl) ?? defaultImgAvatar;
 
 	return (
 		<section className={`${card} flex flex-col items-center gap-4.5 max-w-full max-[720px]:items-start`}>
 			<div className="grid gap-4 justify-items-center justify-center">
 				<img
 					className="w-50 h-50 rounded-full  object-cover bg-[rgba(255,255,255,0.12)]"
-					src={profile.avatarUrl ?? defaultImgAvatar}
+					src={avatarSrc}
 					alt={profile.username || t("profile.fallback.username")}
 				/>
 				<div className="flex items-center justify-center gap-4">

@@ -163,7 +163,8 @@ function hardDropSync(state: GameState): GameState {
 	};
 }
 
-export function useTetrisGame() {
+export function useTetrisGame(options: { reportSolo?: boolean } = {}) {
+	const { reportSolo = true } = options;
 	const [state, dispatch] = React.useReducer(reducer, undefined, () => initializeGame(true));
 
 	const displayGrid = useMemo(() => {
@@ -236,7 +237,7 @@ export function useTetrisGame() {
 	}, []);
 
 	React.useEffect(() => {
-		if (state.isGameOver && !state.hasReportedSoloGame) {
+		if (reportSolo && state.isGameOver && !state.hasReportedSoloGame) {
 			reportSoloGameResult({
 				score: state.score,
 				linesCompleted: state.linesCompletedThisGame,
@@ -245,6 +246,7 @@ export function useTetrisGame() {
 			dispatch({ type: "REPORT_SOLO_GAME" });
 		}
 	}, [
+		reportSolo,
 		state.isGameOver,
 		state.hasReportedSoloGame,
 		state.score,

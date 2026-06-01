@@ -22,6 +22,14 @@
 		},
 		"gameOver": {
 			"title": "GAME OVER"
+		},
+		"multiplayer": {
+			"alive": "EN VIE",
+			"out": "ÉLIMINÉ",
+			"waiting": "en attente",
+			"waitingForHost": "EN ATTENTE DU LANCEMENT PAR LE HOST",
+			"remoteStats": "{{score}} pts · N{{level}}",
+			"gameOverWithWinner": "GAME OVER · GAGNANT : {{winner}}"
 		}
 	}
 }

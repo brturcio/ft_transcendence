@@ -60,7 +60,7 @@ export async function PATCH(request: Request) {
 		await writeFile(filePath, Buffer.from(bytes));
 		await deleteAvatarFile(user.avatarUrl);
 
-		const avatarUrl = `${new URL(request.url).origin}/uploads/avatars/${fileName}`;
+		const avatarUrl = `/uploads/avatars/${fileName}`;
 		await db
 			.update(users)
 			.set({

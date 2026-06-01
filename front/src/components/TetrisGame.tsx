@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTetrisGame, getPieceShape } from "../games/tetris";
 import { useTranslation } from "react-i18next";
+import type { PlayerGameState, PublicRoomPlayer } from "../realtime/useRealtimeRoom";
 
 const PIECE_COLORS: Record<string, string> = {
 	I: "#00e5ff",
@@ -14,11 +15,73 @@ const PIECE_COLORS: Record<string, string> = {
 	null: "transparent",
 };
 
-export default function TetrisGame() {
-	const game = useTetrisGame();
+type TetrisGameProps = {
+	mode?: "solo" | "multiplayer";
+	multiplayerStarted?: boolean;
+	remotePlayers?: PublicRoomPlayer[];
+	winner?: string | null;
+	onStateChange?: (state: PlayerGameState) => void;
+	onGameOver?: (state: PlayerGameState) => void;
+};
+
+export default function TetrisGame({
+	mode = "solo",
+	multiplayerStarted = false,
+	remotePlayers = [],
+	winner = null,
+	onStateChange,
+	onGameOver,
+}: TetrisGameProps) {
+	const game = useTetrisGame({ reportSolo: mode === "solo" });
 	const { t } = useTranslation();
 	const [isStarted, setIsStarted] = useState(false);
+	const hasSentGameOver = useRef(false);
+	const previousMultiplayerStarted = useRef(false);
+	const onStateChangeRef = useRef(onStateChange);
+	const onGameOverRef = useRef(onGameOver);
 	const displayGrid = game.displayGrid;
+
+	useEffect(() => {
+		onStateChangeRef.current = onStateChange;
+		onGameOverRef.current = onGameOver;
+	}, [onStateChange, onGameOver]);
+
+	useEffect(() => {
+		if (mode !== "multiplayer") return;
+		if (multiplayerStarted && !previousMultiplayerStarted.current) {
+			game.resetGame();
+			game.togglePause();
+			setIsStarted(true);
+			hasSentGameOver.current = false;
+		}
+		previousMultiplayerStarted.current = multiplayerStarted;
+	}, [mode, multiplayerStarted]);
+
+	useEffect(() => {
+		if (mode !== "multiplayer" || !isStarted) return;
+
+		const state: PlayerGameState = {
+			displayGrid,
+			score: game.gameState.score,
+			lines: game.gameState.lines,
+			level: game.gameState.level,
+			isGameOver: game.gameState.isGameOver,
+		};
+
+		onStateChangeRef.current?.(state);
+		if (game.gameState.isGameOver && !hasSentGameOver.current) {
+			hasSentGameOver.current = true;
+			onGameOverRef.current?.(state);
+		}
+	}, [
+		mode,
+		isStarted,
+		displayGrid,
+		game.gameState.score,
+		game.gameState.lines,
+		game.gameState.level,
+		game.gameState.isGameOver,
+	]);
 
 	const handleStart = () => {
 		setIsStarted(true);
@@ -28,6 +91,39 @@ export default function TetrisGame() {
 	const handleRestart = () => {
 		game.resetGame();
 		setIsStarted(false);
+		hasSentGameOver.current = false;
+	};
+
+	const renderMiniBoard = (player: PublicRoomPlayer) => {
+		const state = player.state;
+		return (
+			<div key={player.id} className="bg-[rgba(0,0,0,0.35)] border border-[rgba(0,229,255,0.2)] rounded-md p-3">
+				<div className="flex items-center justify-between gap-2 mb-2">
+					<p className="text-white font-['Orbitron',sans-serif] text-xs truncate">{player.username}</p>
+					<span className={`text-[0.65rem] uppercase ${player.isAlive ? "text-[var(--glow-cyan)]" : "text-[var(--glow-pink)]"}`}>
+						{player.isAlive ? t("game.tetris.multiplayer.alive") : t("game.tetris.multiplayer.out")}
+					</span>
+				</div>
+				<div className="grid grid-cols-10 grid-rows-20 gap-px bg-[rgba(0,0,0,0.55)] p-1 rounded-sm aspect-10/20 w-full max-w-28 mx-auto">
+					{(state?.displayGrid ?? Array.from({ length: 20 }, () => Array(10).fill(null))).map((row, rowIdx) =>
+						row.map((cell, colIdx) => (
+							<div
+								key={`${player.id}-${rowIdx}-${colIdx}`}
+								className="rounded-[1px]"
+								style={{
+									backgroundColor: cell ? (PIECE_COLORS[cell] ?? "rgba(255,255,255,0.2)") : "rgba(0, 229, 255, 0.05)",
+								}}
+							/>
+						)),
+					)}
+				</div>
+				<p className="text-[var(--txt-soft)] text-xs mt-2 text-center">
+					{state
+						? t("game.tetris.multiplayer.remoteStats", { score: state.score, level: state.level })
+						: t("game.tetris.multiplayer.waiting")}
+				</p>
+			</div>
+		);
 	};
 
 	const renderNextPiece = () => {
@@ -149,12 +245,24 @@ export default function TetrisGame() {
 				{/* Play/Restart Button Overlay */}
 				{(!isStarted || game.gameState.isGameOver) && (
 					<div className="absolute inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.75)] rounded-sm backdrop-blur-[2px] z-10">
-						<button
-							className="bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] border-0 py-4 px-8 text-2xl font-bold font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] rounded-lg cursor-pointer shadow-[0_0_24px_rgba(0,229,255,0.4)] transition-all duration-200 hover:shadow-[0_0_32px_rgba(0,229,255,0.6)] hover:scale-[1.05] active:scale-[0.98] max-[760px]:py-3 max-[760px]:px-6 max-[760px]:text-[1.2rem]"
-							onClick={isStarted ? handleRestart : handleStart}
-						>
-							[ {isStarted ? t("game.tetris.actions.restart") : t("game.tetris.actions.play")} ]
-						</button>
+						{mode === "multiplayer" && !multiplayerStarted && !game.gameState.isGameOver ? (
+							<p className="text-[var(--glow-cyan)] font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] text-center px-4">
+								{t("game.tetris.multiplayer.waitingForHost")}
+							</p>
+						) : mode === "multiplayer" && game.gameState.isGameOver ? (
+							<p className="text-[var(--glow-pink)] font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] text-center px-4">
+								{winner
+									? t("game.tetris.multiplayer.gameOverWithWinner", { winner })
+									: t("game.tetris.gameOver.title")}
+							</p>
+						) : (
+							<button
+								className="bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] border-0 py-4 px-8 text-2xl font-bold font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] rounded-lg cursor-pointer shadow-[0_0_24px_rgba(0,229,255,0.4)] transition-all duration-200 hover:shadow-[0_0_32px_rgba(0,229,255,0.6)] hover:scale-[1.05] active:scale-[0.98] max-[760px]:py-3 max-[760px]:px-6 max-[760px]:text-[1.2rem]"
+								onClick={isStarted ? handleRestart : handleStart}
+							>
+								[ {isStarted ? t("game.tetris.actions.restart") : t("game.tetris.actions.play")} ]
+							</button>
+						)}
 					</div>
 				)}
 				{/* Break Button Overlay */}
@@ -241,6 +349,12 @@ export default function TetrisGame() {
 					</div>
 				)}
 			</div>
+
+			{mode === "multiplayer" && remotePlayers.length > 0 && (
+				<div className="grid grid-cols-2 gap-3 min-w-56 max-w-72 max-[760px]:w-full max-[760px]:max-w-full">
+					{remotePlayers.map(renderMiniBoard)}
+				</div>
+			)}
 		</div>
 	);
 }

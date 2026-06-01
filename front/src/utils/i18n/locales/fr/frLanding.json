@@ -31,5 +31,40 @@
   "leaderboard": {
     "player": "Joueur",
     "score": "Score"
+  },
+  "multiplayer": {
+    "room": "Salle",
+    "roomCodePlaceholder": "CODE DE SALLE",
+    "winner": "Gagnant : {{winner}}",
+    "noWinner": "Aucun gagnant",
+    "status": {
+      "waiting": "En attente",
+      "playing": "En partie",
+      "finished": "Terminée"
+    },
+    "playerStatus": {
+      "host": "Host",
+      "ready": "Prêt",
+      "out": "Éliminé"
+    },
+    "actions": {
+      "start": "Démarrer",
+      "leave": "Quitter"
+    },
+    "errors": {
+      "AUTH_REQUIRED": "Vous devez être connecté pour jouer en multijoueur.",
+      "CONNECTION_FAILED": "La connexion temps réel a échoué.",
+      "ROOM_NOT_FOUND": "Salle introuvable.",
+      "ROOM_NOT_ACCEPTING_PLAYERS": "La salle n'accepte plus de joueurs.",
+      "ROOM_FULL": "La salle est pleine.",
+      "ONLY_HOST_CAN_START": "Seul le host peut démarrer la partie.",
+      "ROOM_MIN_PLAYERS": "Au moins deux joueurs sont requis.",
+      "PLAYER_NOT_IN_ROOM": "Le joueur n'est pas dans cette salle.",
+      "NOT_IN_ROOM": "Rejoignez une salle avant de continuer.",
+      "UNKNOWN_MESSAGE": "Message temps réel non pris en charge.",
+      "INVALID_MESSAGE": "Message temps réel invalide.",
+      "AUTH_FAILED": "L'authentification temps réel a échoué.",
+      "REALTIME_ERROR": "Erreur du serveur temps réel."
+    }
   }
 }

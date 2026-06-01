@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import flagsEs from "../assets/Language/squareEspaña.png";
 import flagsFr from "../assets/Language/squareFrance.png";
 import flagsEn from "../assets/Language/squareUnitedKingdom.png";
+import { API_BASE_URL, resolveMediaUrl } from "../config/network";
 
 const navLink =
 	"text-[var(--txt-soft)] text-[0.95rem] uppercase tracking-[0.06rem] font-['Orbitron',sans-serif] relative transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:-bottom-2 after:w-full after:h-0.5 after:bg-[linear-gradient(90deg,var(--glow-cyan),var(--glow-pink))] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:text-[var(--txt-main)]";
@@ -28,6 +29,13 @@ type NavbarProps = {
 	onSelectUser?: (user: LeaderboardEntry) => void;
 };
 
+type LeaderboardEntry = {
+	id: string;
+	username: string;
+	avatarUrl: string | null;
+	soloBestScore: number;
+};
+
 const LANGUAGE_OPTIONS: LanguageOption[] = [
 	{ code: "en", label: "navbar.language.english", flag: flagsEn },
 	{ code: "es", label: "navbar.language.spanish", flag: flagsEs },
@@ -42,7 +50,6 @@ export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: Navb
 	const [selectedLanguage, setSelectedLanguage] = useState<LanguageOption>(LANGUAGE_OPTIONS[0]);
 
 	// Search state
-	const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchResults, setSearchResults] = useState<LeaderboardEntry[]>([]);
 	const [searchLoading, setSearchLoading] = useState(false);
@@ -171,7 +178,7 @@ export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: Navb
 											}}
 										>
 											<span className="font-semibold">{u.username}</span>
-											{u.avatarUrl && <img src={u.avatarUrl} alt={u.username} className="inline-block w-6 h-6 rounded-full ml-2 align-middle" />}
+											{u.avatarUrl && <img src={resolveMediaUrl(u.avatarUrl) ?? undefined} alt={u.username} className="inline-block w-6 h-6 rounded-full ml-2 align-middle" />}
 										</button>
 									))}
 								</div>

@@ -7,11 +7,11 @@ import { ProfileForm } from "./ProfileForm.tsx";
 import { ProfileHeader } from "./ProfileHeader.tsx";
 import { ProfileStats } from "./ProfileStats.tsx";
 import type { ProfileData } from "./Profile.types.ts";
+import { API_BASE_URL } from "../../config/network.ts";
 
 const card = "bg-[rgba(9,18,40,0.72)] border border-[rgba(110,210,255,0.18)] rounded-[14px] p-5 shadow-none";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const PROFILE_ENDPOINT = `${API_BASE_URL}/users/me`;
 const AVATAR_ENDPOINT = `${API_BASE_URL}/users/me/avatar`;
 const ACHIEVEMENTS_ENDPOINT = `${API_BASE_URL}/achievements/me`;

@@ -31,5 +31,40 @@
   "leaderboard": {
     "player": "Jugador",
     "score": "Puntuación"
+  },
+  "multiplayer": {
+    "room": "Sala",
+    "roomCodePlaceholder": "CÓDIGO DE SALA",
+    "winner": "Ganador: {{winner}}",
+    "noWinner": "Sin ganador",
+    "status": {
+      "waiting": "Esperando",
+      "playing": "En partida",
+      "finished": "Finalizada"
+    },
+    "playerStatus": {
+      "host": "Host",
+      "ready": "Listo",
+      "out": "Fuera"
+    },
+    "actions": {
+      "start": "Iniciar",
+      "leave": "Salir"
+    },
+    "errors": {
+      "AUTH_REQUIRED": "Debes iniciar sesión para jugar multijugador.",
+      "CONNECTION_FAILED": "No se pudo conectar al servidor en tiempo real.",
+      "ROOM_NOT_FOUND": "No se encontró la sala.",
+      "ROOM_NOT_ACCEPTING_PLAYERS": "La sala ya no acepta jugadores.",
+      "ROOM_FULL": "La sala está llena.",
+      "ONLY_HOST_CAN_START": "Solo el host puede iniciar la partida.",
+      "ROOM_MIN_PLAYERS": "Se necesitan al menos dos jugadores.",
+      "PLAYER_NOT_IN_ROOM": "El jugador no está en esta sala.",
+      "NOT_IN_ROOM": "Únete a una sala antes de continuar.",
+      "UNKNOWN_MESSAGE": "Mensaje en tiempo real no soportado.",
+      "INVALID_MESSAGE": "Mensaje en tiempo real inválido.",
+      "AUTH_FAILED": "No se pudo autenticar la conexión en tiempo real.",
+      "REALTIME_ERROR": "Error del servidor en tiempo real."
+    }
   }
 }

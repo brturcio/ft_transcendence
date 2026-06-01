@@ -1,11 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { API_BASE_URL } from "../config/network";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 const REFRESH_TOKEN_KEY = "ft_refresh_token";
 const USER_STORAGE_KEY = "ft_user";
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const LOGIN_ENDPOINT = `${API_BASE_URL}/auth/login`;
 
 type LoginProps = {

@@ -31,5 +31,40 @@
   "leaderboard": {
     "player": "Player",
     "score": "Score"
+  },
+  "multiplayer": {
+    "room": "Room",
+    "roomCodePlaceholder": "ROOM CODE",
+    "winner": "Winner: {{winner}}",
+    "noWinner": "No winner",
+    "status": {
+      "waiting": "Waiting",
+      "playing": "Playing",
+      "finished": "Finished"
+    },
+    "playerStatus": {
+      "host": "Host",
+      "ready": "Ready",
+      "out": "Out"
+    },
+    "actions": {
+      "start": "Start",
+      "leave": "Leave"
+    },
+    "errors": {
+      "AUTH_REQUIRED": "You must be logged in to play multiplayer.",
+      "CONNECTION_FAILED": "Realtime connection failed.",
+      "ROOM_NOT_FOUND": "Room not found.",
+      "ROOM_NOT_ACCEPTING_PLAYERS": "Room is not accepting players.",
+      "ROOM_FULL": "Room is full.",
+      "ONLY_HOST_CAN_START": "Only the host can start the game.",
+      "ROOM_MIN_PLAYERS": "At least two players are required.",
+      "PLAYER_NOT_IN_ROOM": "Player is not in this room.",
+      "NOT_IN_ROOM": "Join a room before continuing.",
+      "UNKNOWN_MESSAGE": "Unsupported realtime message.",
+      "INVALID_MESSAGE": "Invalid realtime message.",
+      "AUTH_FAILED": "Realtime authentication failed.",
+      "REALTIME_ERROR": "Realtime server error."
+    }
   }
 }

@@ -1,3 +1,5 @@
+*This project has been created as part of the 42 curriculum by ntome, grouger, brturcio.*
+
 # ft_transcendence
 
 ## Local dev stack (front + back + PostgreSQL persistent)

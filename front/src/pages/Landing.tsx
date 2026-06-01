@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import TetrisGame from "../components/TetrisGame";
 import Leaderboard from "../components/Leaderboard";
+import { useRealtimeRoom } from "../realtime/useRealtimeRoom";
 
 type LandingProps = {
 	isAuthenticated: boolean;
@@ -31,9 +33,36 @@ const dashboardTitle =
 	"text-[var(--glow-cyan)] text-[1.2rem] font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] mb-3";
 const actionButton =
 	"w-full h-[50px] border-0 rounded-lg font-['Orbitron',sans-serif] text-[0.9rem] uppercase cursor-pointer tracking-[0.04rem] transition-all duration-200 max-[760px]:h-[45px] max-[760px]:text-[0.85rem]";
+const USER_STORAGE_KEY = "ft_user";
+
+function getCurrentUserId() {
+	try {
+		const rawUser = localStorage.getItem(USER_STORAGE_KEY);
+		if (!rawUser) return null;
+		const user = JSON.parse(rawUser) as { id?: string };
+		return user.id ?? null;
+	} catch {
+		return null;
+	}
+}
 
 export default function Landing({ isAuthenticated }: LandingProps) {
 	const { t } = useTranslation();
+	const realtime = useRealtimeRoom();
+	const [joinCode, setJoinCode] = useState("");
+	const currentUserId = useMemo(() => getCurrentUserId(), [isAuthenticated]);
+	const currentPlayer = realtime.room?.players.find((player) => player.id === currentUserId) ?? null;
+	const remotePlayers = realtime.room?.players.filter((player) => player.id !== currentUserId) ?? [];
+	const isHost = Boolean(currentPlayer?.isHost);
+	const isInRoom = Boolean(realtime.room);
+	const roomStatus = realtime.room ? t(`landing.multiplayer.status.${realtime.room.status}`) : null;
+
+	const handleJoin = () => {
+		const roomId = joinCode.trim();
+		if (roomId) {
+			realtime.joinRoom(roomId);
+		}
+	};
 
 	return (
 		<div className="min-h-screen text-(--txt-main) pt-6 px-10 pb-27.5 max-[1100px]:pt-4 max-[1100px]:px-3.5 max-[1100px]:pb-22 max-[760px]:pb-20">
@@ -80,23 +109,91 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 					</aside>
 
 					<section className="flex flex-col p-5 bg-[rgba(0,0,0,0.3)] border border-(--line-soft) rounded-lg max-[760px]:p-4">
-							<TetrisGame />
+							<TetrisGame
+								mode={isInRoom ? "multiplayer" : "solo"}
+								multiplayerStarted={realtime.isGameStarted}
+								remotePlayers={remotePlayers}
+								winner={realtime.winner}
+								onStateChange={realtime.sendPlayerState}
+								onGameOver={realtime.sendGameOver}
+							/>
 						</section>
 
 						<aside
 							className={`${dashboardPanel} justify-start max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-3`}
 						>
-							<button
-								className={`${actionButton} bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] font-bold shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:shadow-[0_0_24px_rgba(0,229,255,0.5)]`}
-							>
-								{t("landing.dashboard.actions.join")}
-							</button>
+							{realtime.room ? (
+								<div className="col-span-full flex flex-col gap-3">
+									<div className="border border-[rgba(0,229,255,0.25)] rounded-lg p-3 bg-[rgba(0,0,0,0.25)]">
+										<p className="text-[var(--txt-soft)] text-xs uppercase tracking-[0.06rem]">{t("landing.multiplayer.room")}</p>
+										<p className="text-[var(--glow-cyan)] font-['Orbitron',sans-serif] text-2xl tracking-[0.12rem]">{realtime.room.id}</p>
+										<p className="text-[var(--txt-soft)] text-xs uppercase mt-1">{roomStatus}</p>
+									</div>
+									<div className="flex flex-col gap-2">
+										{realtime.room.players.map((player) => (
+											<div key={player.id} className="flex items-center justify-between gap-2 text-sm text-white">
+												<span className="truncate">{player.username}</span>
+												<span className="text-[var(--txt-soft)] text-xs uppercase">
+											{player.isHost
+												? t("landing.multiplayer.playerStatus.host")
+												: player.isAlive
+													? t("landing.multiplayer.playerStatus.ready")
+													: t("landing.multiplayer.playerStatus.out")}
+												</span>
+											</div>
+										))}
+									</div>
+									{isHost && realtime.room.status === "waiting" && (
+										<button
+											type="button"
+											className={`${actionButton} bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] font-bold shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:shadow-[0_0_24px_rgba(0,229,255,0.5)]`}
+											onClick={realtime.startGame}
+										>
+											{t("landing.multiplayer.actions.start")}
+										</button>
+									)}
+									<button
+										type="button"
+										className={`${actionButton} bg-transparent border border-(--glow-pink) text-(--glow-pink) shadow-[0_0_10px_rgba(255,62,136,0.2)] hover:shadow-[0_0_16px_rgba(255,62,136,0.4)]`}
+										onClick={realtime.leaveRoom}
+									>
+										{t("landing.multiplayer.actions.leave")}
+									</button>
+									{realtime.winner && (
+										<p className="text-[var(--glow-cyan)] text-sm font-['Orbitron',sans-serif]">
+											{t("landing.multiplayer.winner", { winner: realtime.winner })}
+										</p>
+									)}
+								</div>
+							) : (
+								<>
+									<div className="col-span-full flex flex-col gap-2">
+										<input
+											type="text"
+											value={joinCode}
+											onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
+											placeholder={t("landing.multiplayer.roomCodePlaceholder")}
+											className="h-[42px] rounded-lg bg-[rgba(0,0,0,0.3)] border border-[rgba(0,229,255,0.25)] px-3 text-white uppercase tracking-[0.08rem]"
+										/>
+										<button
+											type="button"
+											className={`${actionButton} bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] font-bold shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:shadow-[0_0_24px_rgba(0,229,255,0.5)]`}
+											onClick={handleJoin}
+										>
+											{t("landing.dashboard.actions.join")}
+										</button>
+									</div>
 
-							<button
-								className={`${actionButton} bg-transparent border border-(--glow-pink) text-(--glow-pink) shadow-[0_0_10px_rgba(255,62,136,0.2)] hover:shadow-[0_0_16px_rgba(255,62,136,0.4)]`}
-							>
-								{t("landing.dashboard.actions.host")}
-							</button>
+									<button
+										type="button"
+										className={`${actionButton} bg-transparent border border-(--glow-pink) text-(--glow-pink) shadow-[0_0_10px_rgba(255,62,136,0.2)] hover:shadow-[0_0_16px_rgba(255,62,136,0.4)]`}
+										onClick={realtime.createRoom}
+									>
+										{t("landing.dashboard.actions.host")}
+									</button>
+								</>
+							)}
+							{realtime.error && <p className="col-span-full text-[var(--glow-pink)] text-sm">{realtime.error}</p>}
 						</aside>
 					</div>
 				)}

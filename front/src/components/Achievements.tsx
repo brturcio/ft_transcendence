@@ -1,7 +1,7 @@
 import { showAchievementNotification } from "./AchievementCard";
+import { API_BASE_URL } from "../config/network";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 type SoloGameResult = {
 	score: number;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AchievementCard } from "./AchievementCard";
 import { type Achievement, getAchievement } from "../constants/achievements";
+import { API_BASE_URL, resolveMediaUrl } from "../config/network";
 
 type LeaderboardEntry = {
 	id: string;
@@ -51,7 +52,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 	const { t } = useTranslation();
 	const [profile, setProfile] = useState<PlayerProfile | null>(null);
 	const [loading, setLoading] = useState(false);
-	const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+	const avatarSrc = resolveMediaUrl(profile?.avatarUrl ?? null);
 
 	useEffect(() => {
 		if (!player) return;
@@ -110,9 +111,9 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 					<div className="space-y-6">
 						{/* Avatar et pseudo */}
 						<div className="flex items-center gap-6">
-							{profile.avatarUrl ? (
+							{avatarSrc ? (
 								<img
-									src={profile.avatarUrl}
+									src={avatarSrc}
 									alt={profile.username}
 									className="w-20 h-20 rounded-full object-cover flex-shrink-0"
 								/>

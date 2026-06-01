@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PlayerModal from "./PlayerModal";
+import { API_BASE_URL, resolveMediaUrl } from "../config/network";
 
 type LeaderboardEntry = {
 	id: string;
@@ -17,7 +18,6 @@ export default function Leaderboard() {
 	const [players, setPlayers] = useState<LeaderboardEntry[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedPlayer, setSelectedPlayer] = useState<LeaderboardEntry | null>(null);
-	const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 	useEffect(() => {
 		const fetchLeaderboard = async () => {
@@ -85,7 +85,7 @@ export default function Leaderboard() {
 							<div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden">
 								{player.avatarUrl ? (
 									<img
-										src={player.avatarUrl}
+										src={resolveMediaUrl(player.avatarUrl) ?? undefined}
 										alt={player.username}
 										className="w-full h-full object-cover"
 									/>
