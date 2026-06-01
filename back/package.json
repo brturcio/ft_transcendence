@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start -p 8000",
     "lint": "next lint",
-    "test": "node --test",
+    "test": "tsx --test tests/friends-api.test.ts",
     "db:migrate:base": "tsx scripts/migrate-base.ts",
     "db:seed": "tsx scripts/seed.ts"
   },
@@ -15,7 +15,7 @@
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.2",
     "jsonwebtoken": "^9.0.3",
-    "next": "15.2.4",
+    "next": "^15.5.18",
     "pg": "^8.20.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -27,7 +27,8 @@
     "@types/pg": "^8.20.0",
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.5",
-    "eslint": "9.26.0",
+    "dotenv": "^16.4.7",
+    "eslint": "^9.39.4",
     "eslint-config-next": "15.2.4",
     "tsx": "^4.21.0",
     "typescript": "5.8.3"
