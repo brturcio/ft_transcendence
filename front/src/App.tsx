@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, Link } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile/Profile";
 import Register from "./pages/Register";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import Credits from "./pages/Credits";
 import Navbar from "./components/Navbar";
 import PlayerModal from "./components/PlayerModal";
 import { API_BASE_URL } from "./config/network";
@@ -17,9 +18,11 @@ const LOGOUT_ENDPOINT = `${API_BASE_URL}/auth/logout`;
 
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(localStorage.getItem(AUTH_TOKEN_KEY)));
+	
 	const handleLogin = () => {
 		setIsAuthenticated(true);
 	};
+	
 	const handleLogout = async () => {
 		const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
 		localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -45,6 +48,7 @@ function App() {
 		avatarUrl: string | null;
 		soloBestScore: number;
 	} | null>(null);
+
 	return (
 		<div className="app-shell app-screen">
 			<Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} onSelectUser={(u) => setSelectedPlayer(u)} />
@@ -67,6 +71,7 @@ function App() {
 					path="/profile"
 					element={isAuthenticated ? <Profile onLogout={handleLogout} /> : <Navigate to="/login" replace />}
 				/>
+				<Route path="/credits" element={<Credits />} />
 				<Route path="/terms" element={<Terms />} />
 				<Route path="/privacy" element={<Privacy />} />
 				<Route path="*" element={<Navigate to="/" replace />} />
@@ -74,4 +79,5 @@ function App() {
 		</div>
 	);
 }
+
 export default App;

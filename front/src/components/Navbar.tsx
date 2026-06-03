@@ -124,6 +124,7 @@ export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: Navb
 				<NavLink to="/" className={getNavClass} end>
 					{t("navbar.menu.home")}
 				</NavLink>
+
 				{isAuthenticated ? (
 					<NavLink to="/profile" className={getNavClass}>
 						{t("navbar.menu.profile")}
@@ -133,6 +134,9 @@ export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: Navb
 						{t("navbar.menu.login")}
 					</NavLink>
 				)}
+				<NavLink to="/credits" className={getNavClass}>
+					Credits
+				</NavLink>
 			</nav>
 
 			{/* Search (authenticated only) */}
@@ -230,8 +234,7 @@ export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: Navb
 					</Link>
 				)}
 			</div>
-
-            
+			
 		</header>
 	);
 }
