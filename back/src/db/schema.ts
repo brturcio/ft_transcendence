@@ -1,5 +1,7 @@
 import { pgEnum, pgTable, text, timestamp, boolean, integer, doublePrecision } from "drizzle-orm/pg-core";
 
+
+export const userStatusEnum = pgEnum("UserStatus", ["ONLINE", "OFFLINE", "INGAME"]);
 export const friendshipStatusEnum = pgEnum("FriendshipStatus", ["PENDING", "ACCEPTED", "BLOCKED"]);
 export const matchResultEnum = pgEnum("MatchResult", ["WIN", "LOSS", "DRAW"]);
 
@@ -11,6 +13,7 @@ export const users = pgTable("User", {
 	avatarUrl: text("avatarUrl"),
 	bio: text("bio"),
 	isActive: boolean("isActive").notNull().default(true),
+	status: userStatusEnum("status").notNull().default("OFFLINE"),
 	createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
 	updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
 });

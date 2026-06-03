@@ -1,6 +1,7 @@
 import type { WebSocket } from "ws";
 
 export type RoomStatus = "waiting" | "playing" | "finished";
+export type UserStatus = "ONLINE" | "OFFLINE" | "INGAME";
 
 export type RealtimeUser = {
 	id: string;
@@ -76,7 +77,8 @@ export type ClientMessage =
 	  }
 	| {
 			type: "ping";
-	  };
+	  }
+	| { type: "set_status"; status: UserStatus };
 
 export type ServerMessage =
 	| {
@@ -120,7 +122,12 @@ export type ServerMessage =
 			type: "error";
 			code: string;
 			message: string;
-	  };
+	  }
+	| {
+            type: "friend_status_update";
+            userId: string;
+            status: UserStatus;
+      };
 
 export type RealtimeClient = {
 	socketId: string;

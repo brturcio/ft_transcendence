@@ -4,6 +4,7 @@ import { REALTIME_BASE_URL } from "../config/network";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 
+
 export type PlayerGameState = {
 	displayGrid: (string | null)[][];
 	score: number;

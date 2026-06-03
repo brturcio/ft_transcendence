@@ -28,6 +28,7 @@ CREATE TABLE "User" (
     "avatarUrl" TEXT,
     "bio" TEXT,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "status" TEXT DEFAULT 'OFFLINE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

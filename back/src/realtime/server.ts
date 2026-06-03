@@ -1,5 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { WebSocket, WebSocketServer } from "ws";
+import { eq } from "drizzle-orm";
+import { db } from "../config/db";
+import { users } from "../db/schema";
+
 import { authenticateRequest } from "./auth";
 import {
 	createRoom,
@@ -10,11 +14,34 @@ import {
 	startRoomGame,
 	updatePlayerState,
 } from "./rooms";
-import type { ClientMessage, RealtimeClient, ServerMessage } from "./types";
+
+import type { ClientMessage, RealtimeClient, ServerMessage, UserStatus } from "./types";
 
 const REALTIME_PORT = Number(process.env.REALTIME_PORT ?? 8001);
 
 const clients = new Map<string, RealtimeClient>();
+
+const activeUsers = new Map<string, Set<string>>();
+
+function broadcastGlobal(message: ServerMessage)
+{
+	for (const client of clients.values())
+		send(client.ws, message);
+}
+
+async function updateUserStatus(userId: string, status: UserStatus)
+{
+	try
+	{
+		await db.update(users).set({ status }).where(eq(users.id, userId));
+		broadcastGlobal({ type: "friend_status_update", userId, status });
+	}
+	catch (error)
+	{
+		console.error(` fail updte the user -> ${userId} to ${status}`, error);
+	}
+}
+
 
 function send(ws: WebSocket, message: ServerMessage) {
 	if (ws.readyState !== WebSocket.OPEN) {
@@ -160,6 +187,13 @@ function handleMessage(client: RealtimeClient, message: ClientMessage) {
 			return;
 		}
 
+		case "set_status":
+		{
+			if (message.status === "INGAME" || message.status === "ONLINE")
+				void updateUserStatus(client.user.id, message.status);
+			return ;
+		}
+
 		default:
 			sendError(client.ws, "UNKNOWN_MESSAGE", "Unsupported realtime message");
 	}
@@ -181,6 +215,16 @@ wss.on("connection", async (ws, request) => {
 		clients.set(socketId, client);
 		send(ws, { type: "pong" });
 
+		// garde le compte onglet
+		let userSockets = activeUsers.get(user.id);
+		if (!userSockets)
+		{
+			userSockets = new Set();
+			activeUsers.set(user.id, userSockets);
+			updateUserStatus(user.id, "ONLINE");
+		}
+		userSockets.add(socketId);
+
 		ws.on("message", (rawMessage) => {
 			const message = parseClientMessage(rawMessage);
 			if (!message) {
@@ -194,10 +238,20 @@ wss.on("connection", async (ws, request) => {
 				sendError(ws, getRealtimeErrorCode(error), error instanceof Error ? error.message : "Realtime error");
 			}
 		});
-
+		// close que si c est la derniere fenetre
 		ws.on("close", () => {
 			handleLeaveRoom(client);
 			clients.delete(socketId);
+			const userSockets = activeUsers.get(user.id);
+			if (userSockets)
+			{
+				userSockets.delete(socketId);
+				if (userSockets.size === 0)
+				{
+					activeUsers.delete(user.id);
+					updateUserStatus(user.id, "OFFLINE");
+				}
+			}
 		});
 	} catch (error) {
 		sendError(ws, "AUTH_FAILED", error instanceof Error ? error.message : "Authentication failed");

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { AchievementsGrid } from "../../components/AchievementCard.tsx";
 import { unlockAchievement } from "../../components/Achievements.tsx";
+import { FriendsManager } from "../../components/FriendsManager";
 import { ProfileForm } from "./ProfileForm.tsx";
 import { ProfileHeader } from "./ProfileHeader.tsx";
 import { ProfileStats } from "./ProfileStats.tsx";
@@ -518,7 +519,7 @@ export default function Profile({ onLogout }: ProfileProps) {
 				{isLoading && <p>{t("profile.messages.loading")}</p>}
 
 				<ProfileStats stats={profile.stats} />
-
+				<FriendsManager />
 				<section className={card}>
 					<h2 className="font-['Orbitron',sans-serif] text-(--txt-main) mb-4">
 						{t("profile.achievements.title")}

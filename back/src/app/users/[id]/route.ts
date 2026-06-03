@@ -25,6 +25,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
 				avatarUrl: users.avatarUrl,
 				bio: users.bio,
 				isActive: users.isActive,
+				status: users.status,
 				statsSoloGamesPlayed: userStats.soloGamesPlayed,
 				statsSoloLastScore: userStats.soloLastScore,
 				statsSoloBestScore: userStats.soloBestScore,
@@ -63,6 +64,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
 				username: record.username,
 				avatarUrl: record.avatarUrl,
 				bio: record.bio ?? "",
+				status: record.status,
 				stats: {
 					solo: {
 						gamesPlayed: record.statsSoloGamesPlayed ?? 0,

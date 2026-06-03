@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useTetrisGame, getPieceShape } from "../games/tetris";
 import { useTranslation } from "react-i18next";
+import { useGlobalPresence } from "../realtime/useGlobalPresence"; // <-- L'import du hook
 import type { PlayerGameState, PublicRoomPlayer } from "../realtime/useRealtimeRoom";
+import { API_BASE_URL, REALTIME_BASE_URL } from "../config/network"; 
+const AUTH_TOKEN_KEY = "ft_auth_token";
 
 const PIECE_COLORS: Record<string, string> = {
 	I: "#00e5ff",
@@ -40,6 +43,7 @@ export default function TetrisGame({
 	const onStateChangeRef = useRef(onStateChange);
 	const onGameOverRef = useRef(onGameOver);
 	const displayGrid = game.displayGrid;
+	const { updateMyStatus } = useGlobalPresence();
 
 	useEffect(() => {
 		onStateChangeRef.current = onStateChange;
@@ -82,6 +86,18 @@ export default function TetrisGame({
 		game.gameState.level,
 		game.gameState.isGameOver,
 	]);
+
+	useEffect(() => {
+		if (isStarted && !game.gameState.isGameOver) {
+			updateMyStatus("INGAME");
+		} 
+		else if (game.gameState.isGameOver) {
+			updateMyStatus("ONLINE");
+		}
+		return () => {
+			 updateMyStatus("ONLINE");
+		};
+	}, [isStarted, game.gameState.isGameOver, updateMyStatus]);
 
 	const handleStart = () => {
 		setIsStarted(true);
