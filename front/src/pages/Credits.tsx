@@ -30,7 +30,7 @@ const TEAM = [
 		initials: "GG",
 	},
 ];
- 
+
 export default function Credits() {
 	return (
 		<div className="min-h-screen py-16 px-6 flex justify-center items-center max-[768px]:py-8 max-[768px]:px-4">
