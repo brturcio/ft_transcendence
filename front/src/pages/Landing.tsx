@@ -65,7 +65,7 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 	};
 
 	return (
-		<div className="min-h-screen text-(--txt-main) pt-6 px-10 pb-27.5 max-[1100px]:pt-4 max-[1100px]:px-3.5 max-[1100px]:pb-22 max-[760px]:pb-20">
+		<div className="min-h-screen text-(--txt-main) pt-6 px-10 pb-16 max-[1100px]:pt-4 max-[1100px]:px-3.5 max-[1100px]:pb-14 max-[760px]:pb-12">
 			<style>{introUpKeyframes}</style>
 
 			<main className="flex justify-center items-center pt-14 px-6 min-h-[calc(100vh-210px)] max-[1100px]:pt-16 max-[1100px]:px-2 max-[1100px]:gap-7.5 max-[760px]:pt-9 max-[760px]:min-h-[calc(100vh-170px)]">

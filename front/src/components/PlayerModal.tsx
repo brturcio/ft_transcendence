@@ -60,17 +60,19 @@ const statusConfig: Record<UserStatus, { dot: string; text: string; label: strin
 };
 
 export default function PlayerModal({ player, onClose }: PlayerModalProps) {
+	// All hooks must be declared at the top, unconditionally
 	const { t } = useTranslation();
 	const [profile, setProfile] = useState<PlayerProfile | null>(null);
 	const [loading, setLoading] = useState(false);
-	
 	const [isSendingRequest, setIsSendingRequest] = useState(false);
 	const [requestSent, setRequestSent] = useState(false);
 	const [requestError, setRequestError] = useState("");
+	const [myId, setMyId] = useState<string | null>(null);
 
 	const avatarSrc = resolveMediaUrl(profile?.avatarUrl ?? null);
 	const realtimeStatuses = useGlobalPresence();
 
+	// Fetch player profile
 	useEffect(() => {
 		if (!player)
 			return;
@@ -101,6 +103,24 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 		setRequestError("");
 	}, [player]);
 
+	// Load current user ID
+	useEffect(() => {
+		const userData = localStorage.getItem("ft_user"); 
+		if (userData)
+		{
+			try
+			{
+				const parsed = JSON.parse(userData);
+				setMyId(parsed.id);
+			}
+			catch (e)
+			{
+				console.error("Erreur lecture utilisateur:", e);
+			}
+		}
+	}, []);
+
+	// Return early only after all hooks are called
 	if (!player)
 		return null;
 
@@ -155,22 +175,6 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 	const currentStatusId = player?.id || "";
 	const displayStatus = (realtimeStatuses[currentStatusId] || profile?.status || "OFFLINE") as UserStatus;
 	const config = statusConfig[displayStatus];
-	const [myId, setMyId] = useState<string | null>(null);
-	useEffect(() => {
-		const userData = localStorage.getItem("ft_user"); 
-		if (userData)
-		{
-			try
-			{
-				const parsed = JSON.parse(userData);
-				setMyId(parsed.id);
-			}
-			catch (e)
-			{
-				console.error("Erreur lecture utilisateur:", e);
-			}
-		}
-	}, []);
 	return (
 		<div
 			className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 overflow-y-auto"
