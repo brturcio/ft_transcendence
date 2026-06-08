@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import TetrisGame from "../components/TetrisGame";
 import Leaderboard from "../components/Leaderboard";
 import { useRealtimeRoom } from "../realtime/useRealtimeRoom";
+import { reportMultiplayerGameResult } from "../components/Achievements";
 
 type LandingProps = {
 	isAuthenticated: boolean;
@@ -50,12 +51,25 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 	const { t } = useTranslation();
 	const realtime = useRealtimeRoom();
 	const [joinCode, setJoinCode] = useState("");
+	const reportedMultiplayerRoom = useRef<string | null>(null);
 	const currentUserId = useMemo(() => getCurrentUserId(), [isAuthenticated]);
 	const currentPlayer = realtime.room?.players.find((player) => player.id === currentUserId) ?? null;
 	const remotePlayers = realtime.room?.players.filter((player) => player.id !== currentUserId) ?? [];
 	const isHost = Boolean(currentPlayer?.isHost);
 	const isInRoom = Boolean(realtime.room);
 	const roomStatus = realtime.room ? t(`landing.multiplayer.status.${realtime.room.status}`) : null;
+
+	useEffect(() => {
+		if (!isAuthenticated || !currentUserId || !realtime.room || realtime.room.status !== "finished") {
+			return;
+		}
+		if (reportedMultiplayerRoom.current === realtime.room.id) {
+			return;
+		}
+
+		reportedMultiplayerRoom.current = realtime.room.id;
+		reportMultiplayerGameResult({ won: realtime.winnerId === currentUserId });
+	}, [isAuthenticated, currentUserId, realtime.room, realtime.winnerId]);
 
 	const handleJoin = () => {
 		const roomId = joinCode.trim();
@@ -102,13 +116,13 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 						</div>
 					</section>
 				) : (
-					<div className="grid grid-cols-[280px_1fr_200px] gap-6 w-full max-w-350 animate-[intro-up_500ms_ease] max-[760px]:grid-cols-1 max-[760px]:gap-4">
-						<aside className={dashboardPanel}>
+					<div className="grid grid-cols-1 gap-4 w-full max-w-350 animate-[intro-up_500ms_ease] 2xl:grid-cols-[280px_minmax(0,1fr)_200px] 2xl:gap-6">
+						<aside className={`${dashboardPanel} order-3 w-full max-w-[720px] mx-auto 2xl:order-none 2xl:max-w-none`}>
 							<h2 className={dashboardTitle}>{t("landing.dashboard.leaderboard.title")}</h2>
 						<Leaderboard />
 					</aside>
 
-					<section className="flex flex-col p-5 bg-[rgba(0,0,0,0.3)] border border-(--line-soft) rounded-lg max-[760px]:p-4">
+					<section className="order-1 flex flex-col min-w-0 p-4 bg-[rgba(0,0,0,0.3)] border border-(--line-soft) rounded-lg 2xl:order-none 2xl:p-5">
 							<TetrisGame
 								mode={isInRoom ? "multiplayer" : "solo"}
 								multiplayerStarted={realtime.isGameStarted}
@@ -120,7 +134,7 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 						</section>
 
 						<aside
-							className={`${dashboardPanel} justify-start max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-3`}
+							className={`${dashboardPanel} order-2 justify-start w-full max-w-[720px] mx-auto 2xl:order-none 2xl:max-w-none max-[760px]:grid max-[760px]:grid-cols-1 max-[760px]:gap-3`}
 						>
 							{realtime.room ? (
 								<div className="col-span-full flex flex-col gap-3">

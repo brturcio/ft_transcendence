@@ -9,6 +9,10 @@ type SoloGameResult = {
 	tetrises: number;
 };
 
+type MultiplayerGameResult = {
+	won: boolean;
+};
+
 type SoloGameResponse = {
 	newlyUnlocked: string[];
 };
@@ -39,6 +43,32 @@ export const unlockAchievement = async (id: string): Promise<boolean> => {
 	} catch (err) {
 		console.error(err);
 		return false;
+	}
+};
+
+export const reportMultiplayerGameResult = async (result: MultiplayerGameResult) => {
+	try {
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+		if (!token) {
+			return;
+		}
+		const response = await fetch(`${API_BASE_URL}/stats/multi-game`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(result),
+		});
+		if (!response.ok) {
+			return;
+		}
+		const data: SoloGameResponse = await response.json();
+		for (const id of data.newlyUnlocked) {
+			showAchievementNotification(id);
+		}
+	} catch (err) {
+		console.error("Multiplayer game report error:", err);
 	}
 };
 

@@ -187,6 +187,15 @@ export function markPlayerGameOver(roomId: string, userId: string, state: Player
 		throw new Error("Player is not in this room");
 	}
 
+	if (room.status === "finished") {
+		const alivePlayers = room.players.filter((candidate) => candidate.isAlive);
+		return {
+			room: toPublicRoom(room),
+			winner: alivePlayers.length === 1 ? alivePlayers[0] : null,
+			isFinished: false,
+		};
+	}
+
 	player.isAlive = false;
 	room.playerStates[userId] = { ...state, isGameOver: true };
 

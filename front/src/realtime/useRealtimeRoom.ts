@@ -63,6 +63,7 @@ export function useRealtimeRoom() {
 	const [isConnected, setIsConnected] = useState(false);
 	const [isGameStarted, setIsGameStarted] = useState(false);
 	const [winner, setWinner] = useState<string | null>(null);
+	const [winnerId, setWinnerId] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
 	const translateRealtimeError = useCallback(
@@ -80,6 +81,7 @@ export function useRealtimeRoom() {
 		pendingMessageRef.current = message;
 		setError(null);
 		setWinner(null);
+		setWinnerId(null);
 
 		if (wsRef.current?.readyState === WebSocket.OPEN) {
 			send(wsRef.current, message);
@@ -112,6 +114,7 @@ export function useRealtimeRoom() {
 					setRoom(message.room);
 					setIsGameStarted(true);
 					setWinner(null);
+					setWinnerId(null);
 					return;
 				case "player_state":
 					setRoom((currentRoom) => {
@@ -129,7 +132,9 @@ export function useRealtimeRoom() {
 					return;
 				case "match_finished":
 					setRoom(message.room);
+					setWinnerId(message.winnerId);
 					setWinner(message.winnerUsername ?? t("landing.multiplayer.noWinner"));
+					setIsGameStarted(false);
 					return;
 				case "error":
 					setError(translateRealtimeError(message.code, message.message));
@@ -157,6 +162,7 @@ export function useRealtimeRoom() {
 		isConnected,
 		isGameStarted,
 		winner,
+		winnerId,
 		error,
 		createRoom: () => connect({ type: "create_room", maxPlayers: 4 }),
 		joinRoom: (roomId: string) => connect({ type: "join_room", roomId }),
@@ -165,6 +171,7 @@ export function useRealtimeRoom() {
 			setRoom(null);
 			setIsGameStarted(false);
 			setWinner(null);
+			setWinnerId(null);
 		},
 		startGame: () => send(wsRef.current, { type: "start_game" }),
 		sendPlayerState: (state: PlayerGameState) => send(wsRef.current, { type: "player_state", state }),

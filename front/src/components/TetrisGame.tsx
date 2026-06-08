@@ -3,7 +3,7 @@ import { useTetrisGame, getPieceShape } from "../games/tetris";
 import { useTranslation } from "react-i18next";
 import { useGlobalPresence } from "../realtime/useGlobalPresence"; // <-- L'import du hook
 import type { PlayerGameState, PublicRoomPlayer } from "../realtime/useRealtimeRoom";
-import { API_BASE_URL, REALTIME_BASE_URL } from "../config/network"; 
+import { API_BASE_URL, REALTIME_BASE_URL } from "../config/network";
 const AUTH_TOKEN_KEY = "ft_auth_token";
 
 const PIECE_COLORS: Record<string, string> = {
@@ -40,6 +40,7 @@ export default function TetrisGame({
 	const [isStarted, setIsStarted] = useState(false);
 	const hasSentGameOver = useRef(false);
 	const previousMultiplayerStarted = useRef(false);
+	const previousMode = useRef(mode);
 	const onStateChangeRef = useRef(onStateChange);
 	const onGameOverRef = useRef(onGameOver);
 	const displayGrid = game.displayGrid;
@@ -49,6 +50,16 @@ export default function TetrisGame({
 		onStateChangeRef.current = onStateChange;
 		onGameOverRef.current = onGameOver;
 	}, [onStateChange, onGameOver]);
+
+	useEffect(() => {
+		if (previousMode.current === "multiplayer" && mode === "solo") {
+			game.resetGame();
+			setIsStarted(false);
+			hasSentGameOver.current = false;
+			previousMultiplayerStarted.current = false;
+		}
+		previousMode.current = mode;
+	}, [mode]);
 
 	useEffect(() => {
 		if (mode !== "multiplayer") return;
@@ -62,7 +73,7 @@ export default function TetrisGame({
 	}, [mode, multiplayerStarted]);
 
 	useEffect(() => {
-		if (mode !== "multiplayer" || !isStarted) return;
+		if (mode !== "multiplayer" || !isStarted || winner) return;
 
 		const state: PlayerGameState = {
 			displayGrid,
@@ -90,7 +101,7 @@ export default function TetrisGame({
 	useEffect(() => {
 		if (isStarted && !game.gameState.isGameOver) {
 			updateMyStatus("INGAME");
-		} 
+		}
 		else if (game.gameState.isGameOver) {
 			updateMyStatus("ONLINE");
 		}
@@ -113,14 +124,14 @@ export default function TetrisGame({
 	const renderMiniBoard = (player: PublicRoomPlayer) => {
 		const state = player.state;
 		return (
-			<div key={player.id} className="bg-[rgba(0,0,0,0.35)] border border-[rgba(0,229,255,0.2)] rounded-md p-3">
+			<div key={player.id} className="bg-[rgba(0,0,0,0.35)] border border-[rgba(0,229,255,0.2)] rounded-md p-2">
 				<div className="flex items-center justify-between gap-2 mb-2">
 					<p className="text-white font-['Orbitron',sans-serif] text-xs truncate">{player.username}</p>
 					<span className={`text-[0.65rem] uppercase ${player.isAlive ? "text-[var(--glow-cyan)]" : "text-[var(--glow-pink)]"}`}>
 						{player.isAlive ? t("game.tetris.multiplayer.alive") : t("game.tetris.multiplayer.out")}
 					</span>
 				</div>
-				<div className="grid grid-cols-10 grid-rows-20 gap-px bg-[rgba(0,0,0,0.55)] p-1 rounded-sm aspect-10/20 w-full max-w-28 mx-auto">
+				<div className="grid grid-cols-10 grid-rows-20 gap-px bg-[rgba(0,0,0,0.55)] p-1 rounded-sm aspect-10/20 w-full max-w-20 md:max-w-24 mx-auto">
 					{(state?.displayGrid ?? Array.from({ length: 20 }, () => Array(10).fill(null))).map((row, rowIdx) =>
 						row.map((cell, colIdx) => (
 							<div
@@ -133,7 +144,7 @@ export default function TetrisGame({
 						)),
 					)}
 				</div>
-				<p className="text-[var(--txt-soft)] text-xs mt-2 text-center">
+				<p className="text-[var(--txt-soft)] text-[0.7rem] mt-2 text-center">
 					{state
 						? t("game.tetris.multiplayer.remoteStats", { score: state.score, level: state.level })
 						: t("game.tetris.multiplayer.waiting")}
@@ -162,7 +173,7 @@ export default function TetrisGame({
 		}
 
 		return (
-			<div className="grid grid-cols-4 grid-rows-4 gap-0.5 w-20 h-20 max-[760px]:w-15 max-[760px]:h-15">
+			<div className="grid grid-cols-4 grid-rows-4 gap-0.5 w-16 h-16 md:w-18 md:h-18">
 				{miniGrid.map((row, rowIdx) =>
 					row.map((cell, colIdx) => (
 						<div
@@ -187,7 +198,7 @@ export default function TetrisGame({
 
 		if (!shape) {
 			return (
-				<div className="grid grid-cols-4 grid-rows-4 gap-0.5 w-20 h-20 max-[760px]:w-15 max-[760px]:h-15">
+				<div className="grid grid-cols-4 grid-rows-4 gap-0.5 w-16 h-16 md:w-18 md:h-18">
 					{miniGrid.map((row, rowIdx) =>
 						row.map((_cell, colIdx) => (
 							<div
@@ -216,7 +227,7 @@ export default function TetrisGame({
 		}
 
 		return (
-			<div className="grid grid-cols-4 grid-rows-4 gap-0.5 w-20 h-20 max-[760px]:w-15 max-[760px]:h-15">
+			<div className="grid grid-cols-4 grid-rows-4 gap-0.5 w-16 h-16 md:w-18 md:h-18">
 				{miniGrid.map((row, rowIdx) =>
 					row.map((cell, colIdx) => (
 						<div
@@ -234,10 +245,11 @@ export default function TetrisGame({
 	};
 
 	return (
-		<div className="flex-1 flex items-center justify-center gap-6 bg-[rgba(0,20,30,0.5)] border-2 border-(--glow-cyan) rounded-lg min-h-100 p-5 shadow-[0_0_20px_rgba(0,229,255,0.1)] w-full max-[760px]:flex-col max-[760px]:gap-4 max-[760px]:p-4 max-[760px]:min-h-auto">
-			{/* Left: Tetris Grid */}
-			<div className="flex-1 flex justify-center items-center relative max-[760px]:w-full">
-				<div className="grid grid-cols-10 grid-rows-20 gap-px bg-[rgba(0,0,0,0.6)] p-1 border-2 border-(--glow-cyan) rounded-sm aspect-10/20 max-w-[320px] w-full max-[760px]:max-w-full max-[760px]:min-h-50">
+		<div className="flex-1 flex flex-col items-center justify-center gap-4 bg-[rgba(0,20,30,0.5)] border-2 border-(--glow-cyan) rounded-lg p-4 shadow-[0_0_20px_rgba(0,229,255,0.1)] w-full 2xl:min-h-100 2xl:p-5">
+			<div className="flex w-full flex-col items-center justify-center gap-4 xl:flex-row xl:items-start xl:gap-6">
+				{/* Left: Tetris Grid */}
+				<div className="flex justify-center items-center relative w-full xl:flex-1">
+					<div className="grid grid-cols-10 grid-rows-20 gap-px bg-[rgba(0,0,0,0.6)] p-1 border-2 border-(--glow-cyan) rounded-sm aspect-10/20 w-full max-w-[240px] md:max-w-[280px] xl:max-w-[320px]">
 					{displayGrid.map((row, rowIdx) =>
 						row.map((cell, colIdx) => (
 							<div
@@ -292,65 +304,71 @@ export default function TetrisGame({
 						</button>
 					</div>
 				)}
-			</div>
+				</div>
 
-			{/* Right: Score and Next Block */}
-			<div className="flex flex-col gap-5 min-w-35 max-[760px]:grid max-[760px]:grid-cols-2 max-[760px]:gap-3 max-[760px]:w-full max-[760px]:min-w-0">
+				{mode === "multiplayer" && remotePlayers.length > 0 && (
+					<div className="grid w-full max-w-[360px] grid-cols-1 gap-2 sm:grid-cols-2 xl:w-32 xl:grid-cols-1 xl:flex-none">
+						{remotePlayers.map(renderMiniBoard)}
+					</div>
+				)}
+
+				{/* Right: Score and Next Block */}
+				<div className="grid w-full max-w-[460px] grid-cols-1 gap-2 sm:grid-cols-2 xl:w-44 xl:grid-cols-1 xl:flex-none">
 				{!game.gameState.isGameOver && (
-					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-4 text-center max-[760px]:p-3">
-						<h3 className="text-(--glow-pink) text-[0.9rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-2 mt-0">
+					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-3 text-center">
+						<h3 className="text-(--glow-pink) text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-1.5 mt-0">
 							{t("game.tetris.labels.score")}
 						</h3>
-						<p className="text-[2rem] max-[760px]:text-[1.5rem] font-bold text-(--glow-cyan) font-['Courier New',monospace] m-0 mb-2 [text-shadow:0_0_8px_rgba(0,229,255,0.3)]">
+						<p className="text-[1.55rem] font-bold text-(--glow-cyan) font-['Courier New',monospace] m-0 mb-1.5 [text-shadow:0_0_8px_rgba(0,229,255,0.3)]">
 							{game.gameState.score}
 						</p>
-						<p className="text-[0.75rem] text-(--txt-soft) m-0 font-['Courier New',monospace]">
+						<p className="text-[0.7rem] text-(--txt-soft) m-0 font-['Courier New',monospace]">
 							{t("game.tetris.labels.level")} {game.gameState.level}
 						</p>
 					</div>
 				)}
 				{!game.gameState.isGameOver && (
-					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-4 text-center max-[760px]:p-3">
-						<h3 className="text-(--glow-pink) text-[0.9rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-2 mt-0">
+					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-3 text-center">
+						<h3 className="text-(--glow-pink) text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-1.5 mt-0">
 							{t("game.tetris.labels.next")}
 						</h3>
-						<div className="flex justify-center items-center bg-[rgba(0,20,30,0.5)] border border-[rgba(0,229,255,0.3)] rounded-sm p-2 min-h-22.5 max-[760px]:min-h-17.5">
+						<div className="flex justify-center items-center bg-[rgba(0,20,30,0.5)] border border-[rgba(0,229,255,0.3)] rounded-sm p-2 min-h-18">
 							{renderNextPiece()}
 						</div>
 					</div>
 				)}
 				{!game.gameState.isGameOver && (
-					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink)] rounded-md p-4 text-center max-[760px]:p-3">
-						<h3 className="text-(--glow-pink)] text-[0.9rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-2 mt-0">
+					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink)] rounded-md p-3 text-center">
+						<h3 className="text-(--glow-pink)] text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-1.5 mt-0">
 							{t("game.tetris.labels.stash")}
 						</h3>
-						<div className="flex justify-center items-center bg-[rgba(0,20,30,0.5)] border border-[rgba(0,229,255,0.3)] rounded-sm p-2 min-h-22.5 max-[760px]:min-h-17.5">
+						<div className="flex justify-center items-center bg-[rgba(0,20,30,0.5)] border border-[rgba(0,229,255,0.3)] rounded-sm p-2 min-h-18">
 							{renderStashPiece()}
 						</div>
 					</div>
 				)}
 				{!game.gameState.isGameOver && (
-					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-4 text-center">
-						<h3 className="text-(--glow-pink) text-[0.9rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-2.5 mt-0">
+					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-3 text-center sm:col-span-2 xl:col-span-1">
+						<h3 className="text-(--glow-pink) text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-2 mt-0">
 							{t("game.tetris.labels.controls")}
 						</h3>
-						<ul className="list-none p-0 m-0 flex flex-col gap-1.5">
-							<li className="font-['Courier New',monospace] text-[0.75rem] text-(--txt-soft) px-2 py-1.5 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+						<ul className="list-none p-0 m-0 flex flex-col gap-1">
+							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
 								{t("game.tetris.controls.move")}
 							</li>
-							<li className="font-['Courier New',monospace] text-[0.75rem] text-(--txt-soft) px-2 py-1.5 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
 								{t("game.tetris.controls.rotate")}
 							</li>
-							<li className="font-['Courier New',monospace] text-[0.75rem] text-(--txt-soft) px-2 py-1.5 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
 								{t("game.tetris.controls.softDrop")}
 							</li>
-							<li className="font-['Courier New',monospace] text-[0.75rem] text-(--txt-soft) px-2 py-1.5 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
 								{t("game.tetris.controls.hardDrop")}
 							</li>
-							<li className="font-['Courier New',monospace] text-[0.75rem] text-(--txt-soft) px-2 py-1.5 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
 								{t("game.tetris.controls.stash")}
 							</li>
-							<li className="font-['Courier New',monospace] text-[0.75rem] text-(--txt-soft) px-2 py-1.5 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
 								{t("game.tetris.controls.pause")}
 							</li>
 						</ul>
@@ -364,13 +382,8 @@ export default function TetrisGame({
 						<p className="text-[1.5rem] text-(--glow-cyan) font-bold mt-2">{game.gameState.score}</p>
 					</div>
 				)}
-			</div>
-
-			{mode === "multiplayer" && remotePlayers.length > 0 && (
-				<div className="grid grid-cols-2 gap-3 min-w-56 max-w-72 max-[760px]:w-full max-[760px]:max-w-full">
-					{remotePlayers.map(renderMiniBoard)}
 				</div>
-			)}
+			</div>
 		</div>
 	);
 }
