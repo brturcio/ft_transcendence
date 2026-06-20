@@ -72,7 +72,7 @@
 
 	.app-screen {
 		min-height: 100vh;
-		padding: 24px 40px 110px;
+		padding: 24px 40px 10px;
 	}
 
 	@media (max-width: 980px) {

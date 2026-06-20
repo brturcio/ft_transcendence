@@ -75,6 +75,7 @@ export type ClientMessage =
 			type: "game_over";
 			state: PlayerGameState;
 	  }
+	| { type: "attack"; lines: number }
 	| {
 			type: "ping";
 	  }
@@ -109,6 +110,7 @@ export type ServerMessage =
 			username: string;
 			room: PublicRoom;
 	  }
+	| { type: "player_attack"; playerId: string; username: string; lines: number }
 	| {
 			type: "match_finished";
 			winnerId: string | null;

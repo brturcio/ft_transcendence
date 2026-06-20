@@ -172,7 +172,20 @@ export function updatePlayerState(roomId: string, userId: string, state: PlayerG
 		throw new Error("Player is not in this room");
 	}
 
+	const prev = room.playerStates[userId];
+	const prevLines = prev?.lines ?? 0;
+	const delta = state.lines - prevLines;
 	room.playerStates[userId] = state;
+	if (delta > 0) {
+	}
+	return toPublicRoom(room);
+}
+
+export function handlePlayerAttack(roomId: string, fromUserId: string, lines: number) {
+	const room = getRoom(roomId);
+	if (!room) throw new Error("Room not found");
+
+    
 	return toPublicRoom(room);
 }
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTetrisGame, getPieceShape } from "../games/tetris";
 import { useTranslation } from "react-i18next";
-import { useGlobalPresence } from "../realtime/useGlobalPresence"; // <-- L'import du hook
+import { useGlobalPresence } from "../realtime/useGlobalPresence";
 import type { PlayerGameState, PublicRoomPlayer } from "../realtime/useRealtimeRoom";
 import { API_BASE_URL, REALTIME_BASE_URL } from "../config/network";
 const AUTH_TOKEN_KEY = "ft_auth_token";
@@ -25,6 +25,8 @@ type TetrisGameProps = {
 	winner?: string | null;
 	onStateChange?: (state: PlayerGameState) => void;
 	onGameOver?: (state: PlayerGameState) => void;
+	incomingAttack?: { fromId: string; lines: number; username?: string; id: number } | null;
+	onSendAttack?: (lines: number) => void;
 };
 
 export default function TetrisGame({
@@ -34,8 +36,10 @@ export default function TetrisGame({
 	winner = null,
 	onStateChange,
 	onGameOver,
+	incomingAttack = null,
+	onSendAttack,
 }: TetrisGameProps) {
-	const game = useTetrisGame({ reportSolo: mode === "solo" });
+	const game = useTetrisGame({ reportSolo: mode === "solo", allowPause: mode === "solo" });
 	const { t } = useTranslation();
 	const [isStarted, setIsStarted] = useState(false);
 	const hasSentGameOver = useRef(false);
@@ -57,6 +61,7 @@ export default function TetrisGame({
 			setIsStarted(false);
 			hasSentGameOver.current = false;
 			previousMultiplayerStarted.current = false;
+			prevCleared.current = 0;
 		}
 		previousMode.current = mode;
 	}, [mode]);
@@ -68,6 +73,7 @@ export default function TetrisGame({
 			game.togglePause();
 			setIsStarted(true);
 			hasSentGameOver.current = false;
+			prevCleared.current = 0;
 		}
 		previousMultiplayerStarted.current = multiplayerStarted;
 	}, [mode, multiplayerStarted]);
@@ -98,6 +104,16 @@ export default function TetrisGame({
 		game.gameState.isGameOver,
 	]);
 
+	const prevCleared = useRef(0);
+	useEffect(() => {
+		const cleared = game.gameState.clearedLines ?? 0;
+		const delta = cleared - (prevCleared.current ?? 0);
+		if (mode === "multiplayer" && isStarted && delta > 0 && onSendAttack) {
+			onSendAttack(delta);
+		}
+		prevCleared.current = cleared;
+	}, [game.gameState.clearedLines, mode, isStarted, onSendAttack]);
+
 	useEffect(() => {
 		if (isStarted && !game.gameState.isGameOver) {
 			updateMyStatus("INGAME");
@@ -118,8 +134,20 @@ export default function TetrisGame({
 	const handleRestart = () => {
 		game.resetGame();
 		setIsStarted(false);
+		// reset any incoming attacks
+		setLocalIncomingAttack(null);
 		hasSentGameOver.current = false;
+		prevCleared.current = 0;
 	};
+
+	const [localIncomingAttack, setLocalIncomingAttack] = useState<null | { fromId: string; lines: number; username?: string; id: number }>(null);
+
+	useEffect(() => {
+		if (!incomingAttack) return;
+		setLocalIncomingAttack(incomingAttack);
+		if (mode !== "multiplayer") return;
+		game.receiveGarbage?.(incomingAttack.lines);
+	}, [incomingAttack, mode, game]);
 
 	const renderMiniBoard = (player: PublicRoomPlayer) => {
 		const state = player.state;

@@ -50,6 +50,7 @@ function getCurrentUserId() {
 export default function Landing({ isAuthenticated }: LandingProps) {
 	const { t } = useTranslation();
 	const realtime = useRealtimeRoom();
+	const [incomingAttack, setIncomingAttack] = useState<null | { fromId: string; lines: number; username?: string; id: number }>(null);
 	const [joinCode, setJoinCode] = useState("");
 	const reportedMultiplayerRoom = useRef<string | null>(null);
 	const currentUserId = useMemo(() => getCurrentUserId(), [isAuthenticated]);
@@ -58,6 +59,16 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 	const isHost = Boolean(currentPlayer?.isHost);
 	const isInRoom = Boolean(realtime.room);
 	const roomStatus = realtime.room ? t(`landing.multiplayer.status.${realtime.room.status}`) : null;
+
+	useEffect(() => {
+		const unregister = realtime.registerAttackHandler?.((playerId, lines, username) => {
+			setIncomingAttack({ fromId: playerId, lines, username, id: Date.now() });
+		});
+
+		return () => {
+			if (unregister) unregister();
+		};
+	}, [realtime.registerAttackHandler]);
 
 	useEffect(() => {
 		if (!isAuthenticated || !currentUserId || !realtime.room || realtime.room.status !== "finished") {
@@ -79,138 +90,167 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 	};
 
 	return (
-		<div className="min-h-screen text-(--txt-main) pt-6 px-10 pb-16 max-[1100px]:pt-4 max-[1100px]:px-3.5 max-[1100px]:pb-14 max-[760px]:pb-12">
+		<div className="text-(--txt-main) py-5 px-10 max-[1100px]:px-4 max-[760px]:py-3">
 			<style>{introUpKeyframes}</style>
 
-			<main className="flex justify-center items-center pt-14 px-6 min-h-[calc(100vh-210px)] max-[1100px]:pt-16 max-[1100px]:px-2 max-[1100px]:gap-7.5 max-[760px]:pt-9 max-[760px]:min-h-[calc(100vh-170px)]">
-				{!isAuthenticated ? (
-					<section className="flex flex-col justify-center items-center text-center max-w-230 animate-[intro-up_500ms_ease]">
-						<p className="text-(--glow-pink) text-2xl mb-7 font-['Orbitron',sans-serif] tracking-[0.06rem] uppercase">
-							{t("landing.intro")}
-						</p>
+			<main className="w-full flex flex-col">
+			{!isAuthenticated ? (
+				<section className="flex flex-col justify-center items-center text-center flex-1 animate-[intro-up_500ms_ease] px-6">
+				<p className="text-(--glow-pink) text-2xl mb-7 font-['Orbitron',sans-serif] tracking-[0.06rem] uppercase">
+					{t("landing.intro")}
+				</p>
 
-						<div>
-							<h1 className={`${heroTitle} text-(--txt-main)`}>{t("landing.title.play")}</h1>
-							<h1
-								className={`${heroTitle} text-(--txt-main) [text-shadow:0_0_18px_rgba(0,229,255,0.45)]`}
-							>
-								{t("landing.title.compete")}
-							</h1>
-							<h1
-								className={`${heroTitle} text---txt-main) [text-shadow:0_0_18px_rgba(255,62,136,0.42)]`}
-							>
-								{t("landing.title.dominate")}
-							</h1>
-						</div>
+				<div>
+					<h1 className={`${heroTitle} text-(--txt-main)`}>
+					{t("landing.title.play")}
+					</h1>
+					<h1 className={`${heroTitle} text-(--txt-main) [text-shadow:0_0_18px_rgba(0,229,255,0.45)]`}>
+					{t("landing.title.compete")}
+					</h1>
+					<h1 className={`${heroTitle} text-(--txt-main) [text-shadow:0_0_18px_rgba(255,62,136,0.42)]`}>
+					{t("landing.title.dominate")}
+					</h1>
+				</div>
 
-						<div className="mt-7 flex flex-col gap-3">
-							<p className="text-(--txt-soft) text-2xl">{t("landing.features.realtime")}</p>
-							<p className="text-(--txt-soft) text-2xl">{t("landing.features.leaderboard")}</p>
-							<p className="text-(--txt-soft) text-2xl">{t("landing.features.tournaments")}</p>
-						</div>
+				<div className="mt-7 flex flex-col gap-3">
+					<p className="text-(--txt-soft) text-2xl">{t("landing.features.realtime")}</p>
+					<p className="text-(--txt-soft) text-2xl">{t("landing.features.leaderboard")}</p>
+					<p className="text-(--txt-soft) text-2xl">{t("landing.features.tournaments")}</p>
+				</div>
 
-						<div className="flex justify-center gap-4.5 mt-9 max-[760px]:flex-col max-[760px]:w-full">
-							<Link className={heroButton} to="/login">
-								{t("landing.cta.playNow")}
-							</Link>
-						</div>
-					</section>
-				) : (
-					<div className="grid grid-cols-1 gap-4 w-full max-w-350 animate-[intro-up_500ms_ease] 2xl:grid-cols-[280px_minmax(0,1fr)_200px] 2xl:gap-6">
-						<aside className={`${dashboardPanel} order-3 w-full max-w-[720px] mx-auto 2xl:order-none 2xl:max-w-none`}>
-							<h2 className={dashboardTitle}>{t("landing.dashboard.leaderboard.title")}</h2>
+				<div className="flex justify-center gap-4.5 mt-9 max-[760px]:flex-col max-[760px]:w-full">
+					<Link className={heroButton} to="/login">
+					{t("landing.cta.playNow")}
+					</Link>
+				</div>
+				</section>
+			) : (
+				<div className="w-full grid grid-cols-1 2xl:grid-cols-[280px_minmax(0,1fr)_340px] gap-6 items-start px-4">
+				
+					{/* LEFT: Leaderboard */}
+					<aside className={`${dashboardPanel} w-full`}>
+						<h2 className={dashboardTitle}>
+						{t("landing.dashboard.leaderboard.title")}
+						</h2>
 						<Leaderboard />
 					</aside>
 
-					<section className="order-1 flex flex-col min-w-0 p-4 bg-[rgba(0,0,0,0.3)] border border-(--line-soft) rounded-lg 2xl:order-none 2xl:p-5">
-							<TetrisGame
-								mode={isInRoom ? "multiplayer" : "solo"}
-								multiplayerStarted={realtime.isGameStarted}
-								remotePlayers={remotePlayers}
-								winner={realtime.winner}
-								onStateChange={realtime.sendPlayerState}
-								onGameOver={realtime.sendGameOver}
-							/>
-						</section>
+					{/* CENTER: Game */}
+					<section className="min-w-0 p-4 bg-[rgba(0,0,0,0.3)] border border-(--line-soft) rounded-lg">
+						<TetrisGame
+						mode={isInRoom ? "multiplayer" : "solo"}
+						multiplayerStarted={realtime.isGameStarted}
+						remotePlayers={remotePlayers}
+						winner={realtime.winner}
+						onStateChange={realtime.sendPlayerState}
+						onGameOver={realtime.sendGameOver}
+						incomingAttack={incomingAttack}
+						onSendAttack={realtime.sendAttack}
+						/>
+					</section>
 
-						<aside
-							className={`${dashboardPanel} order-2 justify-start w-full max-w-[720px] mx-auto 2xl:order-none 2xl:max-w-none max-[760px]:grid max-[760px]:grid-cols-1 max-[760px]:gap-3`}
-						>
-							{realtime.room ? (
-								<div className="col-span-full flex flex-col gap-3">
-									<div className="border border-[rgba(0,229,255,0.25)] rounded-lg p-3 bg-[rgba(0,0,0,0.25)]">
-										<p className="text-[var(--txt-soft)] text-xs uppercase tracking-[0.06rem]">{t("landing.multiplayer.room")}</p>
-										<p className="text-[var(--glow-cyan)] font-['Orbitron',sans-serif] text-2xl tracking-[0.12rem]">{realtime.room.id}</p>
-										<p className="text-[var(--txt-soft)] text-xs uppercase mt-1">{roomStatus}</p>
-									</div>
-									<div className="flex flex-col gap-2">
-										{realtime.room.players.map((player) => (
-											<div key={player.id} className="flex items-center justify-between gap-2 text-sm text-white">
-												<span className="truncate">{player.username}</span>
-												<span className="text-[var(--txt-soft)] text-xs uppercase">
-											{player.isHost
-												? t("landing.multiplayer.playerStatus.host")
-												: player.isAlive
-													? t("landing.multiplayer.playerStatus.ready")
-													: t("landing.multiplayer.playerStatus.out")}
-												</span>
-											</div>
-										))}
-									</div>
-									{isHost && realtime.room.status === "waiting" && (
-										<button
-											type="button"
-											className={`${actionButton} bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] font-bold shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:shadow-[0_0_24px_rgba(0,229,255,0.5)]`}
-											onClick={realtime.startGame}
-										>
-											{t("landing.multiplayer.actions.start")}
-										</button>
-									)}
-									<button
-										type="button"
-										className={`${actionButton} bg-transparent border border-(--glow-pink) text-(--glow-pink) shadow-[0_0_10px_rgba(255,62,136,0.2)] hover:shadow-[0_0_16px_rgba(255,62,136,0.4)]`}
-										onClick={realtime.leaveRoom}
-									>
-										{t("landing.multiplayer.actions.leave")}
-									</button>
-									{realtime.winner && (
-										<p className="text-[var(--glow-cyan)] text-sm font-['Orbitron',sans-serif]">
-											{t("landing.multiplayer.winner", { winner: realtime.winner })}
-										</p>
-									)}
+					{/* RIGHT: Multiplayer / Room */}
+					<aside className={`${dashboardPanel} w-full flex flex-col gap-3`}>
+						
+						{realtime.room ? (
+						<div className="flex flex-col gap-3 p-3 bg-[rgba(0,0,0,0.25)] border border-[rgba(0,229,255,0.25)] rounded-lg">
+							
+							{/* Room info */}
+							<div className="p-3 bg-[rgba(0,0,0,0.25)] border border-[rgba(0,229,255,0.25)] rounded-lg">
+							<p className="text-[var(--txt-soft)] text-xs uppercase tracking-[0.06rem]">
+								{t("landing.multiplayer.room")}
+							</p>
+
+							<p className="text-[var(--glow-cyan)] font-['Orbitron',sans-serif] text-2xl tracking-[0.12rem]">
+								{realtime.room.id}
+							</p>
+
+							<p className="text-[var(--txt-soft)] text-xs uppercase mt-1">
+								{roomStatus}
+							</p>
+							</div>
+
+							{/* Players */}
+							<div className="flex flex-col gap-2">
+							{realtime.room.players.map((player) => (
+								<div key={player.id} className="flex justify-between text-sm">
+								<span className="truncate">{player.username}</span>
+								<span className="text-[var(--txt-soft)] text-xs uppercase">
+									{player.isHost
+									? t("landing.multiplayer.playerStatus.host")
+									: player.isAlive
+									? t("landing.multiplayer.playerStatus.ready")
+									: t("landing.multiplayer.playerStatus.out")}
+								</span>
 								</div>
-							) : (
-								<>
-									<div className="col-span-full flex flex-col gap-2">
-										<input
-											type="text"
-											value={joinCode}
-											onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
-											placeholder={t("landing.multiplayer.roomCodePlaceholder")}
-											className="h-[42px] rounded-lg bg-[rgba(0,0,0,0.3)] border border-[rgba(0,229,255,0.25)] px-3 text-white uppercase tracking-[0.08rem]"
-										/>
-										<button
-											type="button"
-											className={`${actionButton} bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] font-bold shadow-[0_0_16px_rgba(0,229,255,0.35)] hover:shadow-[0_0_24px_rgba(0,229,255,0.5)]`}
-											onClick={handleJoin}
-										>
-											{t("landing.dashboard.actions.join")}
-										</button>
-									</div>
+							))}
+							</div>
 
-									<button
-										type="button"
-										className={`${actionButton} bg-transparent border border-(--glow-pink) text-(--glow-pink) shadow-[0_0_10px_rgba(255,62,136,0.2)] hover:shadow-[0_0_16px_rgba(255,62,136,0.4)]`}
-										onClick={realtime.createRoom}
-									>
-										{t("landing.dashboard.actions.host")}
-									</button>
-								</>
+							{/* Actions */}
+							{isHost && realtime.room.status === "waiting" && (
+							<button
+								type="button"
+								className={`${actionButton} bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] font-bold`}
+								onClick={realtime.startGame}
+							>
+								{t("landing.multiplayer.actions.start")}
+							</button>
 							)}
-							{realtime.error && <p className="col-span-full text-[var(--glow-pink)] text-sm">{realtime.error}</p>}
-						</aside>
-					</div>
-				)}
+
+							<button
+							type="button"
+							className={`${actionButton} border border-(--glow-pink) text-(--glow-pink)`}
+							onClick={realtime.leaveRoom}
+							>
+							{t("landing.multiplayer.actions.leave")}
+							</button>
+
+							{realtime.winner && (
+							<p className="text-[var(--glow-cyan)] text-sm font-['Orbitron',sans-serif]">
+								{t("landing.multiplayer.winner", { winner: realtime.winner })}
+							</p>
+							)}
+						</div>
+						) : (
+						<>
+							{/* Join room */}
+							<div className="flex flex-col gap-2">
+							<input
+								type="text"
+								value={joinCode}
+								onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+								placeholder={t("landing.multiplayer.roomCodePlaceholder")}
+								className="h-[42px] rounded-lg bg-[rgba(0,0,0,0.3)] border border-[rgba(0,229,255,0.25)] px-3 text-white uppercase tracking-[0.08rem]"
+							/>
+
+							<button
+								type="button"
+								className={`${actionButton} bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] font-bold`}
+								onClick={handleJoin}
+							>
+								{t("landing.dashboard.actions.join")}
+							</button>
+							</div>
+
+							{/* Host */}
+							<button
+							type="button"
+							className={`${actionButton} border border-(--glow-pink) text-(--glow-pink)`}
+							onClick={realtime.createRoom}
+							>
+							{t("landing.dashboard.actions.host")}
+							</button>
+						</>
+						)}
+
+						{realtime.error && (
+						<p className="text-[var(--glow-pink)] text-sm">
+							{realtime.error}
+						</p>
+						)}
+					</aside>
+				</div>
+			)}
 			</main>
 		</div>
 	);

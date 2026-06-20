@@ -12,6 +12,7 @@ import {
 	rotatePiece,
 	switchStash,
 	getHardDropY,
+	addGarbageLines,
 } from "./index";
 
 import { getDisplayGrid, updateLevel, getDropSpeed } from "./gameEngine";
@@ -28,7 +29,8 @@ type Action =
 	| { type: "SWAP" }
 	| { type: "PAUSE" }
 	| { type: "RESET" }
-	| { type: "REPORT_SOLO_GAME" };
+	| { type: "REPORT_SOLO_GAME" }
+	| { type: "RECEIVE_GARBAGE"; lines: number };
 
 function reducer(state: GameState, action: Action): GameState {
 	switch (action.type) {
@@ -58,6 +60,9 @@ function reducer(state: GameState, action: Action): GameState {
 
 		case "RESET":
 			return initializeGame(true);
+
+		case "RECEIVE_GARBAGE":
+			return addGarbageLines(state, action.lines);
 
 		case "REPORT_SOLO_GAME":
 			return { ...state, hasReportedSoloGame: true };
@@ -163,8 +168,8 @@ function hardDropSync(state: GameState): GameState {
 	};
 }
 
-export function useTetrisGame(options: { reportSolo?: boolean } = {}) {
-	const { reportSolo = true } = options;
+export function useTetrisGame(options: { reportSolo?: boolean; allowPause?: boolean } = {}) {
+	const { reportSolo = true, allowPause = true } = options;
 	const [state, dispatch] = React.useReducer(reducer, undefined, () => initializeGame(true));
 
 	const displayGrid = useMemo(() => {
@@ -227,7 +232,7 @@ export function useTetrisGame(options: { reportSolo?: boolean } = {}) {
 					break;
 				case "Escape":
 					e.preventDefault();
-					inputQueue.current.push({ type: "PAUSE" });
+					if (allowPause) inputQueue.current.push({ type: "PAUSE" });
 					break;
 			}
 		};
@@ -258,6 +263,9 @@ export function useTetrisGame(options: { reportSolo?: boolean } = {}) {
 		gameState: state,
 		displayGrid,
 		resetGame: () => dispatch({ type: "RESET" }),
-		togglePause: () => dispatch({ type: "PAUSE" }),
+		togglePause: () => {
+			if (allowPause) dispatch({ type: "PAUSE" });
+		},
+		receiveGarbage: (lines: number) => dispatch({ type: "RECEIVE_GARBAGE", lines }),
 	};
 }

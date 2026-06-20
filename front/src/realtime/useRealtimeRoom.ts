@@ -37,6 +37,7 @@ type ServerMessage =
 	| { type: "player_state"; playerId: string; username: string; state: PlayerGameState }
 	| { type: "player_game_over"; playerId: string; username: string; room: PublicRoom }
 	| { type: "match_finished"; winnerId: string | null; winnerUsername: string | null; room: PublicRoom }
+	| { type: "player_attack"; playerId: string; username: string; lines: number }
 	| { type: "error"; code: string; message: string }
 	| { type: "pong" };
 
@@ -47,7 +48,10 @@ type ClientMessage =
 	| { type: "start_game" }
 	| { type: "player_state"; state: PlayerGameState }
 	| { type: "game_over"; state: PlayerGameState }
+	| { type: "attack"; lines: number }
 	| { type: "ping" };
+
+type ClientAttackMessage = { type: "attack"; lines: number };
 
 function send(ws: WebSocket | null, message: ClientMessage) {
 	if (ws?.readyState === WebSocket.OPEN) {
@@ -141,6 +145,9 @@ export function useRealtimeRoom() {
 					return;
 				case "pong":
 					return;
+				case "player_attack":
+					if (attackHandlerRef.current) attackHandlerRef.current(message.playerId, message.lines, message.username);
+					return;
 			}
 		};
 
@@ -152,6 +159,9 @@ export function useRealtimeRoom() {
 			setIsConnected(false);
 		};
 	}, [t, translateRealtimeError]);
+
+	const attackHandlerRef = useRef<((playerId: string, lines: number, username?: string) => void) | null>(null);
+
 
 	useEffect(() => {
 		return () => wsRef.current?.close();
@@ -176,5 +186,12 @@ export function useRealtimeRoom() {
 		startGame: () => send(wsRef.current, { type: "start_game" }),
 		sendPlayerState: (state: PlayerGameState) => send(wsRef.current, { type: "player_state", state }),
 		sendGameOver: (state: PlayerGameState) => send(wsRef.current, { type: "game_over", state }),
+		sendAttack: (lines: number) => send(wsRef.current, { type: "attack", lines }),
+		registerAttackHandler: (handler: (playerId: string, lines: number, username?: string) => void) => {
+			attackHandlerRef.current = handler;
+			return () => {
+				attackHandlerRef.current = null;
+			};
+		},
 	};
 }

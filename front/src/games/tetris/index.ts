@@ -36,6 +36,7 @@ export {
 	moveRight,
 	togglePause,
 	quickDrop,
+	addGarbageLines,
 	getDisplayGrid,
 	switchStash
 } from "./gameEngine";

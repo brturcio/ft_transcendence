@@ -98,6 +98,16 @@ function broadcastRoom(roomId: string, message: ServerMessage) {
 	}
 }
 
+function broadcastRoomExcept(roomId: string, exceptSocketId: string, message: ServerMessage) {
+	for (const socketId of getRoomSocketIds(roomId)) {
+		if (socketId === exceptSocketId) continue;
+		const client = clients.get(socketId);
+		if (client) {
+			send(client.ws, message);
+		}
+	}
+}
+
 function handleLeaveRoom(client: RealtimeClient) {
 	const previousRoomId = client.roomId;
 	if (!previousRoomId) {
@@ -160,6 +170,20 @@ function handleMessage(client: RealtimeClient, message: ClientMessage) {
 				playerId: client.user.id,
 				username: client.user.username,
 				state: message.state,
+			});
+			return;
+		}
+
+		case "attack": {
+			if (!client.roomId) {
+				sendError(client.ws, "NOT_IN_ROOM", "Join a room before sending attacks");
+				return;
+			}
+			broadcastRoomExcept(client.roomId, client.socketId, {
+				type: "player_attack",
+				playerId: client.user.id,
+				username: client.user.username,
+				lines: message.lines,
 			});
 			return;
 		}

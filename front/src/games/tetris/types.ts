@@ -10,8 +10,8 @@ export interface Piece {
 	hasSwapped?: boolean; // whether this piece has already been swapped
 }
 
-// Cell state in the grid
-export type CellState = null | PieceType;
+// Cell state in the grid (allows a garbage marker "G")
+export type CellState = null | PieceType | "G";
 
 // Game state
 export interface GameState {

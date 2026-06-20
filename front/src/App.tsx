@@ -8,6 +8,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Credits from "./pages/Credits";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import PlayerModal from "./components/PlayerModal";
 import { API_BASE_URL } from "./config/network";
 
@@ -76,6 +77,8 @@ function App() {
 				<Route path="/privacy" element={<Privacy />} />
 				<Route path="*" element={<Navigate to="/" replace />} />
 			</Routes>
+
+			<Footer isAuthenticated={isAuthenticated} onLogout={handleLogout} />
 		</div>
 	);
 }

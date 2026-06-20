@@ -184,6 +184,37 @@ export function quickDrop(state: GameState): GameState {
 	};
 }
 
+export function addGarbageLines(state: GameState, count: number): GameState {
+	if (count <= 0) return state;
+
+	// Copy grid
+	const newGrid = state.grid.map((row) => [...row]);
+
+	// Generate garbage rows (each with one hole)
+	const garbageRows: (PieceType | null | "G")[][] = [];
+	for (let i = 0; i < count; i++) {
+		const hole = Math.floor(Math.random() * GRID_COLS);
+		const row: (PieceType | null | "G")[] = [];
+		for (let col = 0; col < GRID_COLS; col++) {
+			row.push(col === hole ? null : ("G" as "G"));
+		}
+		garbageRows.push(row);
+	}
+
+	// Shift up existing rows and append garbage at bottom
+	const shifted = newGrid.slice(count);
+	const resultGrid = [...shifted, ...garbageRows];
+
+	// If any cell in the top rows (that got shifted out) was occupied, it's game over
+	const topOverflow = newGrid.slice(0, count).some((row) => row.some((cell) => cell !== null));
+
+	return {
+		...state,
+		grid: resultGrid as (PieceType | null | "G")[][],
+		isGameOver: topOverflow ? true : state.isGameOver,
+	};
+}
+
 export function togglePause(state: GameState): GameState {
 	return {
 		...state,
