@@ -33,6 +33,12 @@
     "score": "Puntuación"
   },
   "multiplayer": {
+    "chat": {
+      "title": "Chat de la sala",
+      "placeholder": "Escribe un mensaje...",
+      "send": "Enviar",
+      "empty": "Sin mensajes aún"
+    },
     "room": "Sala",
     "roomCodePlaceholder": "CÓDIGO DE SALA",
     "winner": "Ganador: {{winner}}",

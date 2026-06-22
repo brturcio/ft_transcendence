@@ -158,7 +158,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 		.filter((achievement): achievement is Achievement => Boolean(achievement));
 
 	const currentStatusId = player?.id || "";
-	const displayStatus = (realtimeStatuses[currentStatusId] || profile?.status || "OFFLINE") as UserStatus;
+	const displayStatus = (realtimeStatuses.statuses[currentStatusId] ?? profile?.status ?? "OFFLINE") as UserStatus;
 	const config = statusConfig[displayStatus];
 	return (
 		<div
@@ -166,7 +166,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 			onClick={onClose}
 		>
 			<div
-				className="bg-[rgba(9,18,40,0.95)] border border-[rgba(110, 209, 255, 0.51)] rounded-lg p-8 max-w-2xl w-full mx-4 my-8 animate-[intro-up_300ms_ease]"
+				className="bg-[rgba(9,18,40,0.95)] border border-[rgba(110, 209, 255, 0.51)] rounded-lg p-8 max-w-2xl w-full animate-[intro-up_300ms_ease]"
 				onClick={(e) => e.stopPropagation()}
 			>
 				<div className="flex justify-between items-center mb-6">
@@ -276,24 +276,6 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 								</div>
 							</div>
 						</div>
-
-						<div className="border-t border-[rgba(110,210,255,0.18)] pt-4">
-							<div className="flex gap-4">
-								<div className="flex-1 bg-[rgba(0,229,255,0.05)] p-4 rounded">
-									<p className="text-[var(--txt-soft)] text-xs mb-1">{t("profile.xp")}</p>
-									<p className="text-[var(--glow-cyan)] font-bold text-xl">
-										{profile.stats.gamification.xp}
-									</p>
-								</div>
-								<div className="flex-1 bg-[rgba(255,62,136,0.05)] p-4 rounded">
-									<p className="text-[var(--txt-soft)] text-xs mb-1">{t("profile.level")}</p>
-									<p className="text-[var(--glow-pink)] font-bold text-xl">
-										{profile.stats.gamification.level}
-									</p>
-								</div>
-							</div>
-						</div>
-
 						{unlockedAchievementItems.length > 0 && (
 							<div className="border-t border-[rgba(110,210,255,0.18)] pt-4">
 								<h4 className="text-[var(--glow-cyan)] font-bold mb-3 text-sm uppercase">

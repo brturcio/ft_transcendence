@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -19,6 +19,78 @@ const LOGOUT_ENDPOINT = `${API_BASE_URL}/auth/logout`;
 
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(localStorage.getItem(AUTH_TOKEN_KEY)));
+
+	function isTokenExpired(token: string | null) {
+		if (!token) return true;
+		try {
+			const parts = token.split('.');
+			if (parts.length < 2) return true;
+			const payload = JSON.parse(atob(parts[1]));
+			if (!payload.exp) return true;
+			return payload.exp * 1000 <= Date.now();
+		} catch {
+			return true;
+		}
+	}
+
+	useEffect(() => {
+		let mounted = true;
+
+		async function initAuth() {
+			const access = localStorage.getItem(AUTH_TOKEN_KEY);
+			const refresh = localStorage.getItem(REFRESH_TOKEN_KEY);
+
+			if (!access) {
+				if (mounted) setIsAuthenticated(false);
+				return;
+			}
+
+			if (!isTokenExpired(access)) {
+				if (mounted) setIsAuthenticated(true);
+				return;
+			}
+
+			if (!refresh) {
+				localStorage.removeItem(AUTH_TOKEN_KEY);
+				if (mounted) setIsAuthenticated(false);
+				return;
+			}
+
+			try {
+				const resp = await fetch(`${API_BASE_URL}/auth/refresh`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ refreshToken: refresh }),
+				});
+
+				if (!resp.ok) {
+					localStorage.removeItem(AUTH_TOKEN_KEY);
+					localStorage.removeItem(REFRESH_TOKEN_KEY);
+					if (mounted) setIsAuthenticated(false);
+					return;
+				}
+
+				const data = await resp.json();
+				if (data?.token) {
+					localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+				}
+				if (data?.refreshToken) {
+					localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+				}
+				if (mounted) setIsAuthenticated(true);
+			} catch {
+				localStorage.removeItem(AUTH_TOKEN_KEY);
+				localStorage.removeItem(REFRESH_TOKEN_KEY);
+				if (mounted) setIsAuthenticated(false);
+			}
+		}
+
+		void initAuth();
+
+		return () => {
+			mounted = false;
+		};
+	}, []);
 
 	const handleLogin = () => {
 		setIsAuthenticated(true);

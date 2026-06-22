@@ -33,6 +33,12 @@
     "score": "Score"
   },
   "multiplayer": {
+    "chat": {
+      "title": "Room Chat",
+      "placeholder": "Type a message...",
+      "send": "Send",
+      "empty": "No messages yet"
+    },
     "room": "Room",
     "roomCodePlaceholder": "ROOM CODE",
     "winner": "Winner: {{winner}}",

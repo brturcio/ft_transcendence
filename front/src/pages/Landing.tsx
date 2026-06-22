@@ -89,6 +89,29 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 		}
 	};
 
+	// simple local chat state (can be wired to realtime later)
+	const [chatMessages, setChatMessages] = useState<{ id: number; author: string; text: string }[]>([]);
+	const [chatText, setChatText] = useState("");
+	const messagesRef = useRef<HTMLDivElement | null>(null);
+
+	const sendChatMessage = () => {
+		if (!chatText.trim() || !isInRoom) return;
+		let author = "You";
+		try {
+			const raw = localStorage.getItem(USER_STORAGE_KEY);
+			if (raw) author = JSON.parse(raw).username ?? author;
+		} catch {}
+		setChatMessages((s) => [...s, { id: Date.now(), author, text: chatText.trim() }]);
+		setChatText("");
+	};
+
+	useEffect(() => {
+		if (!isInRoom) return;
+		if (!messagesRef.current) return;
+		// scroll to bottom when new message arrives
+		messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+	}, [chatMessages, isInRoom]);
+
 	return (
 		<div className="text-(--txt-main) py-5 px-10 max-[1100px]:px-4 max-[760px]:py-3">
 			<style>{introUpKeyframes}</style>
@@ -125,15 +148,20 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 				</div>
 				</section>
 			) : (
-				<div className="w-full grid grid-cols-1 2xl:grid-cols-[280px_minmax(0,1fr)_340px] gap-6 items-start px-4">
+				<div className={
+					`w-full grid grid-cols-1 gap-6 items-start px-4 ` +
+					(isInRoom ? `2xl:grid-cols-[minmax(0,1fr)_340px]` : `2xl:grid-cols-[280px_minmax(0,1fr)_340px]`)
+				}>
 				
-					{/* LEFT: Leaderboard */}
+					{/* LEFT: Leaderboard (hidden when in a room) */}
+					{!isInRoom && (
 					<aside className={`${dashboardPanel} w-full`}>
 						<h2 className={dashboardTitle}>
 						{t("landing.dashboard.leaderboard.title")}
 						</h2>
 						<Leaderboard />
 					</aside>
+					)}
 
 					{/* CENTER: Game */}
 					<section className="min-w-0 p-4 bg-[rgba(0,0,0,0.3)] border border-(--line-soft) rounded-lg">
@@ -234,14 +262,47 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 
 							{/* Host */}
 							<button
-							type="button"
-							className={`${actionButton} border border-(--glow-pink) text-(--glow-pink)`}
-							onClick={realtime.createRoom}
+								type="button"
+								className={`${actionButton} h-[42px] rounded-lg bg-[rgba(119, 1, 143, 0.49)] border border-[rgba(0,229,255,0.25)] px-3 text-white uppercase tracking-[0.08rem]`}
+								onClick={realtime.createRoom}
 							>
-							{t("landing.dashboard.actions.host")}
+								{t("landing.dashboard.actions.host")}
 							</button>
 						</>
 						)}
+
+					{/* Chat section: visible only when in a room */}
+					{isInRoom && (
+						<div className="mt-3 p-3 bg-[rgba(0,0,0,0.18)] border border-[rgba(110,210,255,0.06)] rounded-lg">
+							<h3 className="text-[var(--glow-cyan)] font-['Orbitron',sans-serif] text-sm mb-2">{t("landing.multiplayer.chat.title")}</h3>
+							<div ref={messagesRef} className="max-h-40 overflow-auto mb-2 text-sm text-(--txt-soft) space-y-2">
+								{chatMessages.length === 0 ? (
+									<p className="italic text-(--txt-soft)">{t("landing.multiplayer.chat.empty")}</p>
+								) : (
+									chatMessages.map((m) => (
+										<div key={m.id} className="text-white">
+											<span className="text-[var(--glow-cyan)] font-bold mr-2">{m.author}:</span>
+											<span className="text-(--txt-soft)">{m.text}</span>
+										</div>
+									))
+								)}
+							</div>
+							<div className="flex gap-2">
+								<input
+									value={chatText}
+									onChange={(e) => setChatText(e.target.value)}
+									onKeyDown={(e) => {
+										if (e.key === "Enter" && !e.shiftKey) {
+											e.preventDefault();
+											sendChatMessage();
+										}
+									}}
+									className="w-full rounded-md px-3 py-2 bg-[rgba(255,255,255,0.03)] border border-[rgba(110,210,255,0.06)] text-white"
+									placeholder={t("landing.multiplayer.chat.placeholder")}
+								/>
+							</div>
+						</div>
+					)}
 
 						{realtime.error && (
 						<p className="text-[var(--glow-pink)] text-sm">

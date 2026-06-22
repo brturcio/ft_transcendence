@@ -205,6 +205,18 @@ export function useTetrisGame(options: { reportSolo?: boolean; allowPause?: bool
 
 	React.useEffect(() => {
 		const onKeyDown = (e: KeyboardEvent) => {
+			// ignore game controls when focus is on an input/textarea or contentEditable
+			try {
+				const active = document.activeElement as HTMLElement | null;
+				if (
+					active &&
+					(active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable)
+				) {
+					return;
+				}
+			} catch {
+				// ignore any DOM access errors and continue handling keys
+			}
 			switch (e.key) {
 				case "ArrowLeft":
 					e.preventDefault();

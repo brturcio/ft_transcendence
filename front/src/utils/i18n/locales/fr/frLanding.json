@@ -33,6 +33,12 @@
     "score": "Score"
   },
   "multiplayer": {
+    "chat": {
+      "title": "Chat de la salle",
+      "placeholder": "Tapez un message...",
+      "send": "Envoyer",
+      "empty": "Pas encore de message"
+    },
     "room": "Salle",
     "roomCodePlaceholder": "CODE DE SALLE",
     "winner": "Gagnant : {{winner}}",

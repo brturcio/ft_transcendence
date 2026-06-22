@@ -237,13 +237,42 @@ export default function Profile({ onLogout }: ProfileProps) {
 				});
 				if (achievementsResponse.ok) {
 					const achievementsData: BackendAchievements = await achievementsResponse.json();
+					// fetch leaderboard to compute user's rank
+					let rank = "-";
+					try {
+						const lbResp = await fetch(`${API_BASE_URL}/users/leaderboard`, { signal: controller.signal });
+						if (lbResp.ok) {
+							const lbJson = await lbResp.json();
+							const list: { id: string; username: string }[] = lbJson.data || [];
+							const idx = list.findIndex((p) => p.username === mappedProfile.username);
+							if (idx >= 0) rank = String(idx + 1);
+						}
+					} catch {
+						// ignore leaderboard errors, keep rank as '-'
+					}
+
 					setProfile({
 						...mappedProfile,
 						unlockedAchievements: achievementsData.achievements ?? [],
+						rank,
 					});
 					return;
 				}
-				setProfile(mappedProfile);
+				{
+					let rank = "-";
+					try {
+						const lbResp = await fetch(`${API_BASE_URL}/users/leaderboard`, { signal: controller.signal });
+						if (lbResp.ok) {
+							const lbJson = await lbResp.json();
+							const list: { id: string; username: string }[] = lbJson.data || [];
+							const idx = list.findIndex((p) => p.username === mappedProfile.username);
+							if (idx >= 0) rank = String(idx + 1);
+						}
+					} catch {
+						// ignore
+					}
+					setProfile({ ...mappedProfile, rank });
+				}
 			} catch (error) {
 				if (error instanceof DOMException && error.name === "AbortError") {
 					return;
