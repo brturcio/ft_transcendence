@@ -77,11 +77,11 @@ async function deleteAvatarFile(avatarUrl: string | null) {
 	if (!avatarUrl) {
 		return;
 	}
-	const url = new URL(avatarUrl);
-	if (!url.pathname.startsWith("/uploads/avatars/")) {
+	const pathname = avatarUrl.startsWith("/") ? avatarUrl : new URL(avatarUrl).pathname;
+	if (!pathname.startsWith("/uploads/avatars/")) {
 		return;
 	}
-	const fileName = url.pathname.split("/").at(-1);
+	const fileName = pathname.split("/").at(-1);
 	if (!fileName) {
 		return;
 	}

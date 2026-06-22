@@ -53,10 +53,10 @@ type PlayerProfile = {
 	unlockedAchievements: string[];
 };
 
-const statusConfig: Record<UserStatus, { dot: string; text: string; label: string }> = {
-	ONLINE: { dot: "bg-green-500", text: "text-green-500", label: "Online" },
-	OFFLINE: { dot: "bg-red-500", text: "text-red-500", label: "Offline" },
-	INGAME: { dot: "bg-purple-500", text: "text-purple-400", label: "In Game" }
+const statusConfig: Record<UserStatus, { dot: string; text: string; labelKey: string }> = {
+	ONLINE: { dot: "bg-green-500", text: "text-green-500", labelKey: "profile.friends.status.online"  },
+	OFFLINE: { dot: "bg-red-500", text: "text-red-500", labelKey: "profile.friends.status.offline" },
+	INGAME: { dot: "bg-purple-500", text: "text-purple-400", labelKey: "profile.friends.status.inGame" },
 };
 
 export default function PlayerModal({ player, onClose }: PlayerModalProps) {
@@ -71,29 +71,30 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 
 	const avatarSrc = resolveMediaUrl(profile?.avatarUrl ?? null);
 	const realtimeStatuses = useGlobalPresence();
+	const getFriendRequestErrorMessage = (errorCode?: string) => {
+		if (errorCode === "INVALID_FRIEND_REQUEST") return t("profile.playerModal.errors.invalidRequest");
+		if (errorCode === "USER_NOT_FOUND") return t("profile.playerModal.errors.userNotFound");
+		if (errorCode === "FRIENDSHIP_BLOCKED") return t("profile.playerModal.errors.blocked");
+		if (errorCode === "FRIENDSHIP_EXISTS") return t("profile.playerModal.errors.alreadyFriends");
+		if (errorCode === "FRIEND_REQUEST_EXISTS") return t("profile.playerModal.errors.requestExists");
+		return t("profile.playerModal.sendError");
+	};
 
 	// Fetch player profile
 	useEffect(() => {
-		if (!player)
-			return;
+		if (!player) return;
 
 		const fetchProfile = async () => {
-			try
-			{
+			try {
 				setLoading(true);
 				const response = await fetch(`${API_BASE_URL}/users/${player.id}`);
-				if (response.ok)
-				{
+				if (response.ok) {
 					const result = await response.json();
 					setProfile(result.data);
 				}
-			}
-			catch (error)
-			{
+			} catch (error) {
 				console.error("Failed to fetch player profile:", error);
-			}
-			finally
-			{
+			} finally {
 				setLoading(false);
 			}
 		};
@@ -105,68 +106,52 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 
 	// Load current user ID
 	useEffect(() => {
-		const userData = localStorage.getItem("ft_user"); 
-		if (userData)
-		{
-			try
-			{
+		const userData = localStorage.getItem("ft_user");
+		if (userData) {
+			try {
 				const parsed = JSON.parse(userData);
 				setMyId(parsed.id);
-			}
-			catch (e)
-			{
+			} catch (e) {
 				console.error("Erreur lecture utilisateur:", e);
 			}
 		}
 	}, []);
 
 	// Return early only after all hooks are called
-	if (!player)
-		return null;
+	if (!player) return null;
 
 	const handleAddFriend = async () => {
-        const token = localStorage.getItem(AUTH_TOKEN_KEY);
-        if (!token)
-			return;
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+		if (!token) return;
 
-        setIsSendingRequest(true);
-        setRequestError("");
+		setIsSendingRequest(true);
+		setRequestError("");
 
-        try
-		{
-            const response = await fetch(`${API_BASE_URL}/friends/requests`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ addresseeId: player.id })
-            });
-            let data;
-            try
-			{
-                data = await response.json();
-            }
-			catch (e)
-			{
-                data = {};
-            }
+		try {
+			const response = await fetch(`${API_BASE_URL}/friends/requests`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({ addresseeId: player.id }),
+			});
+			let data;
+			try {
+				data = await response.json();
+			} catch (e) {
+				data = {};
+			}
 
-            if (response.ok)
-                setRequestSent(true);
-            else
-                setRequestError(data.error || "Impossible d'envoyer la demande");
-        } 
-		catch (error)
-		{
-            console.error("Add friend error", error);
-            setRequestError("Erreur réseau");
-        }
-		finally
-		{
-            setIsSendingRequest(false);
+			if (response.ok) setRequestSent(true);
+			else setRequestError(getFriendRequestErrorMessage(data?.error));
+		} catch (error) {
+			console.error("Add friend error", error);
+			setRequestError(t("profile.playerModal.networkError"));
+		} finally {
+			setIsSendingRequest(false);
 		}
-    };
+	};
 
 	const unlockedAchievementItems = (profile?.unlockedAchievements ?? [])
 		.map((achievementId) => getAchievement(achievementId))
@@ -186,7 +171,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 			>
 				<div className="flex justify-between items-center mb-6">
 					<h2 className="text-[var(--glow-cyan)] text-xl font-['Orbitron',sans-serif] uppercase tracking-[0.06rem]">
-						{t("profile.title") || "Profil"}
+						{t("profile.title")}
 					</h2>
 					<button
 						onClick={onClose}
@@ -197,9 +182,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 				</div>
 
 				{loading ? (
-					<div className="text-center text-[var(--txt-soft)] py-12">
-						{t("profile.messages.loading")}
-					</div>
+					<div className="text-center text-[var(--txt-soft)] py-12">{t("profile.messages.loading")}</div>
 				) : profile ? (
 					<div className="space-y-6">
 						<div className="flex items-center gap-6">
@@ -217,16 +200,20 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 										</span>
 									</div>
 								)}
-								<span className={`absolute bottom-0 right-1 w-5 h-5 rounded-full border-4 border-[rgba(9,18,40,0.95)] ${config.dot}`}></span>
+								<span
+									className={`absolute bottom-0 right-1 w-5 h-5 rounded-full border-4 border-[rgba(9,18,40,0.95)] ${config.dot}`}
+								></span>
 							</div>
-							
+
 							<div className="flex-1">
 								<div className="flex justify-between items-start">
 									<div>
 										<h3 className="text-white font-bold text-2xl mb-1 flex items-center gap-3">
 											{profile.username}
-											<span className={`text-[12px] font-bold tracking-wider uppercase ${config.text}`}>
-												{config.label}
+											<span
+												className={`text-[12px] font-bold tracking-wider uppercase ${config.text}`}
+											>
+												{t(config.labelKey)}
 											</span>
 										</h3>
 										<p className="text-[var(--glow-cyan)] text-sm">
@@ -240,12 +227,16 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 												onClick={handleAddFriend}
 												disabled={isSendingRequest || requestSent}
 												className={`px-4 py-2 rounded-lg font-['Orbitron',sans-serif] text-sm uppercase tracking-wider font-bold transition-all ${
-													requestSent 
-														? "bg-[rgba(0,229,255,0.1)] text-[var(--glow-cyan)] border border-[var(--glow-cyan)] opacity-70 cursor-not-allowed" 
+													requestSent
+														? "bg-[rgba(0,229,255,0.1)] text-[var(--glow-cyan)] border border-[var(--glow-cyan)] opacity-70 cursor-not-allowed"
 														: "bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] hover:shadow-[0_0_15px_rgba(0,229,255,0.4)]"
 												}`}
 											>
-												{requestSent ? "Request Sent" : isSendingRequest ? "Sending..." : "Add Friend"}
+												{requestSent
+													? t("profile.playerModal.requestSent")
+													: isSendingRequest
+														? t("profile.playerModal.sending")
+														: t("profile.playerModal.addFriend")}
 											</button>
 											{requestError && (
 												<span className="text-red-400 text-xs mt-1">{requestError}</span>
@@ -267,7 +258,9 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 							<div className="grid grid-cols-2 gap-3">
 								<div className="bg-[rgba(0,229,255,0.05)] p-3 rounded">
 									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.bestScore")}</p>
-									<p className="text-[var(--glow-pink)] font-bold text-lg">{profile.stats.solo.bestScore}</p>
+									<p className="text-[var(--glow-pink)] font-bold text-lg">
+										{profile.stats.solo.bestScore}
+									</p>
 								</div>
 								<div className="bg-[rgba(0,229,255,0.05)] p-3 rounded">
 									<p className="text-[var(--txt-soft)] text-xs">{t("profile.stats.games")}</p>
@@ -288,11 +281,15 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 							<div className="flex gap-4">
 								<div className="flex-1 bg-[rgba(0,229,255,0.05)] p-4 rounded">
 									<p className="text-[var(--txt-soft)] text-xs mb-1">{t("profile.xp")}</p>
-									<p className="text-[var(--glow-cyan)] font-bold text-xl">{profile.stats.gamification.xp}</p>
+									<p className="text-[var(--glow-cyan)] font-bold text-xl">
+										{profile.stats.gamification.xp}
+									</p>
 								</div>
 								<div className="flex-1 bg-[rgba(255,62,136,0.05)] p-4 rounded">
 									<p className="text-[var(--txt-soft)] text-xs mb-1">{t("profile.level")}</p>
-									<p className="text-[var(--glow-pink)] font-bold text-xl">{profile.stats.gamification.level}</p>
+									<p className="text-[var(--glow-pink)] font-bold text-xl">
+										{profile.stats.gamification.level}
+									</p>
 								</div>
 							</div>
 						</div>
@@ -318,9 +315,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
 						</button>
 					</div>
 				) : (
-					<div className="text-center text-[var(--txt-soft)] py-12">
-						{t("profile.messages.notFound")}
-					</div>
+					<div className="text-center text-[var(--txt-soft)] py-12">{t("profile.messages.notFound")}</div>
 				)}
 			</div>
 		</div>

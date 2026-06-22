@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by ntome, grouger, brturcio.*
+*This project has been created as part of the 42 curriculum by ntome, grouger, brturcio,  gajanvie.*
 
 # ft_transcendence
 

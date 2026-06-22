@@ -9,5 +9,103 @@
 		"title": "???",
 		"description": "???",
 		"imageAlt": "Logro bloqueado"
+	},
+	"items": {
+		"first_game": {
+			"title": "Bienvenido al juego",
+			"description": "Juega tu primera partida."
+		},
+		"five_games": {
+			"title": "Ya le vas pillando el truco",
+			"description": "Juega 5 partidas."
+		},
+		"ten_games": {
+			"title": "No quieres parar ?",
+			"description": "Juega diez partidas."
+		},
+		"fifty_games": {
+			"title": "Pegado al juego",
+			"description": "Juega 50 partidas."
+		},
+		"hundred_games": {
+			"title": "Ya eres habitual",
+			"description": "Juega 100 partidas."
+		},
+		"first_victory": {
+			"title": "Primera victoria",
+			"description": "Gana tu primera partida."
+		},
+		"five_wins": {
+			"title": "Racha ganadora",
+			"description": "Gana cinco partidas."
+		},
+		"ten_wins": {
+			"title": "Deberia hacerse profesional",
+			"description": "Gana 10 partidas."
+		},
+		"fifty_wins": {
+			"title": "Aqui tienes tu corona, rey",
+			"description": "Gana 50 partidas."
+		},
+		"first_tetris": {
+			"title": "El nombre del juego",
+			"description": "Completa tu primer tetris."
+		},
+		"five_tetrises": {
+			"title": "Entendiendo el juego",
+			"description": "Completa 5 tetrises."
+		},
+		"ten_tetrises": {
+			"title": "Se esta poniendo buenisimo",
+			"description": "Completa 10 tetrises."
+		},
+		"fifty_tetrises": {
+			"title": "Alguien puede pararlo ????",
+			"description": "Completa 50 tetrises."
+		},
+		"curious": {
+			"title": "Curioso",
+			"description": "Haz clic en esta insignia."
+		},
+		"first_message": {
+			"title": "Hola por ahi",
+			"description": "Envia tu primer mensaje en el chat."
+		},
+		"hundred_messages": {
+			"title": "Confianza social",
+			"description": "Envia 100 mensajes en el chat."
+		},
+		"host_tournament": {
+			"title": "Alguien quiere unirse ?",
+			"description": "Organiza un torneo."
+		},
+		"host_full_tournament": {
+			"title": "LO SIENTO NO QUEDAN PLAZAS",
+			"description": "Organiza un torneo que se llena."
+		},
+		"win_tournament": {
+			"title": "Campeon",
+			"description": "Gana un torneo."
+		},
+		"win_medium_tournament": {
+			"title": "El mejor de los mejores",
+			"description": "Gana un torneo con 8 a 15 jugadores."
+		},
+		"win_large_tournament": {
+			"title": "El rey del mundo",
+			"description": "Gana un torneo con mas de 15 jugadores."
+		},
+		"win_max_tournament": {
+			"title": "El dios del mundo",
+			"description": "Gana un torneo con el maximo de jugadores."
+		},
+		"finish_last_tournament": {
+			"title": "Lo importante es participar",
+			"description": "Termina ultimo en un torneo."
+		},
+		"change_nickname": {
+			"title": "Nuevo nombre, quien es ?",
+			"description": "Cambia tu apodo."
+		}
 	}
 }

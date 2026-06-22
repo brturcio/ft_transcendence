@@ -51,6 +51,8 @@ if (typeof document !== "undefined") {
 const AchievementNotificationItem = ({ achievement, onExit }: { achievement: Achievement; onExit: () => void }) => {
 	const { t } = useTranslation();
 	const [isExiting, setIsExiting] = useState(false);
+	const title = t(`achievements.items.${achievement.id}.title`);
+	const description = t(`achievements.items.${achievement.id}.description`);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -71,13 +73,13 @@ const AchievementNotificationItem = ({ achievement, onExit }: { achievement: Ach
 		<div
 			className={`achievement-notification mb-4 flex min-w-80 items-center gap-4 rounded-lg border border-white/20 bg-[linear-gradient(135deg,#522cff_0%,#6b3fff_100%)] p-4 shadow-[0_8px_32px_rgba(82,44,255,0.3)] ${isExiting ? "exit" : ""}`}
 		>
-			<img src={achievement.image} alt={achievement.title} className="h-16 w-16 shrink-0 rounded-md" />
+			<img src={achievement.image} alt={title} className="h-16 w-16 shrink-0 rounded-md" />
 			<div>
 				<h4 className="mb-1 mt-0 text-white">🎉 {t("achievements.notification.unlocked")}</h4>
 				<p className="mb-0 mt-1 text-[#e8e4ff]">
-					<strong>{achievement.title}</strong>
+					<strong>{title}</strong>
 				</p>
-				<p className="mb-0 mt-1 text-[0.85rem] text-[#d0c9ff]">{achievement.description}</p>
+				<p className="mb-0 mt-1 text-[0.85rem] text-[#d0c9ff]">{description}</p>
 			</div>
 		</div>
 	);
@@ -136,8 +138,10 @@ export const AchievementCard = ({ achievement, unlocked, onAchievementUnlocked }
 	const { t } = useTranslation();
 	const isLocked = !unlocked;
 	const displayImage = isLocked ? LOCKED_BADGE : achievement.image;
-	const title = isLocked ? t("achievements.locked.title") : achievement.title;
-	const description = isLocked ? t("achievements.locked.description") : achievement.description;
+	const title = isLocked ? t("achievements.locked.title") : t(`achievements.items.${achievement.id}.title`);
+	const description = isLocked
+		? t("achievements.locked.description")
+		: t(`achievements.items.${achievement.id}.description`);
 
 	const handleClick = async () => {
 		if (achievement.id === "curious" && isLocked) {
@@ -160,7 +164,7 @@ export const AchievementCard = ({ achievement, unlocked, onAchievementUnlocked }
 				<div className="flex h-32 w-full items-center justify-center">
 					<img
 						src={displayImage}
-						alt={isLocked ? t("achievements.locked.imageAlt") : achievement.title}
+						alt={isLocked ? t("achievements.locked.imageAlt") : title}
 						className="max-h-full max-w-full rounded object-contain"
 					/>
 				</div>

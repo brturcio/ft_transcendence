@@ -6,7 +6,8 @@
 	"menu": {
 		"home": "Inicio",
 		"profile": "Perfil",
-		"login": "Iniciar sesion"
+		"login": "Iniciar sesion",
+		"credits": "Créditos"
 	},
 	"actions": {
 		"logout": "Cerrar sesion",
@@ -17,5 +18,10 @@
 		"spanish": "Español",
 		"french": "Frances",
 		"flagAltSuffix": "bandera"
+	},
+	"search": {
+		"placeholder": "Buscar usuarios...",
+		"loading": "Buscando...",
+		"noResults": "Sin usuarios"
 	}
 }

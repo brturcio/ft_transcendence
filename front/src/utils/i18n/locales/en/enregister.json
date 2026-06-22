@@ -39,6 +39,8 @@
 		"passwordMismatch": "Passwords do not match.",
 		"mustAcceptTerms": "You must accept the Terms of Service and Privacy Policy.",
 		"couldNotCreate": "Could not create account.",
+		"userAlreadyExists": "Email or username is already in use.",
+		"validation": "Please check the fields and try again.",
 		"server": "Server error. Please try again later."
 	},
 	"actions": {

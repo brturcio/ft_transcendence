@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, Route, Routes, Link } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile/Profile";
@@ -19,11 +19,11 @@ const LOGOUT_ENDPOINT = `${API_BASE_URL}/auth/logout`;
 
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(localStorage.getItem(AUTH_TOKEN_KEY)));
-	
+
 	const handleLogin = () => {
 		setIsAuthenticated(true);
 	};
-	
+
 	const handleLogout = async () => {
 		const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
 		localStorage.removeItem(AUTH_TOKEN_KEY);

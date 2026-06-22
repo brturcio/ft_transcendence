@@ -39,6 +39,8 @@
 		"passwordMismatch": "Las contrasenas no coinciden.",
 		"mustAcceptTerms": "Debes aceptar los Terminos del Servicio y la Politica de Privacidad.",
 		"couldNotCreate": "No se pudo crear la cuenta.",
+		"userAlreadyExists": "El correo o usuario ya esta en uso.",
+		"validation": "Revisa los campos e intentalo de nuevo.",
 		"server": "Error del servidor. Intentalo de nuevo mas tarde."
 	},
 	"actions": {

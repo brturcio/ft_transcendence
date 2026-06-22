@@ -7,6 +7,8 @@
 	"summary": {
 		"rankPrefix": "Rango #"
 	},
+	"level": "Nivel",
+	"xp": "XP",
 	"fields": {
 		"username": "Usuario",
 		"bio": "Biografia",
@@ -19,12 +21,14 @@
 		"deleting": "[ ELIMINANDO ]",
 		"changeAvatar": "Cambiar foto",
 		"removeAvatar": "Eliminar foto",
-		"uploadingAvatar": "Subiendo..."
+		"uploadingAvatar": "Subiendo...",
+		"close": "Cerrar"
 	},
 	"messages": {
 		"loading": "Cargando perfil...",
 		"updated": "Perfil actualizado correctamente.",
 		"loadError": "No se pudo cargar el perfil",
+		"notFound": "Perfil no encontrado.",
 		"saveError": "No se pudo actualizar el perfil",
 		"deleteConfirm": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
 		"deleteError": "No se pudo eliminar la cuenta",
@@ -40,10 +44,12 @@
 	},
 	"stats": {
 		"games": "Partidas",
+		"soloTitle": "Solo",
 		"soloGames": "Partidas solo",
 		"bestScore": "Mejor puntuacion",
 		"lastScore": "Ultima puntuacion",
 		"linesCompleted": "Lineas completadas",
+		"lines": "Lineas",
 		"tetrises": "Tetrises",
 		"multiWins": "Victorias multijugador",
 		"tournamentsPlayed": "Torneos jugados",
@@ -52,5 +58,34 @@
 	},
 	"achievements": {
 		"title": "Logros"
+	},
+	"friends": {
+		"title": "Amigos",
+		"pendingRequests": "Solicitudes pendientes",
+		"emptyFriends": "No tienes amigos por ahora.",
+		"emptyRequests": "No hay solicitudes pendientes.",
+		"remove": "Eliminar",
+		"accept": "Aceptar",
+		"decline": "Rechazar",
+		"requestText": "quiere ser tu amigo",
+		"status": {
+			"online": "En linea",
+			"offline": "Desconectado",
+			"inGame": "En partida"
+		}
+	},
+	"playerModal": {
+		"addFriend": "Añadir amigo",
+		"sending": "Enviando...",
+		"requestSent": "Solicitud enviada",
+		"sendError": "No se pudo enviar la solicitud de amistad.",
+		"networkError": "Error de red.",
+		"errors": {
+			"invalidRequest": "No puedes enviarte una solicitud de amistad a ti mismo.",
+			"userNotFound": "Usuario no encontrado.",
+			"blocked": "Esta amistad esta bloqueada.",
+			"alreadyFriends": "Ya sois amigos.",
+			"requestExists": "La solicitud de amistad ya fue enviada."
+		}
 	}
 }

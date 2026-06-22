@@ -9,5 +9,103 @@
 		"title": "???",
 		"description": "???",
 		"imageAlt": "Achievement verrouille"
+	},
+	"items": {
+		"first_game": {
+			"title": "Bienvenue dans le jeu",
+			"description": "Joue ta premiere partie."
+		},
+		"five_games": {
+			"title": "Tu prends le coup",
+			"description": "Joue 5 parties."
+		},
+		"ten_games": {
+			"title": "Tu ne veux plus t'arreter ?",
+			"description": "Joue dix parties."
+		},
+		"fifty_games": {
+			"title": "Colle au jeu",
+			"description": "Joue 50 parties."
+		},
+		"hundred_games": {
+			"title": "Tu es un habitue maintenant",
+			"description": "Joue 100 parties."
+		},
+		"first_victory": {
+			"title": "Premiere victoire",
+			"description": "Gagne ta premiere partie."
+		},
+		"five_wins": {
+			"title": "Serie gagnante",
+			"description": "Gagne cinq parties."
+		},
+		"ten_wins": {
+			"title": "Il devrait passer pro",
+			"description": "Gagne 10 parties."
+		},
+		"fifty_wins": {
+			"title": "Voici ta couronne, roi",
+			"description": "Gagne 50 parties."
+		},
+		"first_tetris": {
+			"title": "Le nom du jeu",
+			"description": "Complete ton premier tetris."
+		},
+		"five_tetrises": {
+			"title": "Comprendre le jeu",
+			"description": "Complete 5 tetrises."
+		},
+		"ten_tetrises": {
+			"title": "Il devient tres bon",
+			"description": "Complete 10 tetrises."
+		},
+		"fifty_tetrises": {
+			"title": "Quelqu'un peut l'arreter ????",
+			"description": "Complete 50 tetrises."
+		},
+		"curious": {
+			"title": "Curieux",
+			"description": "Clique sur ce badge."
+		},
+		"first_message": {
+			"title": "Salut toi",
+			"description": "Envoie ton premier message dans le chat."
+		},
+		"hundred_messages": {
+			"title": "Aisance sociale",
+			"description": "Envoie 100 messages dans le chat."
+		},
+		"host_tournament": {
+			"title": "Quelqu'un veut rejoindre ?",
+			"description": "Organise un tournoi."
+		},
+		"host_full_tournament": {
+			"title": "DESOLE PLUS DE PLACE",
+			"description": "Organise un tournoi complet."
+		},
+		"win_tournament": {
+			"title": "Champion",
+			"description": "Gagne un tournoi."
+		},
+		"win_medium_tournament": {
+			"title": "Le meilleur des meilleurs",
+			"description": "Gagne un tournoi avec 8 a 15 joueurs."
+		},
+		"win_large_tournament": {
+			"title": "Le roi du monde",
+			"description": "Gagne un tournoi avec plus de 15 joueurs."
+		},
+		"win_max_tournament": {
+			"title": "Le dieu du monde",
+			"description": "Gagne un tournoi avec le maximum de joueurs."
+		},
+		"finish_last_tournament": {
+			"title": "L'important c'est de participer",
+			"description": "Finis dernier dans un tournoi."
+		},
+		"change_nickname": {
+			"title": "Nouveau nom, c'est qui ?",
+			"description": "Change ton pseudo."
+		}
 	}
 }

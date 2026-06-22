@@ -9,8 +9,10 @@ import register from "./esregister.json"
 import terms from "./esterms.json"
 import tournaments from "./estournaments.json"
 import achievements from "./esachievements.json"
+import credits from "./escredits.json"
 
 export default {
+	credits,
 	game,
 	landing,
 	login,

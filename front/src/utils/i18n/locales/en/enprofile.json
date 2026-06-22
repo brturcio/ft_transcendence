@@ -59,5 +59,34 @@
 	},
 	"achievements": {
 		"title": "Achievements"
+	},
+	"friends": {
+		"title": "Friends",
+		"pendingRequests": "Pending Requests",
+		"emptyFriends": "No friends at the moment.",
+		"emptyRequests": "No pending requests.",
+		"remove": "Remove",
+		"accept": "Accept",
+		"decline": "Decline",
+		"requestText": "wants to be your friend",
+		"status": {
+			"online": "Online",
+			"offline": "Offline",
+			"inGame": "In Game"
+		}
+	},
+	"playerModal": {
+		"addFriend": "Add Friend",
+		"sending": "Sending...",
+		"requestSent": "Request Sent",
+		"sendError": "Could not send friend request.",
+		"networkError": "Network error.",
+		"errors": {
+			"invalidRequest": "You cannot send a friend request to yourself.",
+			"userNotFound": "User not found.",
+			"blocked": "This friendship is blocked.",
+			"alreadyFriends": "You are already friends.",
+			"requestExists": "Friend request already sent."
+		}
 	}
 }

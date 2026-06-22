@@ -49,13 +49,13 @@ export default function Leaderboard() {
 
 				<div className="flex-1 px-4 min-w-max">
 					<span className="text-[var(--glow-cyan)] font-bold text-xs uppercase tracking-widest whitespace-nowrap">
-						{t("landing.leaderboard.player") || "Joueur"}
+						{t("landing.leaderboard.player")}
 					</span>
 				</div>
 
 				<div className="shrink-0 px-2 text-right min-w-max">
 					<span className="text-[var(--glow-cyan)] font-bold text-xs uppercase tracking-widest whitespace-nowrap">
-						{t("landing.leaderboard.score") || "Score"}
+						{t("landing.leaderboard.score")}
 					</span>
 				</div>
 			</div>
@@ -67,7 +67,7 @@ export default function Leaderboard() {
 					</div>
 				) : players.length === 0 ? (
 					<div className="text-(--txt-soft) text-center p-5 italic">
-						{t("landing.dashboard.leaderboard.empty") || "Pas de joueurs"}
+						{t("landing.dashboard.leaderboard.empty")}
 					</div>
 				) : (
 					players.map((player, index) => (

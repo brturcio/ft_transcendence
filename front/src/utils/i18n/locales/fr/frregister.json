@@ -39,6 +39,8 @@
 		"passwordMismatch": "Les mots de passe ne correspondent pas.",
 		"mustAcceptTerms": "Vous devez accepter les Conditions d'utilisation et la Politique de confidentialite.",
 		"couldNotCreate": "Impossible de creer le compte.",
+		"userAlreadyExists": "L'email ou le nom d'utilisateur est deja utilise.",
+		"validation": "Verifiez les champs puis reessayez.",
 		"server": "Erreur serveur. Veuillez reessayer plus tard."
 	},
 	"actions": {

@@ -6,7 +6,8 @@
 	"menu": {
 		"home": "Accueil",
 		"profile": "Profil",
-		"login": "Connexion"
+		"login": "Connexion",
+		"credits": "Crédits"
 	},
 	"actions": {
 		"logout": "Deconnexion",
@@ -17,5 +18,10 @@
 		"spanish": "Espagnol",
 		"french": "Français",
 		"flagAltSuffix": "drapeau"
+	},
+	"search": {
+		"placeholder": "Rechercher des utilisateurs...",
+		"loading": "Recherche...",
+		"noResults": "Aucun utilisateur"
 	}
 }

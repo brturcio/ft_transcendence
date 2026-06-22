@@ -35,6 +35,11 @@ export default function Register({ onLogin }: RegisterProps) {
 	const [acceptTerms, setAcceptTerms] = useState(false);
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const getRegisterErrorMessage = (errorCode?: string) => {
+		if (errorCode === "USER_ALREADY_EXISTS") return t("register.errors.userAlreadyExists");
+		if (errorCode === "VALIDATION_ERROR") return t("register.errors.validation");
+		return t("register.errors.couldNotCreate");
+	};
 
 	const rules = [
 		{
@@ -81,7 +86,7 @@ export default function Register({ onLogin }: RegisterProps) {
 			});
 			const data = await response.json();
 			if (!response.ok) {
-				setError(data.message ?? t("register.errors.couldNotCreate"));
+				setError(getRegisterErrorMessage(data?.error));
 				return;
 			}
 			if (!data.token || !data.refreshToken || !data.user) {

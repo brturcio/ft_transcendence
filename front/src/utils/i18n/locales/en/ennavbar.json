@@ -6,7 +6,8 @@
 	"menu": {
 		"home": "Home",
 		"profile": "Profile",
-		"login": "Login"
+		"login": "Login",
+		"credits": "Credits"
 	},
 	"actions": {
 		"logout": "Logout",
@@ -17,5 +18,10 @@
 		"spanish": "Spanish",
 		"french": "French",
 		"flagAltSuffix": "flag"
+	},
+	"search": {
+		"placeholder": "Search users...",
+		"loading": "Searching...",
+		"noResults": "No users"
 	}
 }

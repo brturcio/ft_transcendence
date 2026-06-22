@@ -9,8 +9,10 @@ import register from "./frregister.json"
 import terms from "./frterms.json"
 import tournaments from "./frtournaments.json"
 import achievements from "./frachievements.json"
+import credits from "./frcredits.json"
 
 export default {
+	credits,
 	game,
 	landing,
 	login,

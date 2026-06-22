@@ -135,7 +135,7 @@ export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: Navb
 					</NavLink>
 				)}
 				<NavLink to="/credits" className={getNavClass}>
-					Credits
+					{t("navbar.menu.credits")}
 				</NavLink>
 			</nav>
 
@@ -158,7 +158,7 @@ export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: Navb
 								setSearchQuery(e.target.value);
 								setShowResults(true);
 							}}
-							placeholder={t("navbar.search.placeholder", "Search users...")}
+							placeholder={t("navbar.search.placeholder")}
 							className="bg-[rgba(0,0,0,0.3)] border border-[rgba(255,62,136,0.2)] rounded-lg py-2 px-3 text-white w-64 max-[760px]:w-40"
 						/>
 					</form>
@@ -166,9 +166,9 @@ export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: Navb
 					{showResults && searchQuery.trim().length > 0 && (
 						<div className="absolute right-0 mt-2 w-64 max-w-full bg-[rgba(10,14,30,0.95)] border border-[rgba(255,62,136,0.65)] rounded-lg p-2 z-20">
 							{searchLoading ? (
-								<div className="text-[var(--txt-soft)] p-2">{t("navbar.search.loading", "Searching...")}</div>
+								<div className="text-[var(--txt-soft)] p-2">{t("navbar.search.loading")}</div>
 							) : searchResults.length === 0 ? (
-								<div className="text-[var(--txt-soft)] p-2">{t("navbar.search.noResults", "No users")}</div>
+								<div className="text-[var(--txt-soft)] p-2">{t("navbar.search.noResults")}</div>
 							) : (
 								<div className="flex flex-col gap-1">
 									{searchResults.map((u) => (
@@ -234,7 +234,7 @@ export default function Navbar({ isAuthenticated, onLogout, onSelectUser }: Navb
 					</Link>
 				)}
 			</div>
-			
+
 		</header>
 	);
 }

@@ -9,5 +9,103 @@
 		"title": "???",
 		"description": "???",
 		"imageAlt": "Locked achievement"
+	},
+	"items": {
+		"first_game": {
+			"title": "Welcome to the game",
+			"description": "Play your first game."
+		},
+		"five_games": {
+			"title": "Getting the hang of it",
+			"description": "Play 5 games."
+		},
+		"ten_games": {
+			"title": "You don't want to stop ?",
+			"description": "Play ten games."
+		},
+		"fifty_games": {
+			"title": "Glued to the game",
+			"description": "Play 50 games."
+		},
+		"hundred_games": {
+			"title": "You're a regular now",
+			"description": "Play 100 games."
+		},
+		"first_victory": {
+			"title": "First victory",
+			"description": "Win your first game."
+		},
+		"five_wins": {
+			"title": "Winning streak",
+			"description": "Win five games."
+		},
+		"ten_wins": {
+			"title": "He should go pro",
+			"description": "Win 10 games."
+		},
+		"fifty_wins": {
+			"title": "Heres your crown king",
+			"description": "Win 50 games."
+		},
+		"first_tetris": {
+			"title": "The name of the game",
+			"description": "Complete your first tetris."
+		},
+		"five_tetrises": {
+			"title": "Understanding the game",
+			"description": "Complete 5 tetrises."
+		},
+		"ten_tetrises": {
+			"title": "His getting gooood",
+			"description": "Complete 10 tetrises."
+		},
+		"fifty_tetrises": {
+			"title": "Can someone stop him ????",
+			"description": "Complete 50 tetrises."
+		},
+		"curious": {
+			"title": "Curious",
+			"description": "Click on this badge."
+		},
+		"first_message": {
+			"title": "Hello there",
+			"description": "Send your first message in the chat."
+		},
+		"hundred_messages": {
+			"title": "Social confident",
+			"description": "Send 100 messages in the chat."
+		},
+		"host_tournament": {
+			"title": "Anyone want to join ?",
+			"description": "Host a tournament."
+		},
+		"host_full_tournament": {
+			"title": "SORRY NO MORE PLACE",
+			"description": "Host a tournament that is full."
+		},
+		"win_tournament": {
+			"title": "Champion",
+			"description": "Win a tournament."
+		},
+		"win_medium_tournament": {
+			"title": "The best of the best",
+			"description": "Win a tournament with 8 to 15 players."
+		},
+		"win_large_tournament": {
+			"title": "The king of the world",
+			"description": "Win a tournament with more than 15 players."
+		},
+		"win_max_tournament": {
+			"title": "The god of the world",
+			"description": "Win a tournament with maximum players."
+		},
+		"finish_last_tournament": {
+			"title": "L'important c'est de participer",
+			"description": "Finish last in a tournament."
+		},
+		"change_nickname": {
+			"title": "New name, who dis ?",
+			"description": "Change your nickname."
+		}
 	}
 }

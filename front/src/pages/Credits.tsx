@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const TEAM = [
 	{
@@ -32,6 +33,8 @@ const TEAM = [
 ];
 
 export default function Credits() {
+	const { t } = useTranslation();
+
 	return (
 		<div className="min-h-screen py-16 px-6 flex justify-center items-center max-[768px]:py-8 max-[768px]:px-4">
 			<section className="w-full max-w-3xl p-12 max-[768px]:py-8 max-[768px]:px-5 rounded-3xl bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.14)] shadow-[0_24px_80px_rgba(0,0,0,0.25)] backdrop-blur-lg">
@@ -41,10 +44,10 @@ export default function Credits() {
 						ft_transcendence — 42
 					</span>
 					<h1 className="m-0 mb-3 text-[clamp(2.2rem,6vw,3.8rem)] leading-[1.05] font-['Orbitron',sans-serif] font-extrabold uppercase text-[var(--txt-main)]">
-						Credits
+						{t("credits.title")}
 					</h1>
 					<p className="m-0 opacity-60 text-[1rem] font-['Rajdhani',sans-serif] tracking-[0.05em]">
-						Tetris Multiplayer — Full-stack project
+						{t("credits.subtitle")}
 					</p>
 
 					<div className="mt-8 mx-auto w-24 h-px bg-[linear-gradient(90deg,transparent,var(--glow-cyan),transparent)]" />
@@ -117,7 +120,7 @@ export default function Credits() {
 						to="/" 
 						className="bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] rounded-xl px-6 py-3 text-[#021318] font-['Orbitron',sans-serif] text-[0.95rem] font-bold uppercase tracking-[0.04rem] cursor-pointer transition-all duration-300 shadow-[0_0_5px_rgba(0,229,255,0.4)] hover:-translate-y-0.5 hover:shadow-[0_0_10px_rgba(0,229,255,0.6)] active:translate-y-0 no-underline"
 					>
-						Back To Home
+						{t("credits.backHome")}
 					</Link>
 					
 					<p className="m-0 text-[0.8rem] text-[var(--txt-soft)] font-['Rajdhani',sans-serif] tracking-[0.05em] uppercase opacity-60">

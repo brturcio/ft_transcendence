@@ -57,6 +57,35 @@
 		"winRate": "Taux de victoire"
 	},
 	"achievements": {
-		"title": "Achievements"
+		"title": "Succès"
+	},
+	"friends": {
+		"title": "Amis",
+		"pendingRequests": "Demandes en attente",
+		"emptyFriends": "Aucun ami pour le moment.",
+		"emptyRequests": "Aucune demande en attente.",
+		"remove": "Supprimer",
+		"accept": "Accepter",
+		"decline": "Refuser",
+		"requestText": "veut devenir ton ami",
+		"status": {
+			"online": "En ligne",
+			"offline": "Hors ligne",
+			"inGame": "En partie"
+		}
+	},
+	"playerModal": {
+		"addFriend": "Ajouter un ami",
+		"sending": "Envoi...",
+		"requestSent": "Demande envoyée",
+		"sendError": "Impossible d'envoyer la demande d'ami.",
+		"networkError": "Erreur réseau.",
+		"errors": {
+			"invalidRequest": "Vous ne pouvez pas vous envoyer une demande d'ami.",
+			"userNotFound": "Utilisateur introuvable.",
+			"blocked": "Cette amitie est bloquee.",
+			"alreadyFriends": "Vous etes deja amis.",
+			"requestExists": "La demande d'ami a deja ete envoyee."
+		}
 	}
 }
