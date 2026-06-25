@@ -23,25 +23,18 @@ const clients = new Map<string, RealtimeClient>();
 
 const activeUsers = new Map<string, Set<string>>();
 
-function broadcastGlobal(message: ServerMessage)
-{
-	for (const client of clients.values())
-		send(client.ws, message);
+function broadcastGlobal(message: ServerMessage) {
+	for (const client of clients.values()) send(client.ws, message);
 }
 
-async function updateUserStatus(userId: string, status: UserStatus)
-{
-	try
-	{
+async function updateUserStatus(userId: string, status: UserStatus) {
+	try {
 		await db.update(users).set({ status }).where(eq(users.id, userId));
 		broadcastGlobal({ type: "friend_status_update", userId, status });
-	}
-	catch (error)
-	{
+	} catch (error) {
 		console.error(` fail updte the user -> ${userId} to ${status}`, error);
 	}
 }
-
 
 function send(ws: WebSocket, message: ServerMessage) {
 	if (ws.readyState !== WebSocket.OPEN) {
@@ -113,12 +106,18 @@ function handleLeaveRoom(client: RealtimeClient) {
 	if (!previousRoomId) {
 		return;
 	}
-
-	const updatedRoom = removePlayerFromCurrentRoom(client.user.id, previousRoomId);
+	const result = removePlayerFromCurrentRoom(client.user.id, previousRoomId);
 	client.roomId = null;
-
-	if (updatedRoom) {
-		broadcastRoom(previousRoomId, { type: "room_updated", room: updatedRoom });
+	if (result) {
+		broadcastRoom(previousRoomId, { type: "room_updated", room: result.room });
+		if (result.isFinished) {
+			broadcastRoom(previousRoomId, {
+				type: "match_finished",
+				winnerId: result.winner?.id ?? null,
+				winnerUsername: result.winner?.username ?? null,
+				room: result.room,
+			});
+		}
 	}
 }
 
@@ -179,11 +178,16 @@ function handleMessage(client: RealtimeClient, message: ClientMessage) {
 				sendError(client.ws, "NOT_IN_ROOM", "Join a room before sending attacks");
 				return;
 			}
+			const lines = Math.floor(message.lines);
+			if (!Number.isFinite(lines) || lines < 1 || lines > 4) {
+				sendError(client.ws, "INVALID_ATTACK", "Invalid attack lines");
+				return;
+			}
 			broadcastRoomExcept(client.roomId, client.socketId, {
 				type: "player_attack",
 				playerId: client.user.id,
 				username: client.user.username,
-				lines: message.lines,
+				lines,
 			});
 			return;
 		}
@@ -211,11 +215,10 @@ function handleMessage(client: RealtimeClient, message: ClientMessage) {
 			return;
 		}
 
-		case "set_status":
-		{
+		case "set_status": {
 			if (message.status === "INGAME" || message.status === "ONLINE")
 				void updateUserStatus(client.user.id, message.status);
-			return ;
+			return;
 		}
 
 		default:
@@ -241,8 +244,7 @@ wss.on("connection", async (ws, request) => {
 
 		// garde le compte onglet
 		let userSockets = activeUsers.get(user.id);
-		if (!userSockets)
-		{
+		if (!userSockets) {
 			userSockets = new Set();
 			activeUsers.set(user.id, userSockets);
 			updateUserStatus(user.id, "ONLINE");
@@ -267,11 +269,9 @@ wss.on("connection", async (ws, request) => {
 			handleLeaveRoom(client);
 			clients.delete(socketId);
 			const userSockets = activeUsers.get(user.id);
-			if (userSockets)
-			{
+			if (userSockets) {
 				userSockets.delete(socketId);
-				if (userSockets.size === 0)
-				{
+				if (userSockets.size === 0) {
 					activeUsers.delete(user.id);
 					updateUserStatus(user.id, "OFFLINE");
 				}

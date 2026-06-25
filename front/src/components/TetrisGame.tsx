@@ -14,6 +14,7 @@ const PIECE_COLORS: Record<string, string> = {
 	Z: "#ff0000",
 	J: "#0000ff",
 	L: "#ff8800",
+	G: "#8b8b8b",
 	preview: "#666666",
 	null: "transparent",
 };
@@ -39,7 +40,7 @@ export default function TetrisGame({
 	incomingAttack = null,
 	onSendAttack,
 }: TetrisGameProps) {
-	const game = useTetrisGame({ reportSolo: mode === "solo", allowPause: mode === "solo" });
+	const game = useTetrisGame({ reportSolo: mode === "solo", allowPause: true });
 	const { t } = useTranslation();
 	const [isStarted, setIsStarted] = useState(false);
 	const hasSentGameOver = useRef(false);
@@ -61,7 +62,7 @@ export default function TetrisGame({
 			setIsStarted(false);
 			hasSentGameOver.current = false;
 			previousMultiplayerStarted.current = false;
-			prevCleared.current = 0;
+			previousLines.current = 0;
 		}
 		previousMode.current = mode;
 	}, [mode]);
@@ -73,7 +74,7 @@ export default function TetrisGame({
 			game.togglePause();
 			setIsStarted(true);
 			hasSentGameOver.current = false;
-			prevCleared.current = 0;
+			previousLines.current = 0;
 		}
 		previousMultiplayerStarted.current = multiplayerStarted;
 	}, [mode, multiplayerStarted]);
@@ -104,25 +105,24 @@ export default function TetrisGame({
 		game.gameState.isGameOver,
 	]);
 
-	const prevCleared = useRef(0);
+	const previousLines = useRef(0);
 	useEffect(() => {
-		const cleared = game.gameState.clearedLines ?? 0;
-		const delta = cleared - (prevCleared.current ?? 0);
-		if (mode === "multiplayer" && isStarted && delta > 0 && onSendAttack) {
-			onSendAttack(delta);
+		const totalLines = game.gameState.lines;
+		const clearedNow = totalLines - previousLines.current;
+		if (mode === "multiplayer" && isStarted && clearedNow > 0 && onSendAttack) {
+			onSendAttack(clearedNow);
 		}
-		prevCleared.current = cleared;
-	}, [game.gameState.clearedLines, mode, isStarted, onSendAttack]);
+		previousLines.current = totalLines;
+	}, [game.gameState.lines, mode, isStarted, onSendAttack]);
 
 	useEffect(() => {
 		if (isStarted && !game.gameState.isGameOver) {
 			updateMyStatus("INGAME");
-		}
-		else if (game.gameState.isGameOver) {
+		} else if (game.gameState.isGameOver) {
 			updateMyStatus("ONLINE");
 		}
 		return () => {
-			 updateMyStatus("ONLINE");
+			updateMyStatus("ONLINE");
 		};
 	}, [isStarted, game.gameState.isGameOver, updateMyStatus]);
 
@@ -136,18 +136,28 @@ export default function TetrisGame({
 		setIsStarted(false);
 		// reset any incoming attacks
 		setLocalIncomingAttack(null);
+		lastAppliedAttackId.current = null;
 		hasSentGameOver.current = false;
-		prevCleared.current = 0;
+		previousLines.current = 0;
 	};
 
-	const [localIncomingAttack, setLocalIncomingAttack] = useState<null | { fromId: string; lines: number; username?: string; id: number }>(null);
+	const [localIncomingAttack, setLocalIncomingAttack] = useState<null | {
+		fromId: string;
+		lines: number;
+		username?: string;
+		id: number;
+	}>(null);
+
+	const lastAppliedAttackId = useRef<number | null>(null);
 
 	useEffect(() => {
 		if (!incomingAttack) return;
+		if (lastAppliedAttackId.current === incomingAttack.id) return;
+		lastAppliedAttackId.current = incomingAttack.id;
 		setLocalIncomingAttack(incomingAttack);
 		if (mode !== "multiplayer") return;
 		game.receiveGarbage?.(incomingAttack.lines);
-	}, [incomingAttack, mode, game]);
+	}, [incomingAttack, mode]);
 
 	const renderMiniBoard = (player: PublicRoomPlayer) => {
 		const state = player.state;
@@ -155,7 +165,9 @@ export default function TetrisGame({
 			<div key={player.id} className="bg-[rgba(0,0,0,0.35)] border border-[rgba(0,229,255,0.2)] rounded-md p-2">
 				<div className="flex items-center justify-between gap-2 mb-2">
 					<p className="text-white font-['Orbitron',sans-serif] text-xs truncate">{player.username}</p>
-					<span className={`text-[0.65rem] uppercase ${player.isAlive ? "text-[var(--glow-cyan)]" : "text-[var(--glow-pink)]"}`}>
+					<span
+						className={`text-[0.65rem] uppercase ${player.isAlive ? "text-[var(--glow-cyan)]" : "text-[var(--glow-pink)]"}`}
+					>
 						{player.isAlive ? t("game.tetris.multiplayer.alive") : t("game.tetris.multiplayer.out")}
 					</span>
 				</div>
@@ -166,7 +178,9 @@ export default function TetrisGame({
 								key={`${player.id}-${rowIdx}-${colIdx}`}
 								className="rounded-[1px]"
 								style={{
-									backgroundColor: cell ? (PIECE_COLORS[cell] ?? "rgba(255,255,255,0.2)") : "rgba(0, 229, 255, 0.05)",
+									backgroundColor: cell
+										? (PIECE_COLORS[cell] ?? "rgba(255,255,255,0.2)")
+										: "rgba(0, 229, 255, 0.05)",
 								}}
 							/>
 						)),
@@ -278,60 +292,61 @@ export default function TetrisGame({
 				{/* Left: Tetris Grid */}
 				<div className="flex justify-center items-center relative w-full xl:flex-1">
 					<div className="grid grid-cols-10 grid-rows-20 gap-px bg-[rgba(0,0,0,0.6)] p-1 border-2 border-(--glow-cyan) rounded-sm aspect-10/20 w-full max-w-[240px] md:max-w-[280px] xl:max-w-[320px]">
-					{displayGrid.map((row, rowIdx) =>
-						row.map((cell, colIdx) => (
-							<div
-								key={`${rowIdx}-${colIdx}`}
-								className="bg-[rgba(0,229,255,0.05)] border-[0.5px] border-[rgba(0,229,255,0.15)] rounded-xs"
-								style={{
-									backgroundColor:
-										cell === "preview"
-											? "rgba(255,255,255,0.15)"
-											: cell
-												? PIECE_COLORS[cell]
-												: "rgba(0, 229, 255, 0.05)",
+						{displayGrid.map((row, rowIdx) =>
+							row.map((cell, colIdx) => (
+								<div
+									key={`${rowIdx}-${colIdx}`}
+									className="bg-[rgba(0,229,255,0.05)] border-[0.5px] border-[rgba(0,229,255,0.15)] rounded-xs"
+									style={{
+										backgroundColor:
+											cell === "preview"
+												? "rgba(255,255,255,0.15)"
+												: cell
+													? PIECE_COLORS[cell]
+													: "rgba(0, 229, 255, 0.05)",
 
-									boxShadow: cell && cell !== "preview" ? `0 0 8px ${PIECE_COLORS[cell]}` : "none",
-								}}
-							/>
-						)),
-					)}
-				</div>
-
-				{/* Play/Restart Button Overlay */}
-				{(!isStarted || game.gameState.isGameOver) && (
-					<div className="absolute inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.75)] rounded-sm backdrop-blur-[2px] z-10">
-						{mode === "multiplayer" && !multiplayerStarted && !game.gameState.isGameOver ? (
-							<p className="text-[var(--glow-cyan)] font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] text-center px-4">
-								{t("game.tetris.multiplayer.waitingForHost")}
-							</p>
-						) : mode === "multiplayer" && game.gameState.isGameOver ? (
-							<p className="text-[var(--glow-pink)] font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] text-center px-4">
-								{winner
-									? t("game.tetris.multiplayer.gameOverWithWinner", { winner })
-									: t("game.tetris.gameOver.title")}
-							</p>
-						) : (
-							<button
-								className="bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] border-0 py-4 px-8 text-2xl font-bold font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] rounded-lg cursor-pointer shadow-[0_0_24px_rgba(0,229,255,0.4)] transition-all duration-200 hover:shadow-[0_0_32px_rgba(0,229,255,0.6)] hover:scale-[1.05] active:scale-[0.98] max-[760px]:py-3 max-[760px]:px-6 max-[760px]:text-[1.2rem]"
-								onClick={isStarted ? handleRestart : handleStart}
-							>
-								[ {isStarted ? t("game.tetris.actions.restart") : t("game.tetris.actions.play")} ]
-							</button>
+										boxShadow:
+											cell && cell !== "preview" ? `0 0 8px ${PIECE_COLORS[cell]}` : "none",
+									}}
+								/>
+							)),
 						)}
 					</div>
-				)}
-				{/* Break Button Overlay */}
-				{isStarted && game.gameState.isPaused && (
-					<div className="absolute inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.75)] rounded-sm backdrop-blur-[2px] z-10">
-						<button
-							className="bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] border-0 py-4 px-8 text-2xl font-bold font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] rounded-lg cursor-pointer shadow-[0_0_24px_rgba(0,229,255,0.4)] transition-all duration-200 hover:shadow-[0_0_32px_rgba(0,229,255,0.6)] hover:scale-[1.05] active:scale-[0.98] max-[760px]:py-3 max-[760px]:px-6 max-[760px]:text-[1.2rem]"
-							onClick={game.togglePause}
-						>
-							{t("game.tetris.actions.continue")}
-						</button>
-					</div>
-				)}
+
+					{/* Play/Restart Button Overlay */}
+					{(!isStarted || game.gameState.isGameOver) && (
+						<div className="absolute inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.75)] rounded-sm backdrop-blur-[2px] z-10">
+							{mode === "multiplayer" && !multiplayerStarted && !game.gameState.isGameOver ? (
+								<p className="text-[var(--glow-cyan)] font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] text-center px-4">
+									{t("game.tetris.multiplayer.waitingForHost")}
+								</p>
+							) : mode === "multiplayer" && game.gameState.isGameOver ? (
+								<p className="text-[var(--glow-pink)] font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] text-center px-4">
+									{winner
+										? t("game.tetris.multiplayer.gameOverWithWinner", { winner })
+										: t("game.tetris.gameOver.title")}
+								</p>
+							) : (
+								<button
+									className="bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] border-0 py-4 px-8 text-2xl font-bold font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] rounded-lg cursor-pointer shadow-[0_0_24px_rgba(0,229,255,0.4)] transition-all duration-200 hover:shadow-[0_0_32px_rgba(0,229,255,0.6)] hover:scale-[1.05] active:scale-[0.98] max-[760px]:py-3 max-[760px]:px-6 max-[760px]:text-[1.2rem]"
+									onClick={isStarted ? handleRestart : handleStart}
+								>
+									[ {isStarted ? t("game.tetris.actions.restart") : t("game.tetris.actions.play")} ]
+								</button>
+							)}
+						</div>
+					)}
+					{/* Break Button Overlay */}
+					{isStarted && game.gameState.isPaused && (
+						<div className="absolute inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.75)] rounded-sm backdrop-blur-[2px] z-10">
+							<button
+								className="bg-[linear-gradient(95deg,var(--glow-cyan),#42f5d7)] text-[#021318] border-0 py-4 px-8 text-2xl font-bold font-['Orbitron',sans-serif] uppercase tracking-[0.06rem] rounded-lg cursor-pointer shadow-[0_0_24px_rgba(0,229,255,0.4)] transition-all duration-200 hover:shadow-[0_0_32px_rgba(0,229,255,0.6)] hover:scale-[1.05] active:scale-[0.98] max-[760px]:py-3 max-[760px]:px-6 max-[760px]:text-[1.2rem]"
+								onClick={game.togglePause}
+							>
+								{t("game.tetris.actions.continue")}
+							</button>
+						</div>
+					)}
 				</div>
 
 				{mode === "multiplayer" && remotePlayers.length > 0 && (
@@ -342,74 +357,74 @@ export default function TetrisGame({
 
 				{/* Right: Score and Next Block */}
 				<div className="grid w-full max-w-[460px] grid-cols-1 gap-2 sm:grid-cols-2 xl:w-44 xl:grid-cols-1 xl:flex-none">
-				{!game.gameState.isGameOver && (
-					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-3 text-center">
-						<h3 className="text-(--glow-pink) text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-1.5 mt-0">
-							{t("game.tetris.labels.score")}
-						</h3>
-						<p className="text-[1.55rem] font-bold text-(--glow-cyan) font-['Courier New',monospace] m-0 mb-1.5 [text-shadow:0_0_8px_rgba(0,229,255,0.3)]">
-							{game.gameState.score}
-						</p>
-						<p className="text-[0.7rem] text-(--txt-soft) m-0 font-['Courier New',monospace]">
-							{t("game.tetris.labels.level")} {game.gameState.level}
-						</p>
-					</div>
-				)}
-				{!game.gameState.isGameOver && (
-					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-3 text-center">
-						<h3 className="text-(--glow-pink) text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-1.5 mt-0">
-							{t("game.tetris.labels.next")}
-						</h3>
-						<div className="flex justify-center items-center bg-[rgba(0,20,30,0.5)] border border-[rgba(0,229,255,0.3)] rounded-sm p-2 min-h-18">
-							{renderNextPiece()}
+					{!game.gameState.isGameOver && (
+						<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-3 text-center">
+							<h3 className="text-(--glow-pink) text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-1.5 mt-0">
+								{t("game.tetris.labels.score")}
+							</h3>
+							<p className="text-[1.55rem] font-bold text-(--glow-cyan) font-['Courier New',monospace] m-0 mb-1.5 [text-shadow:0_0_8px_rgba(0,229,255,0.3)]">
+								{game.gameState.score}
+							</p>
+							<p className="text-[0.7rem] text-(--txt-soft) m-0 font-['Courier New',monospace]">
+								{t("game.tetris.labels.level")} {game.gameState.level}
+							</p>
 						</div>
-					</div>
-				)}
-				{!game.gameState.isGameOver && (
-					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink)] rounded-md p-3 text-center">
-						<h3 className="text-(--glow-pink)] text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-1.5 mt-0">
-							{t("game.tetris.labels.stash")}
-						</h3>
-						<div className="flex justify-center items-center bg-[rgba(0,20,30,0.5)] border border-[rgba(0,229,255,0.3)] rounded-sm p-2 min-h-18">
-							{renderStashPiece()}
+					)}
+					{!game.gameState.isGameOver && (
+						<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-3 text-center">
+							<h3 className="text-(--glow-pink) text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-1.5 mt-0">
+								{t("game.tetris.labels.next")}
+							</h3>
+							<div className="flex justify-center items-center bg-[rgba(0,20,30,0.5)] border border-[rgba(0,229,255,0.3)] rounded-sm p-2 min-h-18">
+								{renderNextPiece()}
+							</div>
 						</div>
-					</div>
-				)}
-				{!game.gameState.isGameOver && (
-					<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-3 text-center sm:col-span-2 xl:col-span-1">
-						<h3 className="text-(--glow-pink) text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-2 mt-0">
-							{t("game.tetris.labels.controls")}
-						</h3>
-						<ul className="list-none p-0 m-0 flex flex-col gap-1">
-							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
-								{t("game.tetris.controls.move")}
-							</li>
-							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
-								{t("game.tetris.controls.rotate")}
-							</li>
-							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
-								{t("game.tetris.controls.softDrop")}
-							</li>
-							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
-								{t("game.tetris.controls.hardDrop")}
-							</li>
-							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
-								{t("game.tetris.controls.stash")}
-							</li>
-							<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
-								{t("game.tetris.controls.pause")}
-							</li>
-						</ul>
-					</div>
-				)}
-				{game.gameState.isGameOver && (
-					<div className="bg-[rgba(255,62,136,0.1)] border border-(--glow-pink) rounded-md p-4 text-center">
-						<p className="m-0 text-(--glow-pink) font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] text-[0.9rem]">
-							{t("game.tetris.gameOver.title")}
-						</p>
-						<p className="text-[1.5rem] text-(--glow-cyan) font-bold mt-2">{game.gameState.score}</p>
-					</div>
-				)}
+					)}
+					{!game.gameState.isGameOver && (
+						<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink)] rounded-md p-3 text-center">
+							<h3 className="text-(--glow-pink)] text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-1.5 mt-0">
+								{t("game.tetris.labels.stash")}
+							</h3>
+							<div className="flex justify-center items-center bg-[rgba(0,20,30,0.5)] border border-[rgba(0,229,255,0.3)] rounded-sm p-2 min-h-18">
+								{renderStashPiece()}
+							</div>
+						</div>
+					)}
+					{!game.gameState.isGameOver && (
+						<div className="bg-[rgba(0,0,0,0.4)] border border-(--glow-pink) rounded-md p-3 text-center sm:col-span-2 xl:col-span-1">
+							<h3 className="text-(--glow-pink) text-[0.78rem] font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] mb-2 mt-0">
+								{t("game.tetris.labels.controls")}
+							</h3>
+							<ul className="list-none p-0 m-0 flex flex-col gap-1">
+								<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+									{t("game.tetris.controls.move")}
+								</li>
+								<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+									{t("game.tetris.controls.rotate")}
+								</li>
+								<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+									{t("game.tetris.controls.softDrop")}
+								</li>
+								<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+									{t("game.tetris.controls.hardDrop")}
+								</li>
+								<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+									{t("game.tetris.controls.stash")}
+								</li>
+								<li className="font-['Courier New',monospace] text-[0.68rem] text-(--txt-soft) px-2 py-1 rounded-sm bg-[rgba(0,20,30,0.4)] border border-[rgba(0,229,255,0.1)] text-left tracking-[0.02rem] transition-all duration-120 hover:bg-[rgba(0,229,255,0.08)] hover:border-[rgba(0,229,255,0.3)] hover:shadow-[0_0_8px_rgba(0,229,255,0.15)]">
+									{t("game.tetris.controls.pause")}
+								</li>
+							</ul>
+						</div>
+					)}
+					{game.gameState.isGameOver && (
+						<div className="bg-[rgba(255,62,136,0.1)] border border-(--glow-pink) rounded-md p-4 text-center">
+							<p className="m-0 text-(--glow-pink) font-['Orbitron',sans-serif] uppercase tracking-[0.04rem] text-[0.9rem]">
+								{t("game.tetris.gameOver.title")}
+							</p>
+							<p className="text-[1.5rem] text-(--glow-cyan) font-bold mt-2">{game.gameState.score}</p>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

@@ -113,21 +113,27 @@ export function leaveRoom(roomId: string, userId: string) {
 	if (!room) {
 		return null;
 	}
-
+	const wasPlaying = room.status === "playing";
 	room.players = room.players.filter((player) => player.id !== userId);
 	if (room.players.length === 0) {
 		rooms.delete(room.id);
 		return null;
 	}
 	delete room.playerStates[userId];
-
 	if (room.hostId === userId) {
 		const nextHost = room.players[0];
 		nextHost.isHost = true;
 		room.hostId = nextHost.id;
 	}
-
-	return toPublicRoom(room);
+	const alivePlayers = room.players.filter((player) => player.isAlive);
+	if (wasPlaying && alivePlayers.length <= 1) {
+		room.status = "finished";
+	}
+	return {
+		room: toPublicRoom(room),
+		winner: alivePlayers.length === 1 ? alivePlayers[0] : null,
+		isFinished: wasPlaying && room.status === "finished",
+	};
 }
 
 export function removePlayerFromCurrentRoom(userId: string, roomId: string | null) {
@@ -185,7 +191,7 @@ export function handlePlayerAttack(roomId: string, fromUserId: string, lines: nu
 	const room = getRoom(roomId);
 	if (!room) throw new Error("Room not found");
 
-    
+
 	return toPublicRoom(room);
 }
 

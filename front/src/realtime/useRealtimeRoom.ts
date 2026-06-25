@@ -4,7 +4,6 @@ import { REALTIME_BASE_URL } from "../config/network";
 
 const AUTH_TOKEN_KEY = "ft_auth_token";
 
-
 export type PlayerGameState = {
 	displayGrid: (string | null)[][];
 	score: number;
@@ -75,93 +74,96 @@ export function useRealtimeRoom() {
 		[t],
 	);
 
-	const connect = useCallback((message: ClientMessage) => {
-		const token = localStorage.getItem(AUTH_TOKEN_KEY);
-		if (!token) {
-			setError(t("landing.multiplayer.errors.AUTH_REQUIRED"));
-			return;
-		}
+	const connect = useCallback(
+		(message: ClientMessage) => {
+			const token = localStorage.getItem(AUTH_TOKEN_KEY);
+			if (!token) {
+				setError(t("landing.multiplayer.errors.AUTH_REQUIRED"));
+				return;
+			}
 
-		pendingMessageRef.current = message;
-		setError(null);
-		setWinner(null);
-		setWinnerId(null);
+			pendingMessageRef.current = message;
+			setError(null);
+			setWinner(null);
+			setWinnerId(null);
 
-		if (wsRef.current?.readyState === WebSocket.OPEN) {
-			send(wsRef.current, message);
-			pendingMessageRef.current = null;
-			return;
-		}
-
-		wsRef.current?.close();
-		const ws = new WebSocket(`${REALTIME_BASE_URL}?token=${encodeURIComponent(token)}`);
-		wsRef.current = ws;
-
-		ws.onopen = () => {
-			setIsConnected(true);
-			if (pendingMessageRef.current) {
-				send(ws, pendingMessageRef.current);
+			if (wsRef.current?.readyState === WebSocket.OPEN) {
+				send(wsRef.current, message);
 				pendingMessageRef.current = null;
+				return;
 			}
-		};
 
-		ws.onmessage = (event) => {
-			const message = JSON.parse(event.data) as ServerMessage;
-			switch (message.type) {
-				case "room_created":
-				case "room_joined":
-				case "room_updated":
-					setRoom(message.room);
-					setIsGameStarted(message.room.status === "playing");
-					return;
-				case "game_started":
-					setRoom(message.room);
-					setIsGameStarted(true);
-					setWinner(null);
-					setWinnerId(null);
-					return;
-				case "player_state":
-					setRoom((currentRoom) => {
-						if (!currentRoom) return currentRoom;
-						return {
-							...currentRoom,
-							players: currentRoom.players.map((player) =>
-								player.id === message.playerId ? { ...player, state: message.state } : player,
-							),
-						};
-					});
-					return;
-				case "player_game_over":
-					setRoom(message.room);
-					return;
-				case "match_finished":
-					setRoom(message.room);
-					setWinnerId(message.winnerId);
-					setWinner(message.winnerUsername ?? t("landing.multiplayer.noWinner"));
-					setIsGameStarted(false);
-					return;
-				case "error":
-					setError(translateRealtimeError(message.code, message.message));
-					return;
-				case "pong":
-					return;
-				case "player_attack":
-					if (attackHandlerRef.current) attackHandlerRef.current(message.playerId, message.lines, message.username);
-					return;
-			}
-		};
+			wsRef.current?.close();
+			const ws = new WebSocket(`${REALTIME_BASE_URL}?token=${encodeURIComponent(token)}`);
+			wsRef.current = ws;
 
-		ws.onerror = () => {
-			setError(t("landing.multiplayer.errors.CONNECTION_FAILED"));
-		};
+			ws.onopen = () => {
+				setIsConnected(true);
+				if (pendingMessageRef.current) {
+					send(ws, pendingMessageRef.current);
+					pendingMessageRef.current = null;
+				}
+			};
 
-		ws.onclose = () => {
-			setIsConnected(false);
-		};
-	}, [t, translateRealtimeError]);
+			ws.onmessage = (event) => {
+				const message = JSON.parse(event.data) as ServerMessage;
+				switch (message.type) {
+					case "room_created":
+					case "room_joined":
+					case "room_updated":
+						setRoom(message.room);
+						setIsGameStarted(message.room.status === "playing");
+						return;
+					case "game_started":
+						setRoom(message.room);
+						setIsGameStarted(true);
+						setWinner(null);
+						setWinnerId(null);
+						return;
+					case "player_state":
+						setRoom((currentRoom) => {
+							if (!currentRoom) return currentRoom;
+							return {
+								...currentRoom,
+								players: currentRoom.players.map((player) =>
+									player.id === message.playerId ? { ...player, state: message.state } : player,
+								),
+							};
+						});
+						return;
+					case "player_game_over":
+						setRoom(message.room);
+						return;
+					case "match_finished":
+						setRoom(message.room);
+						setWinnerId(message.winnerId);
+						setWinner(message.winnerUsername ?? t("landing.multiplayer.noWinner"));
+						setIsGameStarted(false);
+						return;
+					case "error":
+						setError(translateRealtimeError(message.code, message.message));
+						return;
+					case "pong":
+						return;
+					case "player_attack":
+						if (attackHandlerRef.current)
+							attackHandlerRef.current(message.playerId, message.lines, message.username);
+						return;
+				}
+			};
+
+			ws.onerror = () => {
+				setError(t("landing.multiplayer.errors.CONNECTION_FAILED"));
+			};
+
+			ws.onclose = () => {
+				setIsConnected(false);
+			};
+		},
+		[t, translateRealtimeError],
+	);
 
 	const attackHandlerRef = useRef<((playerId: string, lines: number, username?: string) => void) | null>(null);
-
 
 	useEffect(() => {
 		return () => wsRef.current?.close();
@@ -186,7 +188,12 @@ export function useRealtimeRoom() {
 		startGame: () => send(wsRef.current, { type: "start_game" }),
 		sendPlayerState: (state: PlayerGameState) => send(wsRef.current, { type: "player_state", state }),
 		sendGameOver: (state: PlayerGameState) => send(wsRef.current, { type: "game_over", state }),
-		sendAttack: (lines: number) => send(wsRef.current, { type: "attack", lines }),
+		sendAttack: (lines: number) => {
+			const safeLines = Math.max(0, Math.min(4, Math.floor(lines)));
+			if (safeLines > 0) {
+				send(wsRef.current, { type: "attack", lines: safeLines });
+			}
+		},
 		registerAttackHandler: (handler: (playerId: string, lines: number, username?: string) => void) => {
 			attackHandlerRef.current = handler;
 			return () => {

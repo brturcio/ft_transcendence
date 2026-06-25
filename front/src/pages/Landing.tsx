@@ -113,7 +113,7 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 	}, [chatMessages, isInRoom]);
 
 	return (
-		<div className="text-(--txt-main) py-5 px-10 max-[1100px]:px-4 max-[760px]:py-3">
+		<div className=" text-(--txt-main) py-5 px-10 max-[1100px]:px-4 max-[760px]:py-3">
 			<style>{introUpKeyframes}</style>
 
 			<main className="w-full flex flex-col">
@@ -152,7 +152,7 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 					`w-full grid grid-cols-1 gap-6 items-start px-4 ` +
 					(isInRoom ? `2xl:grid-cols-[minmax(0,1fr)_340px]` : `2xl:grid-cols-[280px_minmax(0,1fr)_340px]`)
 				}>
-				
+
 					{/* LEFT: Leaderboard (hidden when in a room) */}
 					{!isInRoom && (
 					<aside className={`${dashboardPanel} w-full`}>
@@ -179,10 +179,10 @@ export default function Landing({ isAuthenticated }: LandingProps) {
 
 					{/* RIGHT: Multiplayer / Room */}
 					<aside className={`${dashboardPanel} w-full flex flex-col gap-3`}>
-						
+
 						{realtime.room ? (
 						<div className="flex flex-col gap-3 p-3 bg-[rgba(0,0,0,0.25)] border border-[rgba(0,229,255,0.25)] rounded-lg">
-							
+
 							{/* Room info */}
 							<div className="p-3 bg-[rgba(0,0,0,0.25)] border border-[rgba(0,229,255,0.25)] rounded-lg">
 							<p className="text-[var(--txt-soft)] text-xs uppercase tracking-[0.06rem]">
