@@ -27,6 +27,22 @@ function isPrivateLanHost(hostname: string) {
   return false;
 }
 
+function isInternalConnection(request: NextRequest): boolean {
+  // Les connexions internes viennent des conteneurs Docker (hostname ou IP interne)
+  const host = request.headers.get("host");
+  if (!host) return false;
+
+  const hostname = host.split(":")[0];
+
+  // Docker internal hostnames (service names)
+  if (hostname === "back" || hostname === "front" || hostname === "db" || hostname === "realtime") {
+    return true;
+  }
+
+  // Private network IPs
+  return isPrivateLanHost(hostname);
+}
+
 function isAllowedOrigin(origin: string | null) {
   if (origin === null) {
     return false;
@@ -61,6 +77,17 @@ function buildCorsHeaders(origin: string | null): Record<string, string> {
 }
 
 export function middleware(request: NextRequest) {
+  // Forcer HTTPS pour les connexions externes (navigateurs, scripts, API)
+  // Permettre HTTP pour les connexions internes (conteneurs Docker)
+  if (!isInternalConnection(request)) {
+    const proto = request.headers.get("x-forwarded-proto") || request.nextUrl.protocol.slice(0, -1);
+    if (proto === "http") {
+      const url = new URL(request.url);
+      url.protocol = "https:";
+      return NextResponse.redirect(url, { status: 301 });
+    }
+  }
+
   const origin = request.headers.get("origin");
   const corsHeaders = buildCorsHeaders(origin);
 
