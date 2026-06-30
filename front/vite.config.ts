@@ -12,8 +12,8 @@ export default defineConfig({
 		host: "0.0.0.0",
 		port: 3000,
 		https: {
-			cert: fs.readFileSync("10.13.247.134.pem"),
-			key: fs.readFileSync("10.13.247.134-key.pem")
+			cert: fs.readFileSync("ft_transcendance.com+2.pem"),
+			key: fs.readFileSync("ft_transcendance.com+2-key.pem")
 		},
 	},
 })

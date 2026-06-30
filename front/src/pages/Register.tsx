@@ -284,11 +284,6 @@ export default function Register({ onLogin }: RegisterProps) {
 							{t("register.oauth.divider")}
 							<span className="h-px flex-1 bg-[linear-gradient(90deg,transparent,var(--line-soft),transparent)]" />
 						</div>
-						<div className="grid place-items-center gap-3 mb-6">
-							<button type="button" className={googleButton}>
-								{t("register.oauth.google")}
-							</button>
-						</div>
 						<p className="text-center text-(--txt-soft) text-[0.95rem] mt-6 font-['Rajdhani',sans-serif]">
 							{t("register.footer.question")}{" "}
 							<Link to="/login" className={formLink}>

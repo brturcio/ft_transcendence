@@ -16,14 +16,10 @@ define get_lan_ip
 $(shell ip route get 1.1.1.1 2>/dev/null | awk '{for (i = 1; i <= NF; i++) if ($$i == "src") { print $$(i + 1); exit }}' || hostname -I 2>/dev/null | awk '{print $$1}')
 endef
 
-all: prod
-
-prod:
-	@bash -c 'cd front && npm i'
-	@bash -c './script.sh'
-	@bash -c 'docker compose -f ./docker-compose-prod.yml up --build; status=$$?; if [ $$status -eq 130 ]; then exit 0; else exit $$status; fi'
+all: dev
 
 dev:
+	@bash -c 'cd front ; ./mkcert-v1.4.4-linux-amd64 ft_transcendance.com localhost 127.0.0.1 ; cd ..'
 	@bash -c 'docker compose -f ./docker-compose-dev.yml up --build; status=$$?; if [ $$status -eq 130 ]; then exit 0; else exit $$status; fi'
 
 up:
@@ -44,8 +40,8 @@ ip:
 	@IP="$(call get_lan_ip)"; \
 	if [ -z "$$IP" ]; then IP="127.0.0.1"; fi; \
 	echo "Primary LAN IP: $$IP"; \
-	echo "Open from another device: http://$$IP:3000"; \
-	echo "Backend API: http://$$IP:8000"; \
+	echo "Open from another device: https://$$IP:3000"; \
+	echo "Backend API: https://$$IP:8000"; \
 	echo "Realtime WS: ws://$$IP:8001"; \
 	echo ""; \
 	echo "Other LAN URLs:"; \
@@ -55,6 +51,8 @@ db-reset:
 	$(COMPOSE_DEV) down -v
 
 clean: down
+	@rm -rf front/ft_transcendance.com+2-key.pem
+	@rm -rf front/ft_transcendance.com+2.pem
 	@rm -rf front/node_modules
 	@rm -rf back/node_modules
 

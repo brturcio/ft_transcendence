@@ -326,6 +326,8 @@ The project uses the following modules.
 | Web | Use a framework for both frontend and backend | Major | 2 | React/Vite frontend and TypeScript backend API routes | brturcio, grouger, ntome, gajanvie |
 | Web | Real-time features using WebSockets | Major | 2 | Multiplayer rooms and real-time game state synchronization | ntome, brturcio |
 | Web | Use an ORM for the database | Minor | 1 | Drizzle ORM with PostgreSQL schema definitions | grouger |
+| Web | Allow users to interact with other users. | Major | 2 | Chat, profile systeme and friend systeme | ntome
+| Web | Custom-made design | Minor | 1 | Buttons, color pallet, navbar, footer | brturcio, grouger, ntome, gajanvie
 | Accessibility and i18n | Support for multiple languages | Minor | 1 | i18next with English, Spanish, and French translations | brturcio |
 | User Management | Standard user management and authentication | Major | 2 | Registration, login, logout, profile, avatar, account deletion, JWT sessions | brturcio, grouger |
 | Gaming and user experience | Complete web-based game | Major | 2 | Browser-based Tetris game with score, levels, game over, and multiplayer mode | ntome, brturcio, gajanvie |
@@ -333,7 +335,7 @@ The project uses the following modules.
 | Gaming and user experience | Multiplayer game with more than two players | Major | 2 | Multiplayer rooms support more than two connected players | ntome, brturcio, gajanvie |
 | Gaming and user experience | Gamification system | Minor | 1 | Achievements, user progress, badges, XP, levels, and leaderboard | ntome, brturcio, grouger |
 
-Total claimed points: **15 points**.
+Total claimed points: **18 points**.
 
 ## Individual Contributions
 
